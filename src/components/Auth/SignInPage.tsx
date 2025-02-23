@@ -1,11 +1,10 @@
-import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+"use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useAuth } from "../../context/AuthContext";
+import Link from "next/link";
+import { login } from "@/actions/auth";
 
-// Zod schema for form validation
 const signInSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -26,21 +25,18 @@ const SignInPage: React.FC = () => {
     },
   });
 
-  const { user, signIn } = useAuth();
-  const navigate = useNavigate();
-
-  const onSubmit = (data: SignInFormData) => {
-    console.log("Form Data:", data);
-    signIn(data.email, data.password);
+  const onSubmit = async (data: SignInFormData) => {
+    try {
+      const formdata = new FormData();
+      formdata.append("email", data.email);
+      formdata.append("password", data.password);
+      await login(formdata);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  useEffect(() => {
-    if (user) {
-      navigate("/cloude/dashboard");
-    }
-  }, [user, navigate]);
-
-  let isError = false;
+  const isError: boolean = false;
 
   return (
     <div className="w-full h-full flex items-center justify-center">
@@ -52,7 +48,11 @@ const SignInPage: React.FC = () => {
         {/* Form Message group */}
         <div className="w-[full] h-[60px] flex items-center justify-center">
           <p
-            className={`text-[0.8rem] ${isError ? "text-red-600" : "text-green-600"} ${isError ? "bg-red-200" : "bg-green-200"} font-semibold  px-[10px] py-[2px] rounded`}
+            className={`text-[0.8rem] ${
+              isError ? "text-red-600" : "text-green-600"
+            } ${
+              isError ? "bg-red-200" : "bg-green-200"
+            } font-semibold  px-[10px] py-[2px] rounded`}
           >
             Registration sucessfull
           </p>
@@ -113,7 +113,7 @@ const SignInPage: React.FC = () => {
           <p className="text-[0.8rem] text-[#1C3553] font-medium">
             Not yet registered?
             <Link
-              to="/cloude/auth/sign-up"
+              href="/cloude/auth/sign-up"
               className="hover:text-[#635DB0] underline ml-[2px]"
             >
               SignUp

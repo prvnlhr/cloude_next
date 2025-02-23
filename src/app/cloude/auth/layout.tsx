@@ -3,5 +3,5 @@ export default function AuthPageLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="w-[80%] h-[80%] bg-blue-400">{children}</div>;
+  return <div className="w-[100%] h-[100%] bg-white">{children}</div>;
 }

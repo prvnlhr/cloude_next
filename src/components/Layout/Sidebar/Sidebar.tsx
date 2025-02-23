@@ -1,30 +1,77 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import AppLogo from "./AppLogo";
 import HamburgerIcon from "../../Icons/HamburgerIcon";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Routes } from "@/config/routes";
+import { logoutUser } from "@/lib/api/auth/authApi";
+import { createClient } from "@/utils/supabase/client";
+import { signout } from "@/actions/auth";
+
 type SidebarProps = {
   showSidebar: boolean;
   setShowSidebar: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const userInfo = {
-  name: "Martin Mickael",
-  email: "mrtnmickael@gmail.com",
-};
-
 // Sidebar component displays navigation and user info
 const Sidebar: FC<SidebarProps> = ({ showSidebar, setShowSidebar }) => {
   const pathname = usePathname();
+  const supabase = createClient();
+
+  const [session, setSession] = useState<{
+    userName: string;
+    email: string;
+    userId: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) throw error;
+
+        if (data.session) {
+          const { display_name, email } = data.session.user.user_metadata;
+          setSession({
+            userName: display_name,
+            email,
+            userId: data.session.user.id,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching session:", error);
+      }
+    };
+
+    fetchSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session) {
+          const { display_name, email } = session.user.user_metadata;
+          setSession({
+            userName: display_name,
+            email,
+            userId: session.user.id,
+          });
+        } else {
+          setSession(null);
+        }
+      }
+    );
+
+    return () => authListener.subscription.unsubscribe();
+  }, [supabase.auth]);
+
   const handleLogout = async () => {
-    // try {
-    //   await supabase.auth.signOut();
-    //   console.log("User logged out successfully");
-    // } catch (error) {
-    //   console.error("Error logging out:", error);
-    // }
+    try {
+      const res = await signout();
+      console.log(res);
+      console.log("User logged out successfully");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
   };
   return (
     <div className="w-[100%] left-[-100%] h-full border-r-[1px] border-r-[#D0D5DD] flex flex-col">
@@ -48,7 +95,7 @@ const Sidebar: FC<SidebarProps> = ({ showSidebar, setShowSidebar }) => {
           <div className="h-[100%] aspect-square flex items-center justify-center">
             <div className="w-[70%] aspect-square bg-[#D9D9D9] rounded-full flex items-center justify-center">
               <p className="text-[#635DB0] text-[1.2rem] font-medium">
-                {userInfo.name.charAt(0)}
+                {session?.userName.charAt(0)}
               </p>
             </div>
           </div>
@@ -56,10 +103,10 @@ const Sidebar: FC<SidebarProps> = ({ showSidebar, setShowSidebar }) => {
           {/* User info card --------------------------- */}
           <div className="w-[auto] h-full flex flex-col justify-center overflow-hidden">
             <p className="text-[#1C3553] text-[1.1rem] font-medium truncate">
-              {userInfo.name}
+              {session?.userName}
             </p>
             <p className="text-[#A2A8B2] text-[0.8rem] font-medium truncate">
-              {userInfo.email}
+              {session?.email}
             </p>
           </div>
           <button
@@ -68,7 +115,7 @@ const Sidebar: FC<SidebarProps> = ({ showSidebar, setShowSidebar }) => {
             onClick={handleLogout}
           >
             <Icon
-              icon="ci:chevron-right"
+              icon="ci:chevron-down"
               className="w-[100%] h-[100%] text-[#A2A8B2]"
             />
           </button>
@@ -82,7 +129,8 @@ const Sidebar: FC<SidebarProps> = ({ showSidebar, setShowSidebar }) => {
             href={route.path}
             key={route.label}
             className={`w-[70%] h-[40px] rounded-[10px] flex my-[10px] pr-[15px]
-               ${pathname === route.path ? "bg-[#F3F2F2]" : "bg-transparent"}`}
+               ${pathname === route.path ? "bg-[#F3F2F2]" : "bg-transparent"}
+               `}
           >
             <div className="h-full aspect-square flex justify-center items-center">
               <Icon

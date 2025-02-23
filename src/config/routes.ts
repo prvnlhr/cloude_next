@@ -25,4 +25,14 @@ export const Routes: RouteConfig[] = [
     label: "Starred",
     icon: "solar:star-linear",
   },
+  {
+    path: "/cloude/auth/sign-in",
+    label: "Sign In",
+    icon: "solar:star-linear",
+  },
+  {
+    path: "/cloude/auth/sign-up",
+    label: "Sign Up",
+    icon: "solar:star-linear",
+  },
 ];

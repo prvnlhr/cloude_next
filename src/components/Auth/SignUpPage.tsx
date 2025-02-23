@@ -1,9 +1,9 @@
-import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+"use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useAuth } from "../../context/AuthContext";
+import Link from "next/link";
+import { signup } from "@/actions/auth";
 
 // Zod schema for form validation
 const signUpSchema = z
@@ -21,9 +21,6 @@ const signUpSchema = z
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
 const SignUpPage = () => {
-  const navigate = useNavigate();
-  const { user, signUp } = useAuth();
-
   const {
     register,
     handleSubmit,
@@ -38,18 +35,19 @@ const SignUpPage = () => {
     },
   });
 
-  const onSubmit = (data: SignUpFormData) => {
-    console.log("Form Data:", data);
-    signUp(data.email, data.password, data.fullName);
+  const onSubmit = async (data: SignUpFormData) => {
+    try {
+      const formdata = new FormData();
+      formdata.append("email", data.email);
+      formdata.append("password", data.password);
+      formdata.append("fullName", data.fullName);
+      await signup(formdata);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  useEffect(() => {
-    if (user) {
-      navigate("/cloude/dashboard");
-    }
-  }, [user, navigate]);
-
-  const isError = true;
+  const isError: boolean = true;
 
   return (
     <div className="w-full h-full flex items-center justify-center">
@@ -61,7 +59,11 @@ const SignUpPage = () => {
         {/* Form Message group */}
         <div className="w-[full] h-[60px] flex items-center justify-center">
           <p
-            className={`text-[0.8rem] ${isError ? "text-red-600" : "text-green-600"} ${isError ? "bg-red-200" : "bg-green-200"} font-semibold  px-[10px] py-[2px] rounded`}
+            className={`text-[0.8rem] ${
+              isError ? "text-red-600" : "text-green-600"
+            } ${
+              isError ? "bg-red-200" : "bg-green-200"
+            } font-semibold  px-[10px] py-[2px] rounded`}
           >
             Registration sucessfull
           </p>
@@ -170,7 +172,7 @@ const SignUpPage = () => {
           <p className="text-[0.8rem] text-[#1C3553] font-medium">
             Already registered?
             <Link
-              to="/cloude/auth/sign-in"
+              href="/cloude/auth/sign-in"
               className="hover:text-[#635DB0] underline ml-[2px]"
             >
               SignIn
