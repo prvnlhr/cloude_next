@@ -1,30 +1,28 @@
-type Route = {
-  label: string;
+type RouteConfig = {
   path: string;
-  icon?: any;
-  exact?: boolean;
-  hidden?: boolean;
+  label: string;
+  icon: string;
 };
-export const routes: Route[] = [
+
+export const Routes: RouteConfig[] = [
   {
+    path: "/cloude/home/dashboard",
     label: "Dashboard",
-    path: "/cloude/dashboard",
     icon: "mynaui:home",
   },
   {
+    path: "/cloude/home/my-storage",
     label: "My Storage",
-    path: "/cloude/my-storage",
     icon: "stash:cloud-duotone",
   },
-
   {
+    path: "/cloude/home/shared",
     label: "Shared",
-    path: "/cloude/shared",
     icon: "solar:share-outline",
   },
   {
+    path: "/cloude/home/starred",
     label: "Starred",
-    path: "/cloude/starred",
     icon: "solar:star-linear",
   },
 ];

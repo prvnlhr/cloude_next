@@ -1,5 +1,6 @@
 import FolderCard from "./FolderCard";
 import FileCard from "./FileCard";
+import { headers } from "next/headers";
 
 // Types
 interface Folder {
@@ -112,7 +113,11 @@ const filesData: File[] = [
   },
 ];
 
-const FolderPage = () => {
+const FolderPage = async () => {
+  const headerList = await headers();
+  const pathname = headerList.get("x-current-path");
+  const basePath = pathname?.replace(/\/folders\/[^/]+$/, "") || "";
+
   return (
     <div
       className="w-full h-full flex flex-col overflow-y-scroll pb-[10px] pt-[20px]"
@@ -128,7 +133,7 @@ const FolderPage = () => {
         </div>
         <div className="w-full h-[auto]  py-[15px] flex flex-wrap">
           {foldersData.map((folder, index) => (
-            <FolderCard key={index} folder={folder} />
+            <FolderCard key={index} folder={folder} basePath={basePath} />
           ))}
         </div>
       </section>
@@ -140,7 +145,7 @@ const FolderPage = () => {
         </div>
         <div className={`w-full h-[auto] flex flex-wrap`}>
           {filesData.map((file, index) => (
-            <FileCard key={index} file={file} />
+            <FileCard key={index} file={file} basePath={basePath} />
           ))}
         </div>
       </section>

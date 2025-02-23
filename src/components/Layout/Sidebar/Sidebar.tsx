@@ -3,9 +3,8 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import AppLogo from "./AppLogo";
 import HamburgerIcon from "../../Icons/HamburgerIcon";
 import Link from "next/link";
-import { routes } from "@/routes/route";
 import { usePathname } from "next/navigation";
-
+import { Routes } from "@/config/routes";
 type SidebarProps = {
   showSidebar: boolean;
   setShowSidebar: React.Dispatch<React.SetStateAction<boolean>>;
@@ -78,7 +77,7 @@ const Sidebar: FC<SidebarProps> = ({ showSidebar, setShowSidebar }) => {
 
       {/* Sidebar Menu Items ------------------------------- */}
       <div className="w-[100%] h-[calc(100%-150px)] flex flex-col items-center justify-start pt-[20px]">
-        {routes.map((route) => (
+        {Routes.map((route) => (
           <Link
             href={route.path}
             key={route.label}

@@ -1,18 +1,19 @@
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { headers } from "next/headers";
 
 interface File {
   fileId: string;
   fileName: string;
 }
+interface FileCardProps {
+  file: File;
+  basePath: string;
+}
 
-const FileCard = async ({ file }: { file: File }) => {
-  const headerList = await headers();
-  const pathname = headerList.get("x-current-path");
+const FileCard = async ({ file, basePath }: FileCardProps) => {
   return (
     <Link
-      href={`${pathname}/files/${file.fileId}`}
+      href={`${basePath}/files/${file.fileId}`}
       className="w-[48%] sm:w-[48%] md:w-[30%] lg:w-[18%] h-auto mx-[1%] my-[15px] bg-[#F4F6F6] border-[1px] border-[#E4E7EC] flex flex-col rounded-[10px]"
     >
       <div className="w-full h-[40px] flex pl-[10%] overflow-hidden">

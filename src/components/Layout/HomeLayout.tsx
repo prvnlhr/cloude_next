@@ -3,7 +3,7 @@ import { useState } from "react";
 import Sidebar from "./Sidebar/Sidebar";
 import Navbar from "./Navbar/Navbar";
 import MainView from "./MainView/MainView";
-const AppLayout = ({ children }: { children: React.ReactNode }) => {
+const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   const [showSidebar, setShowSidebar] = useState<boolean>(false);
 
   return (
@@ -29,4 +29,4 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default AppLayout;
+export default HomeLayout;

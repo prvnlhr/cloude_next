@@ -1,18 +1,20 @@
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { headers } from "next/headers";
 
 interface Folder {
   folderId: string;
   folderName: string;
 }
 
-const FolderCard = async ({ folder }: { folder: Folder }) => {
-  const headerList = await headers();
-  const pathname = headerList.get("x-current-path");
+interface FolderCardProps {
+  folder: Folder;
+  basePath: string;
+}
+
+const FolderCard = async ({ folder, basePath }: FolderCardProps) => {
   return (
     <Link
-      href={`${pathname}/folders/${folder.folderId}`}
+      href={`${basePath}/folders/${folder.folderId}`}
       className="w-[48%] sm:w-[48%] md:w-[30%] lg:w-[18%] h-[40px] mx-[1%] my-[15px] flex border border-[#E4E7EC] bg-[#F4F6F6] rounded-[8px]"
     >
       <div className="h-full aspect-square flex items-center justify-center">
