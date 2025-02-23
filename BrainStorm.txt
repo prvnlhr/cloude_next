@@ -1,0 +1,1043 @@
+As of now i have made the ui design in figma. According to the design, below is how my ui looks now,
+
+Header bar at top
+
+- Header at has search bar where we can search for any file etc
+
+Sidebar at left side
+
+- Sidebar has two section
+  - top section
+    - top section has logged in username and email shown
+  - bottom section
+    - bottom section has menu items,
+      - Home
+      - Shared files
+      - Starred
+
+Main Content Section at right of sidebar
+
+- Has a header section at top which show menu name which is selected, for example show 'Home' when 'Home' is selected from sidebar. This header section also has two buttons, upload and create folder
+- Below header has some section in row one below other
+
+  - Recent Uploads Section -> shows card which has file type icon, name & extension(.pdf, .docx,.xlms,.jpeg etc), action icon(delete,rename,share, download, star)
+  - Folder Section -> shows all the folders -> created and uploaded
+  - Files section -> displays a table with filename, size, action
+
+
+FOLDER STRUCTURE -------------------------------------------------------------------------------------------------------------------------------
+
+
+
+src  
+│  
+└── components  
+    │  
+    ├── Layout                    // Main Layout Components  
+    │   ├── Navbar                // Header renamed to Navbar for clarity  
+    │   │   └── Navbar.js  
+    │   │   └── SearchBar.js  
+    │   │  
+    │   ├── Sidebar               // Sidebar Components  
+    │   │   └── Sidebar.js  
+    │   │   └── AppLogo.js  
+    │   │   └── UserInfo.js  
+    │   │   └── MenuItem.js  
+    │   │  
+    │   └── MainView              // Main Content Section  
+    │       ├── MainHeader        // Header for MainView Pages  
+    │       │   └── MainHeader.js  
+    │       │   └── UploadButton.js  
+    │       │   └── CreateFolderButton.js  
+    │       │  
+    │       └── Pages             // All Pages for MainView  
+    │           ├── DashboardPage  
+    │           │   └── DashboardPage.js  
+    │           │   └── RecentUploads.js  
+    │           │   └── Folders.js  
+    │           │   └── FilesTable.js  
+    │           │   └── FileCard.js  
+    │           │  
+    │           ├── SharedFilesPage  
+    │           │   └── SharedFilesPage.js  
+    │           │   └── SharedFileCard.js  
+    │           │  
+    │           └── StarredFilesPage  
+    │               └── StarredFilesPage.js  
+    │               └── StarredFileCard.js  
+    │  
+    └── Auth                      // Authentication Components  
+        └── SignUpPage  
+        │   └── SignUpPage.js  
+        │   └── SignUpForm.js  
+        │  
+        └── SignInPage  
+            └── SignInPage.js  
+            └── SignInForm.js  
+
+
+
+
+
+// Routes
+
+http://localhost:5173/cloude/signin          -> SignInPage
+http://localhost:5173/cloude/signup          -> SignUpPage
+http://localhost:5173/cloude/home            -> DashboardPage with Recent Uploads, Folders, and Files Table
+http://localhost:5173/cloude/shared          -> SharedFilesPage showing shared files
+http://localhost:5173/cloude/starred         -> StarredFilesPage showing starred files
+
+
+i have a parent div -> parent
+
+parent has two childs left and right
+
+
+parent is flex and left and right are placed side by side
+
+both left and right child has a onClick function which changes a state value 'show'
+
+
+i want that if show is true the left show visible in parent and right should be hidden
+
+for that i want that left should move towards the negative left direction and right will take come in view
+and vice versa
+i am using react and tialwind css
+
+
+
+
+
+
+Dashboard -> Shows recent uploads, 10 folders, 10 files 
+My Storage -> All my files and folders
+Shared -> Files and Folders that are shared to me
+starred -> Files and folders that i have added to starred
+
+/cloude/dashboard
+/cloude/my-drive
+/cloude/shared
+/cloude/starred
+/cloude/auth/signin
+/cloude/auth/signup
+
+
+
+---------------------------------------------------------
+
+Dashboard have 3 sections
+1. RecentUploads -> Shows the five most recent files uploaded.
+2. Folders -> Shows recently uploaded or newly created folders.
+3. Files -> Shows up to 20 files that are -> Shared with the user, Recently uploaded, Recently accessed
+
+I also have 
+'Shared' Page(files & folder)
+'starred' page (files & folder)
+'My Storage' page (shows all files and folder of my own)
+
+I also have two buttons at top header, 'Create Folder' , 'Upload'
+'Create Folder' button -> Lets create a folder
+'Upload' -> Lets upload a single, multiple files and folder
+
+If I am at Dashboard and create a folder or upload a file or folder,
+It will be create or uploaded and show at 'My Storage' Page
+
+
+If i am at My Storage Page,
+
+My Storage -> file upload, folder upload, folder create
+ - will create file or folder at 'My Storage Page'
+
+My Storage -> some folder ->  file upload, folder upload, folder create
+  - will create file or folder in that folder
+
+--------------------------------------------------------------
+
+Alright, let's walk through how this system will work, keeping everything organized for easy querying and maintaining proper URL structures. We'll also set up the database in Supabase to efficiently handle nested folders and files.
+
+---
+
+ 1. Database Design in Supabase
+
+We'll need three main tables:  
+- users – To store user information.  
+- folders – To store folder details, including nested structures.  
+- files – To store file details.  
+
+---
+
+ users Table : 
+This table keeps track of all users in the system.  
+
+| id | name     | email             |
+|----|----------|-------------------|
+| 1  | John Doe | john@example.com   |
+| 2  | Jane Roe | jane@example.com   |
+
+---
+
+ folders Table  
+This table stores folder information.  
+- `id`: Unique identifier for each folder.  
+- `name`: Folder name.  
+- `parent_id`: ID of the parent folder. Null if it's a root folder.  
+- `owner_id`: The user who owns this folder (foreign key to users table).  
+- `created_at`: Timestamp of folder creation.  
+
+| id | name              | parent_id | owner_id | created_at          |
+|----|-------------------|-----------|----------|---------------------|
+| 1  | My Storage        | NULL      | 1        | 2025-02-20 10:00:00 |
+| 2  | Work Documents    | 1         | 1        | 2025-02-20 10:05:00 |
+| 3  | Personal Photos   | 1         | 1        | 2025-02-20 10:10:00 |
+| 4  | Vacation Bali     | 3         | 1        | 2025-02-20 10:15:00 |
+| 5  | Invoice 2023      | 2         | 1        | 2025-02-20 10:20:00 |
+
+---
+
+ files Table  
+This table stores file details.  
+- `id`: Unique identifier for each file.  
+- `name`: File name.  
+- `folder_id`: The folder to which this file belongs (foreign key to folders table).  
+- `owner_id`: The user who owns this file (foreign key to users table).  
+- `url`: URL of the uploaded file.  
+- `created_at`: Timestamp of file upload.  
+
+| id | name            | folder_id | owner_id | url                            | created_at          |
+|----|-----------------|-----------|----------|------------------------------- |---------------------|
+| 1  | Resume.pdf      | 2         | 1        | /drive/resume.pdf              | 2025-02-20 10:25:00 |
+| 2  | BaliBeach.jpg   | 4         | 1        | /drive/vacation-bali/beach.jpg | 2025-02-20 10:30:00 |
+| 3  | Invoice-Jan.pdf | 5         | 1        | /drive/invoice-2023/jan.pdf    | 2025-02-20 10:35:00 |
+
+---
+
+ 2. User Flow and URL Structure  
+
+ Scenario 1: Accessing My Storage  
+- User clicks on My Storage from the sidebar.  
+- URL: `localhost:3000/cloude/my-storage`  
+- Query: Fetch folders where `parent_id` is `NULL` and `owner_id` is the logged-in user's ID.  
+- Displayed Content:  
+  - Folders: Work Documents, Personal Photos  
+  - Files: None at this level.  
+
+---
+
+ Scenario 2: Navigating into a Folder  
+- User clicks on Personal Photos.  
+- URL: `localhost:3000/cloude/my-storage/personal-photos`  
+- Query: Fetch folders where `parent_id` = 3 (Personal Photos' ID) and files where `folder_id` = 3.  
+- Displayed Content:  
+  - Folders: Vacation Bali  
+  - Files: None at this level.  
+
+--- 
+
+ Scenario 3: Nested Folder Navigation  
+- User navigates into Vacation Bali.  
+- URL: `localhost:3000/cloude/my-storage/personal-photos/vacation-bali`  
+- Query: Fetch folders and files where `parent_id` = 4 or `folder_id` = 4.  
+- Displayed Content:  
+  - Folders: None  
+  - Files: BaliBeach.jpg  
+
+---
+
+ Scenario 4: Creating a Folder  
+- User clicks Create Folder while in My Storage.  
+- A new folder Projects is created.  
+- Request Sent: POST request to backend with:  
+  - `name`: Projects  
+  - `parent_id`: NULL (since it's at the root level)  
+  - `owner_id`: 1 (logged-in user ID)  
+- Database Update:  
+  - folders Table:  
+
+| id | name     | parent_id | owner_id | created_at          |
+|----|----------|-----------|----------|---------------------|
+| 6  | Projects | NULL      | 1        | 2025-02-20 10:40:00 |
+
+- Displayed Content: Refreshes to show the new Projects folder.  
+
+---
+
+ Scenario 5: Uploading a File  
+- User uploads Report.pdf inside Work Documents.  
+- URL: `localhost:3000/cloude/my-storage/work-documents`  
+- Request Sent: POST request to backend with:  
+  - `name`: Report.pdf  
+  - `folder_id`: 2 (Work Documents' ID)  
+  - `owner_id`: 1  
+  - `url`: `/drive/work-documents/report.pdf`  
+- Database Update:  
+  - files Table:  
+
+| id | name        | folder_id | owner_id | url                              | created_at          |
+|----|-------------|-----------|----------|----------------------------------|---------------------|
+| 4  | Report.pdf  | 2         | 1        | /drive/work-documents/report.pdf  | 2025-02-20 10:45:00 |
+
+- Displayed Content: Refreshes to show the newly uploaded Report.pdf.  
+
+---
+
+ 3. Benefits of This Setup  
+- Nested Structure Handling: The `parent_id` column allows infinite nesting of folders.  
+- Efficient Queries: Easy to get contents of any folder by querying `parent_id` for folders and `folder_id` for files.  
+- Consistent URLs: URLs follow the folder hierarchy, maintaining a clean and intuitive structure.  
+- Owner-based Security: `owner_id` helps ensure users only access their own files and folders.  
+
+---
+
+ 4. Example Queries  
+
+1. Get Root Level Folders for User 1:  
+
+SELECT * FROM folders WHERE parent_id IS NULL AND owner_id = 1;
+
+
+2. Get Contents of 'Personal Photos' Folder:  
+
+SELECT * FROM folders WHERE parent_id = 3;
+SELECT * FROM files WHERE folder_id = 3;
+
+
+3. Get All Files Shared with User 1:  
+We'll need an additional shared_files table for this.  
+
+---
+
+This structure efficiently supports:  
+- Nested folders and files  
+- Easy navigation and URL maintenance  
+- Scalable storage and retrieval  
+
+
+
+-------------------------------------------------------------------------------
+
+I want that if user is not signedin then he must be taken to 
+
+http://localhost:5173/cloude/auth/sign-in
+
+
+let say if user is signed in and tries to go to the below urls,
+
+http://localhost:5173/cloude/auth/sign-in
+http://localhost:5173/cloude/auth/sign-up
+
+
+then he must not be able to do that and should be taken to below url
+
+http://localhost:5173/cloude/dashboard
+
+
+Also if a user refresh the page then he must remain on same page unless he is signedin
+
+
+following are the routes that needs to protect and dont let to be visited of not signedin,
+/cloude/dashboard
+/cloude/my-drive
+/cloude/shared
+/cloude/starred
+
+
+following is my component structure, which is old setup using AuthContext and other stuf. I want new setup to protect routes
+
+App.tsx --------------------------------
+
+import React from "react";
+import "./index.css";
+import { AuthProvider } from "./context/AuthContext";
+import AppRoutes from "./components/AppRoutes";
+
+const App: React.FC = () => {
+  return (
+    <div className="app_wrapper">
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </div>
+  );
+};
+
+export default App;
+
+AppRoutes.tsx -------------------------
+
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute";
+import AppLayout from "./Layout/AppLayout";
+import SignInPage from "./Auth/SignInPage";
+import SignUpPage from "./Auth/SignUpPage";
+
+const AppRoutes: React.FC = () => {
+  return (
+    <Routes>
+      {/* Authentication Routes */}
+      <Route path="/cloude/auth/sign-in" element={<SignInPage />} />
+      <Route path="/cloude/auth/sign-up" element={<SignUpPage />} />
+
+      {/* Protected Routes with AppLayout */}
+      <Route
+        path="/cloude/*"
+        element={
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Redirect unknown routes */}
+      <Route path="*" element={<Navigate to="/cloude/dashboard" replace />} />
+    </Routes>
+  );
+};
+
+export default AppRoutes;
+
+
+AppLayout.tsx --------------------------
+
+import { useState } from "react";
+import MainView from "./MainView/MainView";
+import Navbar from "./Navbar/Navbar";
+import Sidebar from "./Sidebar/Sidebar";
+
+const AppLayout: React.FC = () => {
+  const [showSidebar, setShowSidebar] = useState<boolean>(false);
+  return (
+    <div className="w-[100%] h-[100%] overflow-hidden relative">
+      <div
+        // className={`
+        //   flex h-full transition-transform duration-300
+        //   ${showSidebar ? "translate-x-0" : "-translate-x-1/2"}
+        //   sm:translate-x-0 w-[200%] sm:w-full
+        //   `}
+
+        className={`
+        flex h-full transition-transform duration-300
+        ${showSidebar ? "translate-x-0" : "-translate-x-1/2"}
+        lg:translate-x-0 w-[200%] lg:w-full
+        `}
+      >
+        <div className="w-[50%] lg:w-[20%] h-full relative flex">
+          <Sidebar showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
+        </div>
+
+        <div className="w-[50%] lg:w-[80%] h-full relative">
+          <Navbar />
+          <MainView showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AppLayout;
+
+
+MainView.tsx --------------------------------------
+
+
+import { FC } from "react";
+import { Route, Routes } from "react-router-dom";
+import PageHeader from "./PageHeader";
+import DashboardPage from "./Pages/Home/DashboardPage";
+import SharedFilesPage from "./Pages/SharedFilesPage/SharedFilesPage";
+import StarredFilesPage from "./Pages/StarredFilesPage/StarredFilesPage";
+
+type MainViewProps = {
+  showSidebar: boolean;
+  setShowSidebar: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const MainView: FC<MainViewProps> = ({ showSidebar, setShowSidebar }) => {
+  return (
+    <div className="w-full h-[calc(100%-80px)] flex flex-col">
+      <PageHeader showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
+      <div className="w-[100%] h-[calc(100%-70px)] px-[20px]">
+        <Routes>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/shared" element={<SharedFilesPage />} />
+          <Route path="/starred" element={<StarredFilesPage />} />
+        </Routes>
+      </div>
+    </div>
+  );
+};
+
+export default MainView;
+
+
+
+
+---------------------------------------------------------------
+
+FILE Upload
+My supabase has user table, 
+
+create table public.users (
+  id uuid not null default extensions.uuid_generate_v4 (),
+  user_id uuid null,
+  full_name text not null,
+  created_at timestamp with time zone null default CURRENT_TIMESTAMP,
+  constraint users_pkey primary key (id),
+  constraint users_user_id_fkey foreign KEY (user_id) references auth.users (id) on delete CASCADE
+) TABLESPACE pg_default;
+
+I have react+vite+ts+redux-toolkit setup at frontend
+At backend i have nodejs+express+supabase setup and also have routes and controllers
+Now lets start , with files, upload,
+I have a button clicking on which a modal is open which has option for file upload
+clicking on it, it lets user select single or multiple files from computer.
+Now i want to upload this file to supabase storage.
+
+PS- At frontend as i am using supabase authentication, i have users session available and other session info.
+
+
+
+
+---------------------------------------------------------------------------
+
+Break down each of these scenarios step by step for your app Cloude.e, focusing on:
+
+- Visiting /cloude/my-storage
+- Opening a file named my documents.docx
+- Opening a folder named My songs
+
+---
+
+ Tables Overview:
+
+ 1. Folders Table  
+| id | name       | parent_folder_id | owner_id | created_at           |
+|----|------------|------------------|----------|----------------------|
+| 1  | My songs   | NULL             | Alice    | 2025-02-20 10:00:00  |
+| 2  | Pictures   | NULL             | Alice    | 2025-02-21 09:30:00  |
+| 3  | Rock       | 1                | Alice    | 2025-02-20 11:00:00  |
+| 4  | Pop        | 1                | Alice    | 2025-02-20 11:30:00  |
+| 5  | Documents  | NULL             | Alice    | 2025-02-21 08:45:00  |
+
+- `id`: Unique identifier for each folder  
+- `name`: Name of the folder  
+- `parent_folder_id`: References the parent folder (`NULL` if it's a root folder)  
+- `owner_id`: The user who owns the folder  
+- `created_at`: Timestamp of folder creation  
+
+---
+
+ 2. Files Table  
+| id | name              | folder_id | owner_id | file_url                          | created_at             |
+|----|-------------------|-----------|----------|------------------------------------|---------------------- |
+| 1  | my documents.docx | NULL      | Alice    | https://.../my-documents.docx       | 2025-02-19 15:20:00  |
+| 2  | song1.mp3         | 1         | Alice    | https://.../song1.mp3               | 2025-02-20 12:00:00  |
+| 3  | song2.mp3         | 1         | Alice    | https://.../song2.mp3               | 2025-02-20 12:30:00  |
+| 4  | rock_song1.mp3    | 3         | Alice    | https://.../rock_song1.mp3          | 2025-02-20 13:00:00  |
+| 5  | profile.jpg       | 2         | Alice    | https://.../profile.jpg             | 2025-02-21 10:00:00  |
+
+- `id`: Unique identifier for each file  
+- `name`: Name of the file  
+- `folder_id`: The folder the file belongs to (`NULL` if it's a root-level file)  
+- `owner_id`: The user who owns the file  
+- `file_url`: The storage URL of the file  
+- `created_at`: Timestamp of file upload  
+
+---
+
+ 1. Visiting `/cloude/my-storage`  
+ Purpose:  To show all root-level folders and files owned by the user.
+
+ URL:  /cloude/my-storage
+
+
+ Tables Involved:  
+- Folders Table  
+- Files Table  
+
+ Data Retrieved:  
+- Folders Table:  
+  - Get folders where `parent_folder_id IS NULL` and `owner_id = Alice`  
+  - From the table, the matching rows are:  
+    ```
+    My songs, Pictures, Documents
+    ```
+
+- Files Table:  
+  - Get files where `folder_id IS NULL` and `owner_id = Alice`  
+  - From the table, the matching row is:  
+    ```
+    my documents.docx
+    ```
+
+ Displayed on the Page:  
+- Folders:  
+  - My songs  
+  - Pictures  
+  - Documents  
+
+- Files:  
+  - my documents.docx  
+
+ When is the Request Made?  
+- On page load of `/cloude/my-storage`  
+
+---
+
+2. Opening a File named `my documents.docx`  
+ Purpose: To view or download the file.  
+
+ URL: /cloude/my-storage/my-documents.docx
+
+
+ Table Involved:  
+- Files Table  
+
+ Data Retrieved:  
+- Get file details for `my documents.docx` where `folder_id IS NULL` and `owner_id = Alice`  
+
+- From the Files Table:  
+  ```
+  Name: my documents.docx  
+  File URL: https://.../my-documents.docx
+  ```
+
+ What Happens Next?  
+- The File URL is used to either view or download the file depending on its type.  
+
+ When is the Request Made?  
+- On clicking the file name from the list in `/cloude/my-storage`
+
+---
+
+3. Opening a Folder named `My songs`  
+P urpose:  To display the contents (subfolders and files) of `My songs`.  
+
+ URL: /cloude/my-storage/my-songs
+
+ Tables Involved:  
+- Folders Table  
+- Files Table  
+
+ Data Retrieved:  
+1. Get Subfolders:  
+   - Get folders where `parent_folder_id = 1` (id of `My songs`) and `owner_id = Alice`  
+   - From the Folders Table, the matching rows are:  
+     ```
+     Rock, Pop
+     ```
+
+2. Get Files:  
+   - Get files where `folder_id = 1` (id of `My songs`) and `owner_id = Alice`  
+   - From the Files Table, the matching rows are:  
+     ```
+     song1.mp3, song2.mp3
+     ```
+
+ Displayed on the Page:  
+- Subfolders:  
+  - Rock  
+  - Pop  
+
+- Files:  
+  - song1.mp3  
+  - song2.mp3  
+
+ When is the Request Made?  
+- On clicking the folder name (`My songs`) from the list in `/cloude/my-storage`
+
+---
+
+ Summary of Flow:  
+1. Visiting `/cloude/my-storage`:  
+   - From Folders Table: Get root-level folders (parent_folder_id IS NULL)  
+   - From Files Table: Get root-level files (folder_id IS NULL)  
+   - Displayed: `My songs`, `Pictures`, `Documents`, `my documents.docx`  
+
+2. Opening a File (`my documents.docx`):  
+   - From Files Table: Get file details and URL  
+   - Displayed: File preview or download initiated  
+
+3. Opening a Folder (`My songs`):  
+   - From Folders Table: Get subfolders (`Rock`, `Pop`)  
+   - From Files Table: Get files in `My songs` (`song1.mp3`, `song2.mp3`)  
+   - Displayed: Contents of `My songs`  
+
+---
+
+-----------------------------------------------------
+
+Lets for a second take and pause and set the frontend component structure,
+
+I have 'MainView' component/page.
+Inside this component/Page, it will rendered.
+below pages,
+- 'MyStorage'
+- 'SharedFiles'(with me) Page
+- 'starred' page
+
+All of these three pages have same ui.
+They all will have two sections.
+1. Folders section -> displays folders
+2. Files section -> displays files
+
+So i made a common child Sub page 'FilesFoldersPage'
+This will be rendered in parent pages 'MyStorage', 'SharedFiles', 'starred'.
+
+FilesFoldersPage will recieve files & folders data and will be rendered accordingly.
+
+For example we visits, 'MyStorage' page.
+Then inside 'MyStorage' page, files and folders of it will be Fetched from backend supabase,
+and 'FilesFoldersPage' will be rendered which will get the files and folders data as props
+from MyStorage page.
+
+Similar is the case for 'SharedFilesPage' and 'starred' page.
+
+
+Now lets say we are inside the 'MyStorage' page and 'FilesFoldersPage' is rendered with the MyStorage pages's Content.
+We see somes files and folders,
+
+Files
+ - project brief.docx
+ - floor plan.pdf
+
+Folders
+ - My Songs
+ - Trip Pictures
+
+We now click on 'My Songs' folder.
+
+Now again 'FilesFoldersPage' will be rendered but now the data will be of 'My Songs' folder.
+So we noticed that how nesting of folders will render the same page.
+
+
+Url structure:
+
+/cloude/my-storage -> we are inside 'My Storage' page
+
+We click on folder named 'My Songs'
+
+/cloude/my-storage/folders/my_songs_folders_id -> we are inside 'My Songs' folder
+
+Lets say 'My Songs' folder have one more folder named 'Pop'
+we click on 'Pop' folder
+
+/cloude/my-storage/folders/pop_folder_id -> we are inside 'Pop' folder 
+
+
+
+Now incase of files we can have,
+
+/cloude/my-storage/files/project brief_docx_id
+
+
+
+
+
+
+
+Let say we have nested folders in 'My Storage' page
+
+'My Storage' -> 'My Songs' -> 'Pop' -> '90sHits' -> 'Michael Jackson' -> 'World Tour'
+
+so how much deep we go, the url remains the same except the end part of url
+
+/cloude/my-storage/folders/my_song_id
+/cloude/my-storage/folders/pop_id
+/cloude/my-storage/folders/90s-hits_id
+/cloude/my-storage/folders/michael-jackson_id
+/cloude/my-storage/folders/world-tour_id
+
+
+So now in my Component that has same ui, how to fetch data. 
+
+
+// MyStoragePage.tsx
+import FilesFolderPage from "../Common/FilesFolderPage";
+
+
+type Folder = {
+  folderId: string;
+  folderName: string;
+  parentFolderId: string | null;
+};
+
+type File = {
+  fileId: string;
+  fileName: string;
+  folderId: string;
+};
+
+// testing dummy folders data
+const folders: Folder[] = [
+  { folderId: "f1", folderName: "Root", parentFolderId: null },
+  { folderId: "f2", folderName: "Documents", parentFolderId: "f1" },
+  { folderId: "f3", folderName: "Images", parentFolderId: "f1" },
+  { folderId: "f4", folderName: "Videos", parentFolderId: "f1" },
+  { folderId: "f5", folderName: "Work", parentFolderId: "f2" },
+  { folderId: "f6", folderName: "Personal", parentFolderId: "f2" }
+];
+// testing dummy files data
+const files: File[] = [
+  { fileId: "file1", fileName: "resume.docx", folderId: "f2" },
+  { fileId: "file2", fileName: "holiday.jpg", folderId: "f3" },
+  { fileId: "file3", fileName: "birthday.mp4", folderId: "f4" },
+  { fileId: "file4", fileName: "project.pdf", folderId: "f5" },
+  { fileId: "file5", fileName: "notes.txt", folderId: "f6" },
+  { fileId: "file6", fileName: "invoice.pdf", folderId: "f5" },
+  { fileId: "file7", fileName: "logo.png", folderId: "f3" },
+  { fileId: "file8", fileName: "music.mp3", folderId: "f4" },
+  { fileId: "file9", fileName: "app.zip", folderId: "f6" },
+  { fileId: "file10", fileName: "readme.md", folderId: "f2" }
+];
+
+const MyStoragePage = () => {
+  return (
+    <div className="w-full h-full flex ">
+      <FilesFolderPage files={files} folders={folders} />
+    </div>
+  );
+};
+
+export default MyStoragePage;
+
+
+
+MyStorage -> folder1 -> folder2 -> folder3 -> folder4
+
+
+files & folder inside folder3
+-  folder3_1
+-  folder3_2
+-  folder3_3
+-  file_3_1.docx
+-  file_3_2.pdf
+
+
+folder1 -> folder2 -> folder3 -> folder4
+
+/cloude/my-storage/folders/folder1_id
+/cloude/my-storage/folders/folder2_id
+/cloude/my-storage/folders/folder3_id
+/cloude/my-storage/folders/folder4_id
+
+
+folder1 -> folder2 -> folder3 -> clicks on file_3_1.docx
+
+
+/cloude/my-storage/files/ file_3_1.docx_id
+
+
+
+
+
+/cloude/my-storage/
+/cloude/my-storage/folders/folder1_id
+/cloude/my-storage/folders/folder2_id
+/cloude/my-storage/folders/folder3_id
+
+
+/cloude/my-storage/files/file1_id
+/cloude/my-storage/files/file2_id
+/cloude/my-storage/files/file3_id
+
+--------------------------------------------
+
+/cloude/shared/
+/cloude/shared/folders/folder1_id
+/cloude/shared/folders/folder2_id
+/cloude/shared/folders/folder3_id
+
+
+/cloude/shared/files/file1_id
+/cloude/shared/files/file2_id
+/cloude/shared/files/file3_id
+
+
+--------------------------------------------
+
+/cloude/starred
+/cloude/starred/folders/folder1_id
+/cloude/starred/folders/folder2_id
+/cloude/starred/folders/folder2_id
+
+/cloude/starred/files/file1_id
+/cloude/starred/files/file2_id
+/cloude/starred/files/file3_id
+
+-------------------------------
+
+
+my-storage -> 'My Storage' Component
+shared -> 'Shared' Component
+starred -> 'Starred' Component
+
+
+-------------------------
+Below are the three pages,
+
+'My Storage'
+'Shared'
+'Starred'
+
+All these page will have either a 'Folders' page or 'Files'.
+
+how to correctly setup nested routes in react router   
+
+
+
+
+
+
+I am making app like google drive.
+
+I am using Supabase authentication on frontend react side.
+I have users session also maintained and token in session.
+
+
+Following are the features of the app like google drive
+
+Has page which shows user's all Files and Folders that he owns.
+Has page that shows all files and folders shared with him by others.
+Has page that shows files and folders that are marked starred. This can be his own files/folders or shared 
+Has dashboard page which shows 10 recently uploaded files and 10 recently create/uploaded folders.
+ 
+ps-above features are like google drive. now considering the above requirements,
+I will use supabase storage for file storage. I am  already using supabase authentication.
+Now i want the tables structure such that all the above requirements are fullfilled and query CRUD becomes
+simple.
+
+techstack ::
+frontend -> react+vite+redux-toolkit+typescript
+frontend -> node+express+supabase+typescript
+
+-----------------------------------------------------------------------------------------------------------------
+
+I have a (react+vite)fontend (node+supabase)backend app. 
+
+
+Lets say there a two users, Alice and Bob and both are using the apps on their computer and are logged in via their respective email and password. 
+For authentication we have used supabase authentication.
+
+Now the app shows files they have uploaded. So Alice app shows his files and Bob app shows his own files.
+
+Now app has feature which lets users to share a file by two methods,
+1. Via email
+2. Generating shareable link.
+
+In first method, let say Alice selects any file and then she enters the email of Bob.
+Now Bob's app will show this file that has been shared by Alice to him.
+
+
+Now let say Alice decides to use second method. She clicks on the file and generates a shareable link. 
+Now anyone who have this link can access the file.
+
+---------------------------------------------------
+
+Now Let me introduce you more of my app's requirements and features.
+
+
+My app name is 'Cloude', which i forgot to mention before.
+
+My app have some pages,
+- 'Dashboard'
+- 'My Storage'
+- 'Shared with me'
+- 'Starred'
+
+'Dashboard' page have three sections,
+- Recently uploaded section
+  This section will show 10 most recently uploaded file
+- Folder section
+  This section will show 10 most recently created or uploaded folders
+- File section
+  This will shows 20 recent file with which user have intereacted(opened,shared)
+
+'My Storage' page have two sections
+- Files
+  Shows all the file of the user's own that are uploaded by him
+- Folders all the folders(folder can have child folder and also files in it) of the user's own that are uploaded by him
+
+'Shared with me' page also has two sections,
+- Files
+  Shows all the file that are shared with the user by others with him.
+- Folders 
+  Shows all the folders that are shared with the user by others with him.
+
+ 'Starred' page also has two sections, 
+ - Files
+    Shows all the files that are starred by the user(own and shared)
+ - Folders 
+   Shows all the folders that are starred by the user(Own and shared)
+
+---------------------------------------------------------------------------
+
+TABELS
+
+users::
+create table public.users (
+  id uuid not null default extensions.uuid_generate_v4 (),
+  user_id uuid null,
+  full_name text not null,
+  created_at timestamp with time zone null default CURRENT_TIMESTAMP,
+  constraint users_pkey primary key (id),
+  constraint users_user_id_fkey foreign KEY (user_id) references auth.users (id) on delete CASCADE
+) TABLESPACE pg_default;
+
+
+
+files ::
+CREATE TABLE files (
+  id UUID PRIMARY KEY,                         
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE, 
+  folder_id UUID REFERENCES folders(id) ON DELETE CASCADE, 
+  file_name TEXT NOT NULL,                      
+  file_type TEXT NOT NULL,                      
+  file_size BIGINT NOT NULL,                    
+  storage_path TEXT NOT NULL UNIQUE,             
+  thumbnail_url TEXT,                           
+  is_starred BOOLEAN DEFAULT FALSE,              
+  is_shared BOOLEAN DEFAULT FALSE,               
+  is_trashed BOOLEAN DEFAULT FALSE,              
+  created_at TIMESTAMPTZ DEFAULT NOW(),          
+  updated_at TIMESTAMPTZ DEFAULT NOW()           
+);
+
+
+folders ::
+
+CREATE TABLE folders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- Owner of the folder
+  parent_folder_id UUID REFERENCES folders(id) ON DELETE CASCADE, -- Parent folder for nesting
+  name TEXT NOT NULL, -- Folder name
+  slug TEXT NOT NULL, -- URL-friendly version of the folder name
+  is_shared BOOLEAN DEFAULT FALSE, -- Shared status
+  is_starred BOOLEAN DEFAULT FALSE, -- Starred status
+  created_at TIMESTAMPTZ DEFAULT NOW(), -- Creation timestamp
+  updated_at TIMESTAMPTZ DEFAULT NOW() -- Last modified timestamp
+);
+
+
+
+
+
+/cloude/my-storage/folders/[folder_id]
+
+/cloude/shared/folders/[folder_id]
+
+/cloude/starred/folders/[folder_id]
+
+
+all of the three routes will render same page.tsx
+this pages.tsx will have same ui
+
+In this page.tsx we gonna fetch the data using the folder_id.
+
+Only difference it the api route will be different
+
+my-storage/folders/[folder_id]->  /api/my-storage/getData
+shared/folders/[folder_id]->  /api/starred/getData
+starred/folders/[folder_id]->  /api/starred/getData
+
+how to set the nextjs 15  app routing
