@@ -14,7 +14,7 @@ interface FolderCardProps {
 const FolderCard = async ({ folder, basePath }: FolderCardProps) => {
   return (
     <Link
-      href={`${basePath}/folders/${folder.folderId}`}
+      href={`${basePath}/folders/${folder.id}`}
       className="w-[48%] sm:w-[48%] md:w-[30%] lg:w-[18%] h-[40px] mx-[1%] my-[15px] flex border border-[#E4E7EC] bg-[#F4F6F6] rounded-[8px]"
     >
       <div className="h-full aspect-square flex items-center justify-center">
@@ -25,7 +25,7 @@ const FolderCard = async ({ folder, basePath }: FolderCardProps) => {
       </div>
       <div className="h-full flex-1 flex items-center overflow-hidden">
         <p className="text-[#1C3553] text-[0.75rem] font-medium  whitespace-nowrap truncate">
-          {folder.folderName}
+          {folder.folder_name}
         </p>
       </div>
       <div className="h-full aspect-square flex items-center justify-center">

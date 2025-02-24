@@ -35,45 +35,45 @@ src
     │  
     ├── Layout                    // Main Layout Components  
     │   ├── Navbar                // Header renamed to Navbar for clarity  
-    │   │   └── Navbar.js  
-    │   │   └── SearchBar.js  
+    │   │   └── Navbar.  
+    │   │   └── SearchBar.  
     │   │  
     │   ├── Sidebar               // Sidebar Components  
-    │   │   └── Sidebar.js  
-    │   │   └── AppLogo.js  
-    │   │   └── UserInfo.js  
-    │   │   └── MenuItem.js  
+    │   │   └── Sidebar.  
+    │   │   └── AppLogo.  
+    │   │   └── UserInfo.  
+    │   │   └── MenuItem.  
     │   │  
     │   └── MainView              // Main Content Section  
     │       ├── MainHeader        // Header for MainView Pages  
-    │       │   └── MainHeader.js  
-    │       │   └── UploadButton.js  
-    │       │   └── CreateFolderButton.js  
+    │       │   └── MainHeader.  
+    │       │   └── UploadButton.  
+    │       │   └── CreateFolderButton.  
     │       │  
     │       └── Pages             // All Pages for MainView  
     │           ├── DashboardPage  
-    │           │   └── DashboardPage.js  
-    │           │   └── RecentUploads.js  
-    │           │   └── Folders.js  
-    │           │   └── FilesTable.js  
-    │           │   └── FileCard.js  
+    │           │   └── DashboardPage.  
+    │           │   └── RecentUploads.  
+    │           │   └── Folders.  
+    │           │   └── FilesTable.  
+    │           │   └── FileCard.  
     │           │  
     │           ├── SharedFilesPage  
-    │           │   └── SharedFilesPage.js  
-    │           │   └── SharedFileCard.js  
+    │           │   └── SharedFilesPage.  
+    │           │   └── SharedFileCard.  
     │           │  
     │           └── StarredFilesPage  
-    │               └── StarredFilesPage.js  
-    │               └── StarredFileCard.js  
+    │               └── StarredFilesPage.  
+    │               └── StarredFileCard.  
     │  
     └── Auth                      // Authentication Components  
         └── SignUpPage  
-        │   └── SignUpPage.js  
-        │   └── SignUpForm.js  
+        │   └── SignUpPage.  
+        │   └── SignUpForm.  
         │  
         └── SignInPage  
-            └── SignInPage.js  
-            └── SignInForm.js  
+            └── SignInPage.  
+            └── SignInForm.  
 
 
 
@@ -178,11 +178,11 @@ This table keeps track of all users in the system.
 
  folders Table  
 This table stores folder information.  
-- `id`: Unique identifier for each folder.  
-- `name`: Folder name.  
-- `parent_id`: ID of the parent folder. Null if it's a root folder.  
-- `owner_id`: The user who owns this folder (foreign key to users table).  
-- `created_at`: Timestamp of folder creation.  
+- id: Unique identifier for each folder.  
+- name: Folder name.  
+- parent_id: ID of the parent folder. Null if it's a root folder.  
+- owner_id: The user who owns this folder (foreign key to users table).  
+- created_at: Timestamp of folder creation.  
 
 | id | name              | parent_id | owner_id | created_at          |
 |----|-------------------|-----------|----------|---------------------|
@@ -196,12 +196,12 @@ This table stores folder information.
 
  files Table  
 This table stores file details.  
-- `id`: Unique identifier for each file.  
-- `name`: File name.  
-- `folder_id`: The folder to which this file belongs (foreign key to folders table).  
-- `owner_id`: The user who owns this file (foreign key to users table).  
-- `url`: URL of the uploaded file.  
-- `created_at`: Timestamp of file upload.  
+- id: Unique identifier for each file.  
+- name: File name.  
+- folder_id: The folder to which this file belongs (foreign key to folders table).  
+- owner_id: The user who owns this file (foreign key to users table).  
+- url: URL of the uploaded file.  
+- created_at: Timestamp of file upload.  
 
 | id | name            | folder_id | owner_id | url                            | created_at          |
 |----|-----------------|-----------|----------|------------------------------- |---------------------|
@@ -215,8 +215,8 @@ This table stores file details.
 
  Scenario 1: Accessing My Storage  
 - User clicks on My Storage from the sidebar.  
-- URL: `localhost:3000/cloude/my-storage`  
-- Query: Fetch folders where `parent_id` is `NULL` and `owner_id` is the logged-in user's ID.  
+- URL: localhost:3000/cloude/my-storage  
+- Query: Fetch folders where parent_id is NULL and owner_id is the logged-in user's ID.  
 - Displayed Content:  
   - Folders: Work Documents, Personal Photos  
   - Files: None at this level.  
@@ -225,8 +225,8 @@ This table stores file details.
 
  Scenario 2: Navigating into a Folder  
 - User clicks on Personal Photos.  
-- URL: `localhost:3000/cloude/my-storage/personal-photos`  
-- Query: Fetch folders where `parent_id` = 3 (Personal Photos' ID) and files where `folder_id` = 3.  
+- URL: localhost:3000/cloude/my-storage/personal-photos  
+- Query: Fetch folders where parent_id = 3 (Personal Photos' ID) and files where folder_id = 3.  
 - Displayed Content:  
   - Folders: Vacation Bali  
   - Files: None at this level.  
@@ -235,8 +235,8 @@ This table stores file details.
 
  Scenario 3: Nested Folder Navigation  
 - User navigates into Vacation Bali.  
-- URL: `localhost:3000/cloude/my-storage/personal-photos/vacation-bali`  
-- Query: Fetch folders and files where `parent_id` = 4 or `folder_id` = 4.  
+- URL: localhost:3000/cloude/my-storage/personal-photos/vacation-bali  
+- Query: Fetch folders and files where parent_id = 4 or folder_id = 4.  
 - Displayed Content:  
   - Folders: None  
   - Files: BaliBeach.jpg  
@@ -247,9 +247,9 @@ This table stores file details.
 - User clicks Create Folder while in My Storage.  
 - A new folder Projects is created.  
 - Request Sent: POST request to backend with:  
-  - `name`: Projects  
-  - `parent_id`: NULL (since it's at the root level)  
-  - `owner_id`: 1 (logged-in user ID)  
+  - name: Projects  
+  - parent_id: NULL (since it's at the root level)  
+  - owner_id: 1 (logged-in user ID)  
 - Database Update:  
   - folders Table:  
 
@@ -263,12 +263,12 @@ This table stores file details.
 
  Scenario 5: Uploading a File  
 - User uploads Report.pdf inside Work Documents.  
-- URL: `localhost:3000/cloude/my-storage/work-documents`  
+- URL: localhost:3000/cloude/my-storage/work-documents  
 - Request Sent: POST request to backend with:  
-  - `name`: Report.pdf  
-  - `folder_id`: 2 (Work Documents' ID)  
-  - `owner_id`: 1  
-  - `url`: `/drive/work-documents/report.pdf`  
+  - name: Report.pdf  
+  - folder_id: 2 (Work Documents' ID)  
+  - owner_id: 1  
+  - url: /drive/work-documents/report.pdf  
 - Database Update:  
   - files Table:  
 
@@ -281,10 +281,10 @@ This table stores file details.
 ---
 
  3. Benefits of This Setup  
-- Nested Structure Handling: The `parent_id` column allows infinite nesting of folders.  
-- Efficient Queries: Easy to get contents of any folder by querying `parent_id` for folders and `folder_id` for files.  
+- Nested Structure Handling: The parent_id column allows infinite nesting of folders.  
+- Efficient Queries: Easy to get contents of any folder by querying parent_id for folders and folder_id for files.  
 - Consistent URLs: URLs follow the folder hierarchy, maintaining a clean and intuitive structure.  
-- Owner-based Security: `owner_id` helps ensure users only access their own files and folders.  
+- Owner-based Security: owner_id helps ensure users only access their own files and folders.  
 
 ---
 
@@ -409,17 +409,17 @@ const HomeLayout: React.FC = () => {
   return (
     <div className="w-[100%] h-[100%] overflow-hidden relative">
       <div
-        // className={`
+        // className={
         //   flex h-full transition-transform duration-300
         //   ${showSidebar ? "translate-x-0" : "-translate-x-1/2"}
         //   sm:translate-x-0 w-[200%] sm:w-full
-        //   `}
+        //   }
 
-        className={`
+        className={
         flex h-full transition-transform duration-300
         ${showSidebar ? "translate-x-0" : "-translate-x-1/2"}
         lg:translate-x-0 w-[200%] lg:w-full
-        `}
+        }
       >
         <div className="w-[50%] lg:w-[20%] h-full relative flex">
           <Sidebar showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
@@ -487,7 +487,7 @@ create table public.users (
 ) TABLESPACE pg_default;
 
 I have react+vite+ts+redux-toolkit setup at frontend
-At backend i have nodejs+express+supabase setup and also have routes and controllers
+At backend i have node+express+supabase setup and also have routes and controllers
 Now lets start , with files, upload,
 I have a button clicking on which a modal is open which has option for file upload
 clicking on it, it lets user select single or multiple files from computer.
@@ -519,11 +519,11 @@ Break down each of these scenarios step by step for your app Cloude.e, focusing 
 | 4  | Pop        | 1                | Alice    | 2025-02-20 11:30:00  |
 | 5  | Documents  | NULL             | Alice    | 2025-02-21 08:45:00  |
 
-- `id`: Unique identifier for each folder  
-- `name`: Name of the folder  
-- `parent_folder_id`: References the parent folder (`NULL` if it's a root folder)  
-- `owner_id`: The user who owns the folder  
-- `created_at`: Timestamp of folder creation  
+- id: Unique identifier for each folder  
+- name: Name of the folder  
+- parent_folder_id: References the parent folder (NULL if it's a root folder)  
+- owner_id: The user who owns the folder  
+- created_at: Timestamp of folder creation  
 
 ---
 
@@ -536,16 +536,16 @@ Break down each of these scenarios step by step for your app Cloude.e, focusing 
 | 4  | rock_song1.mp3    | 3         | Alice    | https://.../rock_song1.mp3          | 2025-02-20 13:00:00  |
 | 5  | profile.jpg       | 2         | Alice    | https://.../profile.jpg             | 2025-02-21 10:00:00  |
 
-- `id`: Unique identifier for each file  
-- `name`: Name of the file  
-- `folder_id`: The folder the file belongs to (`NULL` if it's a root-level file)  
-- `owner_id`: The user who owns the file  
-- `file_url`: The storage URL of the file  
-- `created_at`: Timestamp of file upload  
+- id: Unique identifier for each file  
+- name: Name of the file  
+- folder_id: The folder the file belongs to (NULL if it's a root-level file)  
+- owner_id: The user who owns the file  
+- file_url: The storage URL of the file  
+- created_at: Timestamp of file upload  
 
 ---
 
- 1. Visiting `/cloude/my-storage`  
+ 1. Visiting /cloude/my-storage  
  Purpose:  To show all root-level folders and files owned by the user.
 
  URL:  /cloude/my-storage
@@ -557,18 +557,18 @@ Break down each of these scenarios step by step for your app Cloude.e, focusing 
 
  Data Retrieved:  
 - Folders Table:  
-  - Get folders where `parent_folder_id IS NULL` and `owner_id = Alice`  
+  - Get folders where parent_folder_id IS NULL and owner_id = Alice  
   - From the table, the matching rows are:  
-    ```
+    
     My songs, Pictures, Documents
-    ```
+    
 
 - Files Table:  
-  - Get files where `folder_id IS NULL` and `owner_id = Alice`  
+  - Get files where folder_id IS NULL and owner_id = Alice  
   - From the table, the matching row is:  
-    ```
+    
     my documents.docx
-    ```
+    
 
  Displayed on the Page:  
 - Folders:  
@@ -580,11 +580,11 @@ Break down each of these scenarios step by step for your app Cloude.e, focusing 
   - my documents.docx  
 
  When is the Request Made?  
-- On page load of `/cloude/my-storage`  
+- On page load of /cloude/my-storage  
 
 ---
 
-2. Opening a File named `my documents.docx`  
+2. Opening a File named my documents.docx  
  Purpose: To view or download the file.  
 
  URL: /cloude/my-storage/my-documents.docx
@@ -594,24 +594,24 @@ Break down each of these scenarios step by step for your app Cloude.e, focusing 
 - Files Table  
 
  Data Retrieved:  
-- Get file details for `my documents.docx` where `folder_id IS NULL` and `owner_id = Alice`  
+- Get file details for my documents.docx where folder_id IS NULL and owner_id = Alice  
 
 - From the Files Table:  
-  ```
+  
   Name: my documents.docx  
   File URL: https://.../my-documents.docx
-  ```
+  
 
  What Happens Next?  
 - The File URL is used to either view or download the file depending on its type.  
 
  When is the Request Made?  
-- On clicking the file name from the list in `/cloude/my-storage`
+- On clicking the file name from the list in /cloude/my-storage
 
 ---
 
-3. Opening a Folder named `My songs`  
-P urpose:  To display the contents (subfolders and files) of `My songs`.  
+3. Opening a Folder named My songs  
+P urpose:  To display the contents (subfolders and files) of My songs.  
 
  URL: /cloude/my-storage/my-songs
 
@@ -621,18 +621,18 @@ P urpose:  To display the contents (subfolders and files) of `My songs`.
 
  Data Retrieved:  
 1. Get Subfolders:  
-   - Get folders where `parent_folder_id = 1` (id of `My songs`) and `owner_id = Alice`  
+   - Get folders where parent_folder_id = 1 (id of My songs) and owner_id = Alice  
    - From the Folders Table, the matching rows are:  
-     ```
+     
      Rock, Pop
-     ```
+     
 
 2. Get Files:  
-   - Get files where `folder_id = 1` (id of `My songs`) and `owner_id = Alice`  
+   - Get files where folder_id = 1 (id of My songs) and owner_id = Alice  
    - From the Files Table, the matching rows are:  
-     ```
+     
      song1.mp3, song2.mp3
-     ```
+     
 
  Displayed on the Page:  
 - Subfolders:  
@@ -644,24 +644,24 @@ P urpose:  To display the contents (subfolders and files) of `My songs`.
   - song2.mp3  
 
  When is the Request Made?  
-- On clicking the folder name (`My songs`) from the list in `/cloude/my-storage`
+- On clicking the folder name (My songs) from the list in /cloude/my-storage
 
 ---
 
  Summary of Flow:  
-1. Visiting `/cloude/my-storage`:  
+1. Visiting /cloude/my-storage:  
    - From Folders Table: Get root-level folders (parent_folder_id IS NULL)  
    - From Files Table: Get root-level files (folder_id IS NULL)  
-   - Displayed: `My songs`, `Pictures`, `Documents`, `my documents.docx`  
+   - Displayed: My songs, Pictures, Documents, my documents.docx  
 
-2. Opening a File (`my documents.docx`):  
+2. Opening a File (my documents.docx):  
    - From Files Table: Get file details and URL  
    - Displayed: File preview or download initiated  
 
-3. Opening a Folder (`My songs`):  
-   - From Folders Table: Get subfolders (`Rock`, `Pop`)  
-   - From Files Table: Get files in `My songs` (`song1.mp3`, `song2.mp3`)  
-   - Displayed: Contents of `My songs`  
+3. Opening a Folder (My songs):  
+   - From Folders Table: Get subfolders (Rock, Pop)  
+   - From Files Table: Get files in My songs (song1.mp3, song2.mp3)  
+   - Displayed: Contents of My songs  
 
 ---
 
@@ -998,7 +998,6 @@ CREATE TABLE files (
   thumbnail_url TEXT,                           
   is_starred BOOLEAN DEFAULT FALSE,              
   is_shared BOOLEAN DEFAULT FALSE,               
-  is_trashed BOOLEAN DEFAULT FALSE,              
   created_at TIMESTAMPTZ DEFAULT NOW(),          
   updated_at TIMESTAMPTZ DEFAULT NOW()           
 );
@@ -1010,7 +1009,7 @@ CREATE TABLE folders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- Owner of the folder
   parent_folder_id UUID REFERENCES folders(id) ON DELETE CASCADE, -- Parent folder for nesting
-  name TEXT NOT NULL, -- Folder name
+  folder_name TEXT NOT NULL, -- Folder name
   slug TEXT NOT NULL, -- URL-friendly version of the folder name
   is_shared BOOLEAN DEFAULT FALSE, -- Shared status
   is_starred BOOLEAN DEFAULT FALSE, -- Starred status
@@ -1040,4 +1039,622 @@ my-storage/folders/[folder_id]->  /api/my-storage/getData
 shared/folders/[folder_id]->  /api/starred/getData
 starred/folders/[folder_id]->  /api/starred/getData
 
-how to set the nextjs 15  app routing
+how to set the next 15  app routing
+
+
+
+
+I am stuck in my Next+supabase project.
+
+
+I have three pages
+- 'My Storage' page
+- 'Shared With Me' page
+- 'Starred' page
+
+Frontend url structure
+
+/cloude/home/my-storage/   
+/cloude/home/my-storage/folders/[folderId]
+- Both above urls will render a same page, lets say FetchPage. 
+
+FetchPage will have two sections,
+- Folders -> shows all folders
+- Files -> shows all files
+
+- FetchPage will make fetch api request to same api route -> '/api/my-storage/getContent$/{folderId}'
+
+for the first url without '/folders/[folderId]', we will not have folderId. 
+for the second url with '/folders/[folderId]', we will have folderId.
+
+Now depending of the folderId present or null in api request, we will fetch data from tables.
+
+We have files table and folder table
+
+files_table
+id
+filename
+user_id
+folder_id
+
+
+folders_table
+id
+folderName
+parentFolderId
+
+
+lets take two scenarios,
+first scenario,
+1. User visits the url -> /cloude/home/my-storage/   
+2. FetchPage is rendered, which will make a api call to backend
+3. Now at this, url we dont have folderId, that means from backend we will fetch all
+   the files for the user which have folderId = null.
+   We will also fetch all the folders for the user where parentFolderId= null
+   
+second scenario,
+1. User visits the url -> /cloude/home/my-storage/folders/[folderId]   
+2. FetchPage is rendered, which will make a api call to backend
+3. Now at this, url we have folderId, that means from backend we will fetch all
+   the files for the user which have folderId = folderId.
+   We will also fetch all the folders for the user where parentFolderId= folderId
+  
+What does we conclude?
+We conclude that if we have folderId then we a inside a folder and we will fetch its content(files & sub folders folder)
+If we dont have a folderId then we are at root.
+
+Now My Storage page show all the content of the user, which he owns, of which he have uploaded
+
+
+
+
+---------------------------------------------------------------------
+
+Now, Similar to above 'My Storage' page,
+We have 'Shared' Page which will again show files and folders.
+But this time, it will be the one that is shared to him by others.
+For this we maintained a share_table in supabase DB.
+
+share_table
+id
+item_id -> id of file or folder from files or folder table
+item_type -> file/folder
+shared_by -> user1 id 
+shared_with -> user2 id -> receipent
+
+
+/cloude/home/shared/
+/cloude/home/shared/folders/[folderId]
+
+Both of the above will render the same Page, FetchPageShared
+FetchPageShared will fetch data from api route  '/api/shared/getContent$/{folderId}''
+
+Lets understand it with scenarios,
+First scenario,
+1. user visits -> /cloude/home/shared
+2. FetchPageShared is rendered 
+3. FetchPage will make the call to same api
+3. Now at this url, we dont have folderId, that means from backend we will fetch all
+   the files that are shared to him
+   We will also fetch all the folders that are shared to him
+
+Second scenario,
+1. user visits -> /cloude/home/shared/folders/[folderId]
+2. FetchPageShared is rendered 
+3. FetchPage will make the call to same api
+3. Now at this url, we  have folderId, that means from backend we will fetch all
+   the files that are shared to him and belongs to the folder with folderId
+   We will also fetch all the folders that are shared to him, which are sub-folder to the Parent folder with id folderId
+
+   
+     
+     
+
+
+
+
+
+-------------------------------------------------------------------------
+
+
+
+
+/cloude/home/starred/
+/cloude/home/starred/folders/[folderId]
+
+
+
+
+Lets take an example,
+
+Lets say user1 shared folder name -> 'Songs' to user2.
+This 'Songs' folder will be show to user2 when he visits the url '/cloude/home/shared'
+
+Shared_table will have entry,
+
+item_id:folderId -> referencing the folder id on folders table
+item_type:folder
+shared_by : user1_id
+shared_with : user2_id
+
+Now When the user visited the 'Shared' Page -> '/cloude/home/shared/'
+
+We make api request and as folderId is not present in url (as we are in root),
+backend will get the item where shared_with matches the user2's id.
+Also item_type = folder and also for that item in folder table parentFolderId = null.
+
+
+Now that 'Shared' Page will show the shared folder 'Songs'.
+
+This 'Songs' folder which was shared to user2 by user1 also had sub folder '80sHits'.
+
+So when user clicks on this 'Songs' folder url, changes to -> /cloude/home/shared/folder/[folderId(Songs folder id)]
+
+Now again we make api request to the backend,
+
+backend now check the share_table.
+But this sub folder '80sHits' is not in share_table, because its parent folder 'Songs' was shared,
+and not its content, although its content should be available. Now how to handle this.
+
+Tell me if i am correct in understanding it.
+
+
+explain like,
+
+user clicks the link on frontend that take him to this url
+at this url this page is rendered. This page needs to show this based on the url
+so it make the api request. Mention what the api request sends and what backend recieves.
+At backend we got to this table and fetch this table.
+backend send the response to frontend and with these data and data is displayed
+---------------------------------
+
+
+Alright, let's go step by step from the user's actions to what happens in the frontend and backend, for both:  
+1. My Storage Page (/cloude/home/my-storage/)  
+2. Shared Page (/cloude/home/shared/) including sub-folder navigation  
+
+I'll explain it like a story, covering:  
+- What the user does on the frontend.  
+- What URL they visit and what component is rendered.  
+- Why an API request is made, what it sends, and what the backend receives.  
+- Which tables are queried using Supabase SDK.  
+- What the backend responds with and how the frontend displays the data.  
+
+---
+
+ 1. 🗄️ My Storage Page (/cloude/home/my-storage/)  
+
+---
+
+ User Action:  
+- The user clicks on the "My Storage" link in the sidebar or navbar.  
+- This takes the user to the URL:  
+  
+  /cloude/home/my-storage/
+  
+
+---
+
+ Page Rendering:  
+- The MyStoragePage component is rendered for this route.  
+- The page needs to display:  
+  - All folders created by the user, at the root level (i.e., not inside any sub-folder).  
+  - All files uploaded by the user that are not inside any folder.  
+
+---
+
+ Why is an API Request Made?  
+- To fetch the user's content at the root level.  
+- The page makes an API request to:  
+  
+  /api/storage/getContent
+  
+
+- The request payload includes:  
+  
+  {
+    folderId: null  // No folderId because we're at the root
+  }
+  
+
+---
+
+ At the Backend:  
+1. API Endpoint: /api/storage/getContent receives the request.  
+2. Parameters Received:  
+   - folderId: null  
+   - userId: user1_id (from the session or auth context)  
+
+3. Purpose:  
+   - To fetch all content created by this user at the root level.  
+
+4. Fetching Folders:  
+   - Query the folders table to get all root-level folders created by the user:  
+     
+     const folders = await supabase
+       .from('folders')
+       .select('*')
+       .eq('created_by', user1_id)
+       .is('parentFolderId', null);
+     
+     - This gets folders where parentFolderId is null, meaning they are at the root level.  
+
+5. Fetching Files:  
+   - Query the files table to get all files at the root level:  
+     
+     const files = await supabase
+       .from('files')
+       .select('*')
+       .eq('uploaded_by', user1_id)
+       .is('parentFolderId', null);
+     
+
+6. Backend Response:  
+   - The backend sends a response containing:  
+     
+     {
+       folders: [ ... ],  // List of root-level folders
+       files: [ ... ]     // List of root-level files
+     }
+     
+
+---
+
+ Frontend Updates:  
+- The MyStoragePage component receives the response and renders the folders and files.  
+- The user now sees:  
+  - All their root-level folders and files.  
+  - They can click on a folder to navigate inside it.  
+
+---
+
+ Navigating Into a Sub-Folder  
+- Example: The user clicks on the Work Documents folder.  
+- The URL changes to:  
+  
+  /cloude/home/my-storage/folder/[folderId]
+  
+
+---
+
+ What Happens Next:  
+- An API request is made to:  
+  
+  /api/storage/getContent
+  
+- The request payload includes:  
+  
+  {
+    folderId: folderId  // ID of the clicked folder
+  }
+  
+
+---
+
+ At the Backend (Sub-Folder):  
+1. API Endpoint: /api/storage/getContent receives the request.  
+2. Parameters Received:  
+   - folderId: folderId (ID of the clicked folder)  
+   - userId: user1_id  
+
+3. Purpose:  
+   - To fetch all folders and files inside this sub-folder.  
+
+4. Fetching Sub-Folders:  
+   - Query folders table for sub-folders:  
+     
+     const subFolders = await supabase
+       .from('folders')
+       .select('*')
+       .eq('parentFolderId', folderId);
+     
+
+5. Fetching Files in Sub-Folder:  
+   - Query files table for files in this sub-folder:  
+     
+     const files = await supabase
+       .from('files')
+       .select('*')
+       .eq('parentFolderId', folderId);
+     
+
+6. Backend Response:  
+   - The backend responds with:  
+     
+     {
+       folders: [ ... ],  // Sub-folders inside the clicked folder
+       files: [ ... ]     // Files inside the clicked folder
+     }
+     
+
+---
+
+ Frontend Updates:  
+- The MyStoragePage component renders the sub-folders and files.  
+- The user now sees:  
+  - Contents of the clicked folder (e.g., Work Documents).  
+
+---
+
+ 2. 📂 Shared Page (/cloude/home/shared/)  
+
+---
+
+ User Action:  
+- The user clicks on the "Shared" link in the sidebar or navbar.  
+- This takes the user to the URL:  
+  
+  /cloude/home/shared/
+  
+
+---
+
+ Page Rendering:  
+- The SharedPage component is rendered.  
+- The page needs to display:  
+  - All folders shared with the user, at the root level.  
+  - All files shared with the user that are not inside any folder.  
+
+---
+
+ API Request:  
+- An API request is made to:  
+  
+  /api/shared/getContent
+  
+- The request payload includes:  
+  
+  {
+    folderId: null  // At root level
+  }
+  
+
+---
+
+ At the Backend:  
+1. API Endpoint: /api/shared/getContent receives the request.  
+2. Parameters Received:  
+   - folderId: null  
+   - userId: user2_id  
+
+3. Fetching Shared Folders:  
+   - Query share_table to get shared folders:  
+     
+     const sharedFolders = await supabase
+       .from('share_table')
+       .select('item_id')
+       .eq('shared_with', user2_id)
+       .eq('item_type', 'folder');
+     
+
+4. Fetching Files:  
+   - Check share_table for files shared directly:  
+     
+     const sharedFiles = await supabase
+       .from('share_table')
+       .select('item_id')
+       .eq('shared_with', user2_id)
+       .eq('item_type', 'file');
+     
+
+---
+
+ Navigating Into a Shared Sub-Folder  
+- Example: The user clicks on the Songs folder.  
+- The URL changes to:  
+  
+  /cloude/home/shared/folder/[folderId]
+  
+
+- API Request:  
+  - An API request is made with the clicked folder's ID.  
+  - The backend recursively checks for sub-folders and files using folders and files tables.  
+  - The user sees the contents of the shared folder, including sub-folders and files.  
+
+
+
+
+  Alright, let's explain navigating into a sub-folder on the Shared Page, including the check for sharing permissions and how we handle parent folder inheritance.  
+
+We'll go through it step by step:  
+- What the user does on the frontend.  
+- Which URL they visit and what component is rendered.  
+- What API request is made, what it sends, and what backend receives.  
+- How we check the share table to see if the folder is shared.  
+- How we check parent folders if the current folder isn't directly shared.  
+- What the backend responds with and how the frontend displays the data.  
+
+---
+
+ 📂 Shared Page - Navigating into a Sub-Folder  
+URL Pattern:  
+
+/cloude/home/shared/folder/[folderId]
+
+
+---
+
+ User Action:  
+- The user is on the Shared Page:  
+  
+  /cloude/home/shared/
+  
+- They click on a shared folder named "Music" which has an ID of folderId1.  
+- The URL changes to:  
+  
+  /cloude/home/shared/folder/folderId1
+  
+
+---
+
+ Page Rendering:  
+- The SharedPage component is rendered for this route.  
+- The page needs to display:  
+  - All sub-folders inside the Music folder.  
+  - All files inside the Music folder.  
+
+---
+
+ Why is an API Request Made?  
+- To fetch the contents of the Music folder, including:  
+  - Sub-folders  
+  - Files  
+- To check if the user has access to this folder.  
+
+- An API request is made to:  
+  
+  /api/shared/getContent
+  
+- The request payload includes:  
+  js
+  {
+    folderId: folderId1  // ID of the "Music" folder
+  }
+  
+
+---
+
+ At the Backend:  
+1. API Endpoint: /api/shared/getContent receives the request.  
+2. Parameters Received:  
+   - folderId: folderId1 (ID of the clicked folder)  
+   - userId: user2_id (the user who is trying to access the folder)  
+
+---
+
+ Checking Sharing Permissions:  
+- The backend first checks if this folder (folderId1) is directly shared with the user.  
+
+---
+
+# 1. Check if Folder is Directly Shared:  
+- Query the share_table to see if this folder is shared:  
+  js
+  const isDirectlyShared = await supabase
+    .from('share_table')
+    .select('*')
+    .eq('item_id', folderId1)
+    .eq('item_type', 'folder')
+    .eq('shared_with', user2_id)
+    .single();
+  
+- If the folder is directly shared:  
+  - The user has access to this folder.  
+
+---
+
+# 2. If Not Directly Shared, Check Parent Folders:  
+- If isDirectlyShared is null (i.e., this folder is not directly shared), the backend checks the parent folders to see if any parent folder is shared.  
+
+- Recursive Check for Parent Sharing:  
+  - Query the folders table to get the parentFolderId:  
+    js
+    const parentFolder = await supabase
+      .from('folders')
+      .select('parentFolderId')
+      .eq('id', folderId1)
+      .single();
+    
+  - The backend gets parentFolderId: parentFolderId1.  
+
+---
+
+# 3. Check Parent Folder in Share Table:  
+- The backend recursively checks if parentFolderId1 is shared:  
+  js
+  const isParentShared = await supabase
+    .from('share_table')
+    .select('*')
+    .eq('item_id', parentFolderId1)
+    .eq('item_type', 'folder')
+    .eq('shared_with', user2_id)
+    .single();
+  
+- This process continues up the folder tree until:  
+  - A shared parent folder is found, or  
+  - The root is reached.  
+
+---
+
+# 4. Decision Based on Sharing Status:  
+- If a parent folder is shared:  
+  - The user is granted access because sharing inherits to sub-folders.  
+- If no parent folder is shared:  
+  - The backend denies access and responds with a 403 Forbidden.  
+
+---
+
+ Fetching Folder Contents:  
+- If access is granted, the backend fetches the contents of the folder:  
+
+1. Get Sub-Folders:  
+   - Query the folders table for sub-folders:  
+     js
+     const subFolders = await supabase
+       .from('folders')
+       .select('*')
+       .eq('parentFolderId', folderId1);
+     
+2. Get Files:  
+   - Query the files table for files in this folder:  
+     js
+     const files = await supabase
+       .from('files')
+       .select('*')
+       .eq('parentFolderId', folderId1);
+     
+
+---
+
+ Backend Response:  
+- The backend sends a response containing:  
+  js
+  {
+    folders: [ ... ],  // Sub-folders inside "Music"
+    files: [ ... ]     // Files inside "Music"
+  }
+  
+
+---
+
+ Frontend Updates:  
+- The SharedPage component receives the response and renders the sub-folders and files.  
+- The user now sees:  
+  - All contents of the "Music" folder, including:  
+    - Sub-folders (e.g., "Rock", "Pop", "Classical")  
+    - Files (e.g., song1.mp3, song2.mp3)  
+
+---
+
+ Summary Recap:  
+- User clicks on a shared folder in the Shared Page.  
+- URL changes, and SharedPage component is rendered.  
+- API request is made to get the folder's contents.  
+- Backend checks:  
+  - If the folder is directly shared, or  
+  - If any parent folder is shared.  
+- Access is granted if the folder is shared directly or inherited from a shared parent.  
+- Backend fetches sub-folders and files and sends them to the frontend.  
+- Frontend renders the contents, and the user can navigate deeper.  
+
+
+POST
+GET
+PATCH
+DELETE
+
+/api/user/file/:fileId -> GET by id, DELETE by id, PATCH by id
+/api/user/file/ -> GET all files, POST new file
+
+/api/user/folder/:folderId -> GET by id, DELETE by id, PATCH by id
+/api/user/folder/ -> GET all files, POST new folder
+
+
+/api/shared/file/:fileId -> GET by id, DELETE by id, PATCH by id
+/api/shared/file/ -> GET all files
+
+
+/api/shared/folder/:folderId -> GET by id, DELETE by id, PATCH by id
+/api/shared/folder/ -> GET all files
+
+

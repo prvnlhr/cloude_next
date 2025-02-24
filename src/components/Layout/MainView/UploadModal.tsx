@@ -1,79 +1,175 @@
-import { FC, useRef, ChangeEvent } from "react";
+import { FC, useRef, ChangeEvent, useEffect, useState } from "react";
+import { createClient } from "@/middlewares/supabase/client";
+import { useParams } from "next/navigation";
+import { uploadFiles } from "@/lib/services/user/filesService";
+import { uploadFolder } from "@/lib/services/user/foldersService";
 
 const UploadModal: FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const folderInputRef = useRef<HTMLInputElement | null>(null);
-  // const params = useParams();
-  // const dispatch = useAppDispatch();
+  const supabase = createClient();
+  const params = useParams();
 
-  // const { user_id } = useSession();
-  // const folderId = params.folderId || null;
+  let folderId: string | null = null;
+  let fileId: string | null = null;
+
+  if (params.path) {
+    const itemType = params.path[0];
+    const itemId = params.path[1];
+
+    if (itemType === "folders") {
+      folderId = itemId;
+    } else if (itemType === "files") {
+      fileId = itemId;
+    }
+  }
+
+  const [session, setSession] = useState<{
+    userName: string;
+    email: string;
+    userId: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        if (error) throw error;
+
+        if (data.user) {
+          const { display_name, email } = data.user.user_metadata;
+          setSession({
+            userName: display_name,
+            email,
+            userId: data.user.id,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching session:", error);
+      }
+    };
+
+    fetchSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session) {
+          const { display_name, email } = session.user.user_metadata;
+          setSession({
+            userName: display_name,
+            email,
+            userId: session.user.id,
+          });
+        } else {
+          setSession(null);
+        }
+      }
+    );
+
+    return () => authListener.subscription.unsubscribe();
+  }, [supabase.auth]);
 
   const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    // const files = e.target.files;
-    // if (files) {
-    //   const fileArray = Array.from(files);
-    //   const fileData = fileArray.map((file) => ({
-    //     name: file.name,
-    //     type: file.type,
-    //     size: file.size,
-    //     file: file,
-    //   }));
-    //   dispatch(
-    //     uploadFiles({
-    //       newFiles: fileData,
-    //       userId: user_id,
-    //       folderId: folderId,
-    //     })
-    //   );
-    // }
+    const files = e.target.files;
+    if (files) {
+      const fileArray = Array.from(files);
+      const fileDataArray = fileArray.map((file) => ({
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        file: file,
+      }));
+      const userId = session?.userId;
+      try {
+        const uploadRes = await uploadFiles(fileDataArray, userId, folderId);
+        console.log("uplaodRes modal", uploadRes);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
-  const handleFolderUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    // const files = e.target.files;
-    // const folderMap: Record<string, string> = {}; // To map folder paths to IDs
-    // const folders: Array<{
-    //   name: string;
-    //   parentFolderId: string | null;
-    //   userId: string;
-    // }> = [];
-    // const filesArray: Array<{
-    //   name: string;
-    //   size: number;
-    //   folderId: string | null;
-    //   userId: string;
-    // }> = [];
-    // Array.from(files).forEach((file) => {
-    //   const pathParts = file.webkitRelativePath.split("/");
-    //   pathParts.pop(); // Remove the file name
-    //   let currentPath = "";
-    //   let parentFolderId: string | null = null;
-    //   pathParts.forEach((folderName) => {
-    //     currentPath += `${folderName}/`;
-    //     // If this folder hasn't been recorded yet
-    //     if (!folderMap[currentPath]) {
-    //       const folderId = `${folderName}_${Math.random().toString(36).substr(2, 9)}`; // Temporary ID
-    //       folderMap[currentPath] = folderId;
-    //       folders.push({
-    //         name: folderName,
-    //         parentFolderId: parentFolderId,
-    //         userId: user_id,
-    //       });
-    //       parentFolderId = folderId; // Set the parent for the next folder level
-    //     } else {
-    //       parentFolderId = folderMap[currentPath]; // Get the existing ID
-    //     }
-    //   });
-    //   // Store the file with its corresponding folder ID
-    //   filesArray.push({
-    //     name: file.name,
-    //     size: file.size,
-    //     folderId: parentFolderId,
-    //     userId: user_id,
-    //   });
-    // });
-    // console.log("Folders:", folders);
-    // console.log("Files:", filesArray);
+  const handleFolderUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const folderMap: Record<string, string> = {}; // Maps folder paths to folder IDs
+
+    const folders: Array<{
+      id: string;
+      name: string;
+      parentFolderId: string | null;
+      userId: string;
+    }> = [];
+
+    const filesArray: Array<{
+      name: string;
+      type: string;
+      size: number;
+      file: File; // The actual file object
+      folderId: string | null;
+      userId: string;
+    }> = [];
+
+    const userId = session?.userId;
+    if (!userId) {
+      console.error("User ID is missing. Please log in.");
+      return;
+    }
+
+    // Helper function to generate a unique folder ID
+    const generateFolderId = () => {
+      return crypto.randomUUID(); // Use crypto.randomUUID() for unique IDs
+    };
+
+    // Process each file
+    Array.from(files).forEach((file) => {
+      const pathParts = file.webkitRelativePath.split("/");
+      const fileName = pathParts.pop(); // Remove the file name
+      let parentFolderId: string | null = null;
+
+      // Traverse the folder structure
+      pathParts.forEach((folderName, index) => {
+        const folderPath = pathParts.slice(0, index + 1).join("/");
+
+        if (!folderMap[folderPath]) {
+          const folderId = generateFolderId();
+          folderMap[folderPath] = folderId;
+
+          // Add the folder to the folders array
+          folders.push({
+            id: folderId,
+            name: folderName,
+            parentFolderId: parentFolderId,
+            userId: userId,
+          });
+
+          parentFolderId = folderId; // Update parentFolderId for the next level
+        } else {
+          parentFolderId = folderMap[folderPath]; // Use existing folder ID
+        }
+      });
+
+      // Add the file to the files array
+      filesArray.push({
+        name: fileName,
+        type: file.type,
+        size: file.size,
+        file: file, // The actual file object
+        folderId: parentFolderId,
+        userId: userId,
+      });
+    });
+
+    console.log("Folders:", folders);
+    console.log("Files:", filesArray);
+
+    try {
+      const folderUploadRes = await uploadFolder(filesArray, folders, userId);
+      console.log(folderUploadRes);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

@@ -113,7 +113,7 @@ const filesData: File[] = [
   },
 ];
 
-const FolderPage = async () => {
+const FolderPage = async ({ files, folders }) => {
   const headerList = await headers();
   const pathname = headerList.get("x-current-path");
   const basePath = pathname?.replace(/\/folders\/[^/]+$/, "") || "";
@@ -132,7 +132,7 @@ const FolderPage = async () => {
           <p className="text-[#1C3553] font-medium">Folders</p>
         </div>
         <div className="w-full h-[auto]  py-[15px] flex flex-wrap">
-          {foldersData.map((folder, index) => (
+          {folders.map((folder, index) => (
             <FolderCard key={index} folder={folder} basePath={basePath} />
           ))}
         </div>
@@ -144,7 +144,7 @@ const FolderPage = async () => {
           <p className="text-[#1C3553] font-medium">Files</p>
         </div>
         <div className={`w-full h-[auto] flex flex-wrap`}>
-          {filesData.map((file, index) => (
+          {files.map((file, index) => (
             <FileCard key={index} file={file} basePath={basePath} />
           ))}
         </div>
