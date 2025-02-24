@@ -1,4 +1,4 @@
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/middlewares/supabase/server";
 import { revalidatePath } from "next/cache";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -8,7 +8,6 @@ export async function POST(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log(user);
 
   if (user) {
     await supabase.auth.signOut();

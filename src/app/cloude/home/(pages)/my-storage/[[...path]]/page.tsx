@@ -8,7 +8,7 @@ export default async function MyStorage({
   const { path } = await params;
 
   // TODO : path can have ['files', 'fileId'] or  ['folders', 'folderId'] or ['files'] or ['folders'] or undefined
-  console.log(path);
+  console.log("path:", path);
 
   return <FolderPage />;
 }

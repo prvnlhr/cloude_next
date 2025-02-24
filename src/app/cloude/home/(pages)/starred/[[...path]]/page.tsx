@@ -6,7 +6,9 @@ export default async function MyStorage({
   params: Promise<{ path: string }>;
 }) {
   const { path } = await params;
-  console.log(path);
+
+  console.log("path:", path);
+
 
   return <FolderPage />;
 }

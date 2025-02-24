@@ -5,8 +5,7 @@ import HamburgerIcon from "../../Icons/HamburgerIcon";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Routes } from "@/config/routes";
-import { logoutUser } from "@/lib/api/auth/authApi";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/middlewares/supabase/client";
 import { signout } from "@/actions/auth";
 
 type SidebarProps = {
@@ -28,15 +27,15 @@ const Sidebar: FC<SidebarProps> = ({ showSidebar, setShowSidebar }) => {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const { data, error } = await supabase.auth.getSession();
+        const { data, error } = await supabase.auth.getUser();
         if (error) throw error;
 
-        if (data.session) {
-          const { display_name, email } = data.session.user.user_metadata;
+        if (data.user) {
+          const { display_name, email } = data.user.user_metadata;
           setSession({
             userName: display_name,
             email,
-            userId: data.session.user.id,
+            userId: data.user.id,
           });
         }
       } catch (error) {
@@ -67,7 +66,7 @@ const Sidebar: FC<SidebarProps> = ({ showSidebar, setShowSidebar }) => {
   const handleLogout = async () => {
     try {
       const res = await signout();
-      console.log(res);
+      console.log("signout res", res);
       console.log("User logged out successfully");
     } catch (error) {
       console.error("Error logging out:", error);
