@@ -1658,3 +1658,243 @@ DELETE
 /api/shared/folder/ -> GET all files
 
 
+
+
+- Songs
+  - MJ
+    - Classics
+    - 90sHits
+      - beatit.mp3  
+  - Rihana
+    - Mega Mix
+    - Mashups
+  - Akon
+    - Smack That.mp3
+
+Movies
+  - SciFi
+  - Action
+  - Romance
+
+- project.pdf
+- schedule.pdf  
+
+
+user stars 'MJ' folder inside the 'Songs' folder and project.pdf and schedule.pdf.
+
+In database, in starred table is like,
+
+item_type = folder | file
+folder_id  -> ref on folders table id
+file_id -> ref on files table id
+user_id 
+
+
+When 'MJ' folder is starred,
+in db, starred table we make entry for just the 'MJ' for and not its content(files & subfolder).
+
+User visits 'Starred Page',
+Starred page will two things,
+userId and folderId(can be null) in url
+
+if folderId is null means we are at root of shared page.
+
+We make a query to db passing the folderId and userId.
+
+At backend we check if folderId is null or not.
+
+If null -> get all the items(file type and folder type) from with matching userId.
+
+if not null -> get all the files and subfolder of the of the folder with folderId.
+
+
+Scenario,
+
+User visits the starred page,
+userId -> user's Id
+folderId -> null
+
+fetch all the items from starred table with matching userId
+
+Page displays:
+- Folders section
+  -> 'Songs' folder
+- File section
+  -> project.pdf
+  -> schedule.pdf    
+
+Now user opens Songs folder
+
+url changes, and we have now folderId( of Songs folder) and userId
+
+fetch request now has userId and folderId of Songs folder
+
+At backend we have folderId and userId
+
+As we have folderId, we now query the folders table and get all the folders which has parent_folder_id = folderId
+We then get all the files from files table who has folderId = folderId.
+
+return files and folders.
+
+So we dont fetch all the nested content at once.
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+In My NextJS 15 App i have a page 'Shared with me Page'.
+There is also a 'Storage' Page
+
+This page has two section:
+- Folders -> shows FolderCards
+- Files  -> Shows FileCards
+
+Consider this scenario,
+
+There are two users -> user1 and user2
+
+user1 opens his app. Visits Storage page.
+At storage page he sees bunch of folder and files. He only see the direct items and not inside content of folders
+
+-> Folder Section
+   - Songs
+   - Movies
+-> Files section
+   - project.pdf
+   - budget-xlms   
+
+ 
+├── Songs/  
+│   ├── Taylor Swift/  
+│   │   ├── Albums/  
+│   │   │   ├── 1989/  
+│   │   │   │   ├── 01-Welcome_To_New_York.mp3  
+│   │   │   │   ├── 02-Blank_Space.mp3  
+│   │   │   │   └── Cover.jpg  
+│   │   └── Singles/  
+│   │       ├── Love_Story.mp3  
+│   │       └── Shake_It_Off.mp3  
+│   ├── The Weeknd/  
+│   │   ├── Albums/  
+│   │   │   ├── After Hours/  
+│   │   │   │   ├── 01-Alone_Again.mp3  
+│   │   │   │   ├── 02-Blinding_Lights.mp3  
+│   │   │   │   └── Cover.jpg  
+│   │   └── Singles/  
+│   │       └── Starboy.mp3  
+│   └── Ed Sheeran/  
+│       ├── Albums/  
+│       │   ├── Divide/  
+│       │   │   ├── 01-Shape_Of_You.mp3  
+│       │   │   ├── 02-Castle_On_The_Hill.mp3  
+│       │   │   └── Cover.jpg  
+│       └── Singles/  
+│           └── Perfect.mp3  
+│  
+├── Movies/  
+│   ├── Genre/  
+│       ├── Action/  
+│       │   ├── Inception (2010)/  
+│       │   │   ├── Inception.mp4  
+│       │   │   ├── Poster.jpg  
+│       │   │   └── Subtitles.srt  
+│       └── Comedy/  
+│           ├── The Mask (1994)/  
+│           │   ├── The_Mask.mp4  
+│           │   └── Poster.jpg  
+│           └── Superbad (2007)/  
+│               ├── Superbad.mp4  
+│               └── Poster.jpg  
+|-- project.pdf
+|-- budget.xlms   
+
+
+Now lets say user selects the Songs folder and decided to Share it.
+He enters the email of the user he wants to share this folder with.
+So he enters the email of user2.
+He also share the project.pdf and budget.xlms
+
+
+Now user2 opens his app and visits the Share page.
+
+He sees two sections
+-> Folders section
+-> Files section 
+ 
+In Folder section he sees Songs folder
+In files section he sees project.pdf and budget.xlms
+
+Now he opens the Songs folder.
+He now sees the,
+In Folder section -> 'Taylor Swift', 'The Weeknd', 'Ed Sheeran'
+In Files section there are on files as Songs folder only has Sub folders and not files.
+
+So what we conclude that we see only the direct child and not the nested contents.
+
+
+Now i have bunch of tables setup up for now. 
+
+create table public.users (
+  user_id uuid not null,
+  email text not null,
+  full_name text not null,
+  timestamp timestamp with time zone null default CURRENT_TIMESTAMP,
+  constraint users_pkey primary key (user_id),
+  constraint users_email_key unique (email),
+  constraint users_user_id_fkey foreign KEY (user_id) references auth.users (id) on delete CASCADE
+) TABLESPACE pg_default;
+
+create table public.files (
+  id uuid not null default gen_random_uuid (),
+  user_id uuid not null,
+  folder_id uuid null,
+  file_name text not null,
+  file_type text not null,
+  file_size bigint not null,
+  storage_path text not null,
+  thumbnail_url text null,
+  is_starred boolean null default false,
+  is_shared boolean null default false,
+  created_at timestamp with time zone null default now(),
+  updated_at timestamp with time zone null default now(),
+  constraint files_pkey primary key (id),
+  constraint files_storage_path_key unique (storage_path),
+  constraint unique_folder_file_name unique (folder_id, file_name),
+  constraint files_folder_id_fkey foreign KEY (folder_id) references folders (id) on delete CASCADE,
+  constraint files_user_id_fkey foreign KEY (user_id) references users (user_id) on delete CASCADE
+) TABLESPACE pg_default;
+
+create index IF not exists idx_files_user_id on public.files using btree (user_id) TABLESPACE pg_default;
+
+create index IF not exists idx_files_folder_id on public.files using btree (folder_id) TABLESPACE pg_default;
+
+create index IF not exists idx_files_is_starred on public.files using btree (is_starred) TABLESPACE pg_default;
+
+create index IF not exists idx_files_is_shared on public.files using btree (is_shared) TABLESPACE pg_default;
+
+
+create table public.folders (
+  id uuid not null default gen_random_uuid (),
+  user_id uuid not null,
+  parent_folder_id uuid null,
+  folder_name text not null,
+  slug text not null,
+  is_shared boolean null default false,
+  is_starred boolean null default false,
+  created_at timestamp with time zone null default now(),
+  updated_at timestamp with time zone null default now(),
+  constraint folders_pkey primary key (id),
+  constraint unique_user_folder_slug unique (user_id, slug),
+  constraint folders_parent_folder_id_fkey foreign KEY (parent_folder_id) references folders (id) on delete CASCADE,
+  constraint folders_user_id_fkey foreign KEY (user_id) references users (user_id) on delete CASCADE
+) TABLESPACE pg_default;
+
+create index IF not exists idx_folders_user_id on public.folders using btree (user_id) TABLESPACE pg_default;
+
+create index IF not exists idx_folders_is_starred on public.folders using btree (is_starred) TABLESPACE pg_default;
+
+create index IF not exists idx_folders_is_shared on public.folders using btree (is_shared) TABLESPACE pg_default;
+
+
+Now tell me how do i setup the ui and content showing. Iam using nextjs 15 and supabase db
+

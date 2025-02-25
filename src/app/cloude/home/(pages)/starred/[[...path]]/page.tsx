@@ -5,10 +5,9 @@ export default async function MyStorage({
 }: {
   params: Promise<{ path: string }>;
 }) {
-  const { path } = await params;
+  const { path = [] } = await params;
 
   console.log("path:", path);
 
-
-  return <FolderPage />;
+  return <FolderPage files={[]} folders={[]} />;
 }

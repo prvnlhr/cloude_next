@@ -4,17 +4,18 @@ import { createClient } from "@/middlewares/supabase/server";
 
 export default async function MyStorage({
   params,
+  searchParams,
 }: {
   params: Promise<{ path: string }>;
 }) {
-  const { path = [] } = await params;
   /*
-    params path can have:
-    - ['files', 'fileId']
-    - ['folders', 'folderId']
-    - undefined
+  params path can have:
+  - ['files', 'fileId']
+  - ['folders', 'folderId']
+  - undefined
   */
 
+  const { path = [] } = await params;
   const supabase = await createClient();
 
   const {
@@ -25,10 +26,11 @@ export default async function MyStorage({
   const folderId = path[0] === "folders" ? path[1] : null;
 
   const pageContent = await getStoragePageContent(userId, folderId);
-  console.log(pageContent);
 
   const files = pageContent.files || [];
   const folders = pageContent.folders || [];
 
-  return <FolderPage files={files} folders={folders} />;
+  return (
+    <FolderPage files={files} folders={folders} searchParams={searchParams} />
+  );
 }
