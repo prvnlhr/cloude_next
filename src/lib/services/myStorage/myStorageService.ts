@@ -8,7 +8,10 @@ export async function getStoragePageContent(userId: string, folderId: string) {
     params.append("folderId", folderId);
 
     const filesResponse = await fetch(
-      `${BASE_URL}/api/user/files?${params.toString()}`
+      `${BASE_URL}/api/user/files?${params.toString()}`,
+      {
+        next: { tags: ["storage"] },
+      }
     );
 
     const folderResponse = await fetch(

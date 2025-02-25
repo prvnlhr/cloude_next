@@ -1,25 +1,56 @@
+import next from "next";
+
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export async function shareContent(shareContentData) {
   try {
-    const formData = new FormData();
-    formData.append("itemId", shareContentData.itemId);
-    formData.append("itemType", shareContentData.itemType);
-    formData.append("userId", shareContentData.userId);
-    formData.append("shareWithEmail", shareContentData.shareWithEmail);
-    const shareResponse = await fetch(`${BASE_URL}/api/share/`, {
+    const response = await fetch(`${BASE_URL}/api/share/`, {
       method: "POST",
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        itemId: shareContentData.itemId,
+        itemType: shareContentData.itemType,
+        sharedById: shareContentData.userId,
+        shareWithEmail: shareContentData.shareWithEmail,
+      }),
+      next: { tags: ["share"] },
     });
-    if (!shareResponse.ok) {
-      throw new Error("Failed to share content.");
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to share content.");
     }
-    const data = await shareResponse.json();
+
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Error sharing content:", error);
     throw new Error(`Failed to share content: ${error.message}`);
+  }
+}
+
+export async function getSharedContent(userId, folderId) {
+  try {
+    const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
+
+    if (folderId) {
+      // If folder id, that means we want data of subfolder
+      params.append("folderId", encodeURIComponent(folderId));
+    }
+
+    const response = await fetch(`${BASE_URL}/api/share?${params.toString()}`);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unknown error occurred");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to get shared content:", error);
+    throw new Error(`Failed to get shared content: ${error.message}`);
   }
 }
 
@@ -115,71 +146,71 @@ export async function shareContent(shareContentData) {
 //   }
 // }
 
-export async function getSharedContent(userId, folderId) {
-  try {
-    const params = new URLSearchParams({
-      userId: encodeURIComponent(userId),
-      folderId: folderId ? encodeURIComponent(folderId) : "null",
-    });
+// export async function getSharedContent(userId, folderId) {
+//   try {
+//     const params = new URLSearchParams({
+//       userId: encodeURIComponent(userId),
+//       folderId: folderId ? encodeURIComponent(folderId) : "null",
+//     });
 
-    const response = await fetch(`${BASE_URL}/api/share?${params.toString()}`);
-    if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
-    }
+//     const response = await fetch(`${BASE_URL}/api/share?${params.toString()}`);
+//     if (!response.ok) {
+//       throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+//     }
 
-    const data = await response.json();
+//     const data = await response.json();
 
-    const mapFiles = (filesArray, nested = false) => {
-      return (
-        filesArray?.map((file) => {
-          const f = nested ? file.files : file;
-          return {
-            id: f.id,
-            file_name: f.file_name,
-            file_size: f.file_size,
-            file_type: f.file_type,
-            created_at: f.created_at,
-            folder_id: f.folder_id,
-            is_shared: f.is_shared,
-            is_starred: f.is_starred,
-            storage_path: f.storage_path,
-            thumbnail_url: f.thumbnail_url,
-            updated_at: f.updated_at,
-            user_id: f.user_id,
-          };
-        }) || []
-      );
-    };
+//     const mapFiles = (filesArray, nested = false) => {
+//       return (
+//         filesArray?.map((file) => {
+//           const f = nested ? file.files : file;
+//           return {
+//             id: f.id,
+//             file_name: f.file_name,
+//             file_size: f.file_size,
+//             file_type: f.file_type,
+//             created_at: f.created_at,
+//             folder_id: f.folder_id,
+//             is_shared: f.is_shared,
+//             is_starred: f.is_starred,
+//             storage_path: f.storage_path,
+//             thumbnail_url: f.thumbnail_url,
+//             updated_at: f.updated_at,
+//             user_id: f.user_id,
+//           };
+//         }) || []
+//       );
+//     };
 
-    const mapFolders = (foldersArray, nested = false) => {
-      return (
-        foldersArray?.map((folder) => {
-          const f = nested ? folder.folders : folder;
-          return {
-            id: f.id,
-            folder_name: f.folder_name,
-            created_at: f.created_at,
-            is_shared: f.is_shared,
-            is_starred: f.is_starred,
-            parent_folder_id: f.parent_folder_id,
-            slug: f.slug,
-            updated_at: f.updated_at,
-            user_id: f.user_id,
-          };
-        }) || []
-      );
-    };
+//     const mapFolders = (foldersArray, nested = false) => {
+//       return (
+//         foldersArray?.map((folder) => {
+//           const f = nested ? folder.folders : folder;
+//           return {
+//             id: f.id,
+//             folder_name: f.folder_name,
+//             created_at: f.created_at,
+//             is_shared: f.is_shared,
+//             is_starred: f.is_starred,
+//             parent_folder_id: f.parent_folder_id,
+//             slug: f.slug,
+//             updated_at: f.updated_at,
+//             user_id: f.user_id,
+//           };
+//         }) || []
+//       );
+//     };
 
-    const isNested = !folderId;
-    const mappedFiles = mapFiles(data.files, isNested);
-    const mappedFolders = mapFolders(data.folders, isNested);
+//     const isNested = !folderId;
+//     const mappedFiles = mapFiles(data.files, isNested);
+//     const mappedFolders = mapFolders(data.folders, isNested);
 
-    return {
-      files: mappedFiles,
-      folders: mappedFolders,
-    };
-  } catch (error) {
-    console.error("Failed to get shared content:", error);
-    throw new Error(`Failed to get shared content: ${error.message}`);
-  }
-}
+//     return {
+//       files: mappedFiles,
+//       folders: mappedFolders,
+//     };
+//   } catch (error) {
+//     console.error("Failed to get shared content:", error);
+//     throw new Error(`Failed to get shared content: ${error.message}`);
+//   }
+// }

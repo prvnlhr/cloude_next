@@ -49,14 +49,12 @@ export default async function SharedPage({
   const userId = user.id;
   const folderId = path[0] === "folders" ? path[1] : null;
 
-  const contentData: SharedContentData = await getSharedContent(
-    userId,
-    folderId
-  );
+  const contentData = await getSharedContent(userId, folderId);
+  console.log(contentData);
   return (
     <FolderPage
-      files={contentData.files || []}
-      folders={contentData.folders || []}
+      files={contentData?.files || []}
+      folders={contentData?.folders || []}
     />
   );
 }

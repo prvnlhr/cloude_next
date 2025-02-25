@@ -3,6 +3,9 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { usePathname } from "next/navigation";
+import { createClient } from "@/middlewares/supabase/client";
+import { addToStarred } from "@/lib/services/starred/starredService";
+
 interface File {
   fileId: string;
   fileName: string;
@@ -19,15 +22,76 @@ const FileCard = ({ file, basePath }: FileCardProps) => {
   const shareUrl = `${pathname}?${new URLSearchParams({
     share: "true",
     type: "file",
-    id: file.id,
+    id: file?.id,
   })}`;
 
-  console.log(file);
   const toggleMenu = (event: React.MouseEvent) => {
     console.log("toggle...");
     event.stopPropagation();
     setIsMenuOpen((prev) => !prev);
   };
+  const supabase = createClient();
+
+  const [session, setSession] = useState<{
+    userName: string;
+    email: string;
+    userId: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        if (error) throw error;
+
+        if (data.user) {
+          const { display_name, email } = data.user.user_metadata;
+          setSession({
+            userName: display_name,
+            email,
+            userId: data.user.id,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching session:", error);
+      }
+    };
+
+    fetchSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session) {
+          const { display_name, email } = session.user.user_metadata;
+          setSession({
+            userName: display_name,
+            email,
+            userId: session.user.id,
+          });
+        } else {
+          setSession(null);
+        }
+      }
+    );
+
+    return () => authListener.subscription.unsubscribe();
+  }, [supabase.auth]);
+
+  const handleMarkStar = async () => {
+    try {
+      const userId = session?.userId;
+      const markItemData = {
+        itemType: "file",
+        itemId: file?.id,
+        userId: userId,
+      };
+      const markStarResponse = await addToStarred(markItemData);
+      console.log(markStarResponse);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -39,13 +103,12 @@ const FileCard = ({ file, basePath }: FileCardProps) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
   return (
     <div className="w-[48%] sm:w-[48%] md:w-[30%] lg:w-[18%] h-auto mx-[1%] my-[15px] bg-[#F4F6F6] border-[1px] border-[#E4E7EC] flex flex-col rounded-[10px]">
       <div className="w-full h-[40px] flex pl-[10%] relative z-0">
         <div className="flex-1 h-full flex items-center justify-start overflow-hidden">
           <p className="text-[0.75rem] text-[#1C3553] font-medium truncate whitespace-nowrap">
-            {file.file_name}
+            {file?.file_name}
           </p>
         </div>
         <button
@@ -75,14 +138,18 @@ const FileCard = ({ file, basePath }: FileCardProps) => {
             <button className="w-full h-[40px] flex items-center justify-start cursor-pointer text-[#1C3553] text-[0.9rem] font-medium px-[20px] hover:bg-[#F4F6F6]">
               <p>Delete</p>
             </button>
-            <button className="w-full h-[40px] flex items-center justify-start cursor-pointer text-[#1C3553] text-[0.9rem] font-medium px-[20px] hover:bg-[#F4F6F6]">
+            <button
+              type="button"
+              onClick={handleMarkStar}
+              className="w-full h-[40px] flex items-center justify-start cursor-pointer text-[#1C3553] text-[0.9rem] font-medium px-[20px] hover:bg-[#F4F6F6]"
+            >
               <p>Add to Starred</p>
             </button>
           </div>
         )}
       </div>
       <Link
-        href={`${basePath}/files/${file.id}`}
+        href={`${basePath}/files/${file?.id}`}
         className="w-full aspect-[3/2] flex justify-center items-end"
       >
         <div className="w-[80%] h-[100%] bg-[#FFFFFF] flex items-center  justify-center">
