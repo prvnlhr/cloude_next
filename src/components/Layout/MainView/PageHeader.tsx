@@ -50,13 +50,13 @@ const PageHeader: FC = () => {
           cursor-pointer
           mr-[15px]
           rounded
-          px-[10px]"
+          "
           onClick={toggleMenu}
         >
           <div className="h-[100%] aspect-[1/1] flex items-center justify-center black">
             <Icon icon="majesticons:plus-line" className="text-[#1C3553]" />
           </div>
-          <p className="text-[#1C3553] text-[0.8rem] font-medium hidden md:block">
+          <p className="text-[#1C3553] text-[0.8rem] font-medium hidden md:block mr-[10px]">
             Add
           </p>
         </button>

@@ -17,7 +17,7 @@ interface FileCardProps {
   basePath: string;
 }
 
-const FileCard = ({ file, basePath }: FileCardProps) => {
+const FileCard = ({ file, setActiveModal }: FileCardProps) => {
   const pathname = usePathname();
   const session = useUserSession();
 
@@ -62,7 +62,9 @@ const FileCard = ({ file, basePath }: FileCardProps) => {
       flex flex-col 
       rounded-[10px]
       min-h-[45px]
-      relative"
+      relative
+      shadow-[0px_0px_0px_1px_rgba(0,0,0,0.05)]
+      "
     >
       <div className="w-full h-[auto]flex flex-col">
         <div className="w-full h-[45px] flex">
@@ -80,13 +82,25 @@ const FileCard = ({ file, basePath }: FileCardProps) => {
               className="w-[40%] h-[40%] text-[#1C3553]"
             />
             {isMenuOpen && (
-              <ActionMenu dropdownRef={dropdownRef} isOpen={isMenuOpen} />
+              <ActionMenu
+                dropdownRef={dropdownRef}
+                item={file}
+                itemType={"file"}
+                setActiveModal={setActiveModal}
+              />
             )}
           </div>
         </div>
-        <div className="w-full aspect-[2/1.5]  flex items-end justify-center cursor-pointer">
+        <Link
+          href={
+            pathname.includes("/files/")
+              ? `${pathname.replace(/files\/[^/]+$/, `files/${file.id}`)}`
+              : `${pathname}/files/${file.id}`
+          }
+          className="w-full aspect-[2/1.5]  flex items-end justify-center cursor-pointer"
+        >
           <div className="w-[90%] h-[100%] bg-[#FFFFFF] rounded-t-[8px]"></div>
-        </div>
+        </Link>
       </div>
     </div>
   );

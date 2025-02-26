@@ -42,7 +42,7 @@ const Sidebar: FC = ({ toggleSidebarShow }) => {
         <div
           className={`w-full h-[${
             showLogoutOption ? 100 : 70
-          }px]  transition-all duration-500 ease-in-out flex flex-col overflow-hidden items-center`}
+          }px]  transition-all duration-300 ease-in-out flex flex-col overflow-hidden items-center`}
         >
           <div className="w-full h-[70px] min-h-[70px] flex justify-center relative">
             <div className="w-[80%] border-t-[1px] border-t-[#D0D5DD] border-b-[1px] border-b-[#D0D5DD]  h-full flex items-center">
@@ -52,15 +52,15 @@ const Sidebar: FC = ({ toggleSidebarShow }) => {
                 </div>
               </div>
               <div className="h-full flex-grow  flex flex-col justify-center overflow-hidden">
-                <p className="text-[1rem] text-[#1C3553] font-medium truncate max-w-[80%]">
+                <p className="text-[1rem] text-[#1C3553] font-medium truncate max-w-[90%]">
                   {session?.userName}
                 </p>
-                <p className="text-[0.7rem] text-[#A2A8B2] font-medium truncate max-w-[80%]">
+                <p className="text-[0.8rem] text-[#A2A8B2] font-medium truncate max-w-[90%]">
                   {session?.email}
                 </p>
               </div>
               <div
-                className="w-[20px] h-[70%] rounded flex items-center justify-center border border-[#D0D5DD] bg-[#FAFAFA] cursor-pointer"
+                className="w-[20px] min-w-[20px] h-[70%] rounded flex items-center justify-center border border-[#D0D5DD] bg-[#FAFAFA] cursor-pointer"
                 onClick={() => setShowLogoutOption((prev) => !prev)}
               >
                 <Icon
