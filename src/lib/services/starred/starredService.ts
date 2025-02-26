@@ -3,17 +3,27 @@ import { revalidateTagHandler } from "@/lib/revalidation";
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-export async function addToStarred(markItemData) {
+interface AddToStarredParams {
+  itemId: string;
+  itemType: string;
+  userId: string;
+}
+
+export async function addToStarred({
+  itemId,
+  itemType,
+  userId,
+}: AddToStarredParams): Promise<any> {
   try {
-    const response = await fetch(`${BASE_URL}/api/starred/`, {
+    const response = await fetch(`${BASE_URL}/api/star/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        itemId: markItemData.itemId,
-        itemType: markItemData.itemType,
-        userId: markItemData.userId,
+        itemId,
+        itemType,
+        userId,
       }),
     });
 
@@ -33,19 +43,17 @@ export async function addToStarred(markItemData) {
   }
 }
 
-export async function getStarredContent(userId, folderId) {
+export async function fetchStarredContent(userId, folderId) {
   try {
     const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
 
     if (folderId) {
-      // If folder id, that means we want data of subfolder
       params.append("folderId", encodeURIComponent(folderId));
     }
 
-    const response = await fetch(
-      `${BASE_URL}/api/starred?${params.toString()}`,
-      { next: { tags: ["starred"] } }
-    );
+    const response = await fetch(`${BASE_URL}/api/star?${params.toString()}`, {
+      next: { tags: ["starred"] },
+    });
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || "Unknown error occurred");

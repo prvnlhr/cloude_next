@@ -1,18 +1,18 @@
 import FolderCard from "./FolderCard";
 import FileCard from "./FileCard";
 import { headers } from "next/headers";
-import ShareModal from "./ShareModal";
+import ShareModal from "./Modals/ShareModal";
 
-const FolderPage = async ({ files, folders, searchParams }) => {
+const ContentPage = async ({ files, folders, searchParams }) => {
   const headerList = await headers();
   const pathname = headerList.get("x-current-path");
   const basePath = pathname?.replace(/\/folders\/[^/]+$/, "") || "";
   const searchParamsObj = (await searchParams) || {};
-  // console.log("searchParamsObj", searchParamsObj);
 
   return (
     <div
-      className="w-full h-full flex flex-col overflow-y-scroll pb-[10px] pt-[20px] relative"
+      className="w-full h-full flex flex-col overflow-y-scroll pb-[10px] pt-[20px]
+      "
       style={{
         scrollbarWidth: "none",
         msOverflowStyle: "none",
@@ -21,7 +21,10 @@ const FolderPage = async ({ files, folders, searchParams }) => {
       {/* Folders section ------------------------------------------------------------------- */}
 
       {folders.length > 0 && (
-        <section className="w-full h-[auto] flex flex-col">
+        <section
+          className="w-full h-[auto] flex flex-col
+        "
+        >
           <div className="w-full h-[40px] flex items-center justify-start">
             <p className="text-[#1C3553] font-medium">Folders</p>
           </div>
@@ -35,7 +38,10 @@ const FolderPage = async ({ files, folders, searchParams }) => {
 
       {/* Files section --------------------------------------------------------------------- */}
       {files.length > 0 && (
-        <section className="w-full h-[auto] flex flex-col">
+        <section
+          className="w-full h-[auto] flex flex-col
+        "
+        >
           <div className="w-full h-[40px] flex items-center justify-start">
             <p className="text-[#1C3553] font-medium">Files</p>
           </div>
@@ -53,9 +59,9 @@ const FolderPage = async ({ files, folders, searchParams }) => {
   );
 };
 
-export default FolderPage;
+export default ContentPage;
 
-FolderPage.defaultProps = {
+ContentPage.defaultProps = {
   files: [],
   folders: [],
 };

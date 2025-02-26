@@ -4,153 +4,146 @@ import AppLogo from "./AppLogo";
 import HamburgerIcon from "../../Icons/HamburgerIcon";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Routes } from "@/config/routes";
-import { createClient } from "@/middlewares/supabase/client";
+import { Routes } from "@/lib/homeRoutes";
 import { signout } from "@/actions/auth";
+import useUserSession from "@/hooks/useUserSession";
 
-type SidebarProps = {
-  showSidebar: boolean;
-  setShowSidebar: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-// Sidebar component displays navigation and user info
-const Sidebar: FC<SidebarProps> = ({ showSidebar, setShowSidebar }) => {
+const Sidebar: FC = ({ toggleSidebarShow }) => {
   const pathname = usePathname();
-  const supabase = createClient();
+  const session = useUserSession();
 
-  const [session, setSession] = useState<{
-    userName: string;
-    email: string;
-    userId: string;
-  } | null>(null);
-
-  useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const { data, error } = await supabase.auth.getUser();
-        if (error) throw error;
-
-        if (data.user) {
-          const { display_name, email } = data.user.user_metadata;
-          setSession({
-            userName: display_name,
-            email,
-            userId: data.user.id,
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching session:", error);
-      }
-    };
-
-    fetchSession();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session) {
-          const { display_name, email } = session.user.user_metadata;
-          setSession({
-            userName: display_name,
-            email,
-            userId: session.user.id,
-          });
-        } else {
-          setSession(null);
-        }
-      }
-    );
-
-    return () => authListener.subscription.unsubscribe();
-  }, [supabase.auth]);
+  const [showLogoutOption, setShowLogoutOption] = useState(false);
 
   const handleLogout = async () => {
     try {
-      const res = await signout();
-      console.log("signout res", res);
+      const signoutResponse = await signout();
+      console.log(" signoutResponse:", signoutResponse);
       console.log("User logged out successfully");
     } catch (error) {
       console.error("Error logging out:", error);
     }
   };
+
   return (
     <div className="w-[100%] left-[-100%] h-full border-r-[1px] border-r-[#D0D5DD] flex flex-col">
-      {/* App Logo ---------------------- */}
-      <div className="w-[100%] h-[80px] flex items-center justify-start">
+      <section className="w-[100%] h-[80px] flex items-center justify-start relative">
         <div className="h-[40%] border-[#D0D5DD] ml-[20px]">
           <AppLogo />
         </div>
-      </div>
-
-      <div className="w-[100%] h-[70px] flex items-center justify-center relative">
         <div
-          className="w-[20px] h-full flex justify-end items-center absolute right-0 aspect-square lg:hidden"
-          onClick={() => setShowSidebar((prev) => !prev)}
+          className="w-[15px] absolute right-0 h-full lg:hidden"
+          onClick={toggleSidebarShow}
         >
-          {showSidebar && <HamburgerIcon />}
+          <HamburgerIcon />
         </div>
+      </section>
 
-        <div className="w-[80%] h-[100%]  border-t-[1px] border-b-[1px] border-t-[#D0D5DD] border-b-[#D0D5DD] flex">
-          {/* User circular badge --------------------- */}
-          <div className="h-[100%] aspect-square flex items-center justify-center">
-            <div className="w-[70%] aspect-square bg-[#D9D9D9] rounded-full flex items-center justify-center">
-              <p className="text-[#635DB0] text-[1.2rem] font-medium">
-                {session?.userName.charAt(0)}
-              </p>
+      <section className="w-full h-[calc(100%-80px)] flex flex-col">
+        <div
+          className={`w-full h-[${
+            showLogoutOption ? 100 : 70
+          }px]  transition-all duration-500 ease-in-out flex flex-col overflow-hidden items-center`}
+        >
+          <div className="w-full h-[70px] min-h-[70px] flex justify-center relative">
+            <div className="w-[80%] border-t-[1px] border-t-[#D0D5DD] border-b-[1px] border-b-[#D0D5DD]  h-full flex items-center">
+              <div className="h-full aspect-square  flex items-center justify-center">
+                <div className="w-[70%] aspect-square rounded-full bg-[#D9D9D9] flex items-center justify-center">
+                  <p className="text-[1rem] text-[#635DB0] font-semibold">M</p>
+                </div>
+              </div>
+              <div className="h-full flex-grow  flex flex-col justify-center overflow-hidden">
+                <p className="text-[1rem] text-[#1C3553] font-medium truncate max-w-[80%]">
+                  {session?.userName}
+                </p>
+                <p className="text-[0.7rem] text-[#A2A8B2] font-medium truncate max-w-[80%]">
+                  {session?.email}
+                </p>
+              </div>
+              <div
+                className="w-[20px] h-[70%] rounded flex items-center justify-center border border-[#D0D5DD] bg-[#FAFAFA] cursor-pointer"
+                onClick={() => setShowLogoutOption((prev) => !prev)}
+              >
+                <Icon
+                  icon="famicons:chevron-down-outline"
+                  className="text-[#A2A8B2] w-full aspect-square"
+                />
+              </div>
             </div>
-          </div>
-
-          {/* User info card --------------------------- */}
-          <div className="w-[auto] h-full flex flex-col justify-center overflow-hidden">
-            <p className="text-[#1C3553] text-[1.1rem] font-medium truncate">
-              {session?.userName}
-            </p>
-            <p className="text-[#A2A8B2] text-[0.8rem] font-medium truncate">
-              {session?.email}
-            </p>
           </div>
           <button
-            type="button"
-            className="w-[20px] h-full flex items-center justify-center ml-[5px]"
             onClick={handleLogout}
+            className="w-[80%] h-[30px] min-h-[30px] flex justify-center items-center bg-red-200 border border-red-600"
           >
-            <Icon
-              icon="ci:chevron-down"
-              className="w-[100%] h-[100%] text-[#A2A8B2]"
-            />
+            <p className="text-[0.8rem] font-medium text-red-600">Logout</p>
           </button>
         </div>
-      </div>
-
-      {/* Sidebar Menu Items ------------------------------- */}
-      <div className="w-[100%] h-[calc(100%-150px)] flex flex-col items-center justify-start pt-[20px]">
-        {Routes.map((route) => (
-          <Link
-            href={route.path}
-            key={route.label}
-            className={`w-[70%] h-[40px] rounded-[10px] flex my-[10px] pr-[15px]
-               ${pathname === route.path ? "bg-[#F3F2F2]" : "bg-transparent"}
-               `}
-          >
-            <div className="h-full aspect-square flex justify-center items-center">
-              <Icon
-                icon={route.icon}
-                className="w-[50%] h-[50%] text-[#6849CE]"
-              />
-            </div>
-            <div className="flex-1 h-full flex items-center">
-              <p className="text-[#1C3553] text-[0.8rem] font-medium">
-                {route.label}
-              </p>
-            </div>
-          </Link>
-        ))}
-      </div>
+        <div
+          className={`w-full flex-grow  flex flex-col items-center justify-start pt-[20px]`}
+        >
+          {Routes.map((route) => (
+            <Link
+              href={route.path}
+              key={route.label}
+              className={`w-[70%] h-[40px] rounded-[10px] flex my-[10px] pr-[15px]
+                ${pathname === route.path ? "bg-[#EAECEB]" : "bg-transparent"}
+                `}
+            >
+              <div className="h-full aspect-square flex justify-center items-center">
+                <Icon
+                  icon={route.icon}
+                  className="w-[50%] h-[50%] text-[#635DB0]"
+                />
+              </div>
+              <div className="flex-1 h-full flex items-center">
+                <p
+                  className={`text-[${
+                    pathname === route.path ? "#635DB0" : "#1C3553"
+                  }] text-[0.8rem]  ${
+                    pathname === route.path ? "font-semibold" : "font-medium"
+                  }`}
+                >
+                  {route.label}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };
 
 export default Sidebar;
 
+{
+  /* <div className="w-[100%] h-[70px] flex items-center justify-center relative border border-black"></div> */
+}
+
+{
+  /* <div className="w-[100%] h-[calc(100%-150px)] flex flex-col items-center justify-start pt-[20px] border border-red-500">
+  {Routes.map((route) => (
+    <Link
+      href={route.path}
+      key={route.label}
+      className={`w-[70%] h-[40px] rounded-[10px] flex my-[10px] pr-[15px]
+       ${pathname === route.path ? "bg-[#F3F2F2]" : "bg-transparent"}
+       `}
+    >
+      <div className="h-full aspect-square flex justify-center items-center">
+        <Icon
+          icon={route.icon}
+          className="w-[50%] h-[50%] text-[#635DB0]"
+        />
+      </div>
+      <div className="flex-1 h-full flex items-center">
+        <p className="text-[#1C3553] text-[0.8rem] font-medium">
+          {route.label}
+        </p>
+      </div>
+    </Link>
+  ))}
+</div> */
+}
 {
   /* <div className="w-[80%] h-[100%] border-t-[1px] border-b-[1px] border-t-[#D0D5DD] border-b-[#D0D5DD] flex"> */
 }

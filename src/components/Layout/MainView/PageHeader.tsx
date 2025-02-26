@@ -1,38 +1,43 @@
-import { FC } from "react";
+import { FC, useState, useRef } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import HamburgerIcon from "../../Icons/HamburgerIcon";
-import UploadModal from "./UploadModal";
+import useClickOutside from "@/hooks/useClickOutside";
+import AddMenu from "./AddMenu";
+import { usePathname } from "next/navigation";
 
-type PageHeaderProps = {
-  showSidebar: boolean;
-  setShowSidebar: React.Dispatch<React.SetStateAction<boolean>>;
-};
+const PageHeader: FC = () => {
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-const PageHeader: FC<PageHeaderProps> = ({ showSidebar, setShowSidebar }) => {
-  // const location = useLocation();
-  // const getLabelByPath = (path: string): string | undefined => {
-  //   const route = routes.find((route) => route.path === path);
-  //   return route?.label;
-  // };
+  const pathname = usePathname();
+  const pathSegments = pathname.split("/");
+
+  let heading = "";
+  if (pathSegments.includes("my-storage")) {
+    heading = "My Storage";
+  } else if (pathSegments.includes("shared")) {
+    heading = "Shared";
+  } else if (pathSegments.includes("starred")) {
+    heading = "Starred";
+  } else if (pathSegments.includes("dashboard")) {
+    heading = "Dashboard";
+  }
+  const toggleMenu = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setIsMenuOpen((prev) => !prev);
+  };
+
+  useClickOutside(menuRef, () => setIsMenuOpen(false));
 
   return (
     <div className="w-[100%] h-[70px] border-b-[1px] border-b-[#D0D5DD] flex">
       <section className="w-[50%] h-[100%] flex items-center justify-start">
-        <div
-          className="w-[20px] h-full flex justify-end items-center aspect-square lg:hidden"
-          onClick={() => setShowSidebar((prev) => !prev)}
-        >
-          {!showSidebar && <HamburgerIcon />}
-        </div>
-        <div className="flex flex-col items-start justify-center pl-[20px]">
-          <p className="text-[#1C3553] text-[1.5rem] font-medium">
-            {/* {getLabelByPath(location.pathname)} */}
-          </p>
-          {/* {location.pathname === "Dashboard" && (
+        <div className="flex flex-col items-start justify-center pl-[15px] lg:pl-[20px]">
+          <p className="text-[#1C3553] text-[1.5rem] font-medium">{heading}</p>
+          {heading === "Dashboard" && (
             <p className="text-[#A2A8B2] text-[0.8rem] font-medium whitespace-nowrap">
               Let’s explore your dashboard
             </p>
-          )} */}
+          )}
         </div>
       </section>
 
@@ -42,19 +47,20 @@ const PageHeader: FC<PageHeaderProps> = ({ showSidebar, setShowSidebar }) => {
           className="w-[auto] h-[30px] 
           border-[1px] border-[#D0D5DD] bg-[#E4E7EC] 
           flex items-center justify-center 
-          px-[10px] mr-[20px]
-          cursor-pointer"
+          cursor-pointer
+          mr-[15px]
+          rounded
+          px-[10px]"
+          onClick={toggleMenu}
         >
-          <div className="h-[100%] aspect-square flex items-center justify-center">
-            <Icon
-              className="text-[#1C3553]"
-              icon="material-symbols:upload-rounded"
-            />
+          <div className="h-[100%] aspect-[1/1] flex items-center justify-center black">
+            <Icon icon="majesticons:plus-line" className="text-[#1C3553]" />
           </div>
-          <p className="text-[#1C3553] text-[0.8rem] hidden md:block">Add</p>
+          <p className="text-[#1C3553] text-[0.8rem] font-medium hidden md:block">
+            Add
+          </p>
         </button>
-
-        <UploadModal />
+        {isMenuOpen && <AddMenu menuRef={menuRef} />}
       </section>
     </div>
   );

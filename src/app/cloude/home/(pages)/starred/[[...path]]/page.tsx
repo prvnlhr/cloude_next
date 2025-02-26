@@ -1,5 +1,5 @@
-import FolderPage from "@/components/Layout/MainView/Pages/Common/FolderPage";
-import { getStarredContent } from "@/lib/services/starred/starredService";
+import ContentPage from "@/components/Layout/MainView/Pages/Common/ContentPage";
+import { fetchStarredContent } from "@/lib/services/starred/starredService";
 import { createClient } from "@/middlewares/supabase/server";
 
 export default async function MyStorage({
@@ -17,11 +17,10 @@ export default async function MyStorage({
   const userId = user.id;
   const folderId = path[0] === "folders" ? path[1] : null;
 
-  const starredContent = await getStarredContent(userId, folderId);
-  console.log(" starredContent:", starredContent);
+  const starredContent = await fetchStarredContent(userId, folderId);
 
   return (
-    <FolderPage
+    <ContentPage
       files={starredContent?.files || []}
       folders={starredContent?.folders || []}
     />

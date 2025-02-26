@@ -5,6 +5,9 @@ import Navbar from "./Navbar/Navbar";
 import MainView from "./MainView/MainView";
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   const [showSidebar, setShowSidebar] = useState<boolean>(false);
+  const toggleSidebarShow = () => {
+    setShowSidebar((prev) => !prev);
+  };
 
   return (
     <div className="w-[100%] h-[100%]  overflow-hidden relative border border-white bg-white">
@@ -16,13 +19,11 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
         `}
       >
         <div className="w-[50%] lg:w-[20%] h-full relative flex">
-          <Sidebar showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
+          <Sidebar toggleSidebarShow={toggleSidebarShow} />
         </div>
         <div className="w-[50%] lg:w-[80%] h-full relative">
-          <Navbar />
-          <MainView showSidebar={showSidebar} setShowSidebar={setShowSidebar}>
-            {children}
-          </MainView>
+          <Navbar toggleSidebarShow={toggleSidebarShow} />
+          <MainView>{children}</MainView>
         </div>
       </div>
     </div>
