@@ -1,7 +1,27 @@
+import useUserSession from "@/hooks/useUserSession";
+import { deleteFile } from "@/lib/services/user/filesService";
+import { deleteFolder } from "@/lib/services/user/foldersService";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
-const DeleteModal = ({ item, itemType }) => {
+const DeleteModal = ({ item, itemType, onClose }) => {
   const key = itemType === "folder" ? "folder_name" : "file_name";
+
+  const session = useUserSession();
+  const handleDelete = async () => {
+    try {
+      const userId = session?.userId;
+
+      const deleteResponse =
+        itemType === "folder"
+          ? await deleteFolder(userId, item.id)
+          : await deleteFile(userId, item.id);
+
+      console.log(" deleteResponse:", deleteResponse);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div
       className="
@@ -26,10 +46,18 @@ const DeleteModal = ({ item, itemType }) => {
         </p>
       </div>
       <div className="w-full h-[80px] flex items-center justify-center">
-        <button className="w-auto h-[30px] mr-[8px] text-[0.8rem] text-[#1C3553] font-medium rounded bg-[#FAFAFA] border border-[#D0D5DD] px-[15px]">
+        <button
+          onClick={onClose}
+          type="button"
+          className="w-auto h-[30px] mr-[8px] text-[0.8rem] text-[#1C3553] font-medium rounded bg-[#FAFAFA] border border-[#D0D5DD] px-[15px]"
+        >
           Cancel
         </button>
-        <button className="w-auto h-[30px] ml-[8px] text-[0.8rem] text-white bg-red-700 rounded font-medium px-[15px]">
+        <button
+          type="button"
+          onClick={handleDelete}
+          className="w-auto h-[30px] ml-[8px] text-[0.8rem] text-white bg-red-700 rounded font-medium px-[15px]"
+        >
           Delete
         </button>
       </div>

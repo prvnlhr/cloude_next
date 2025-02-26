@@ -5,6 +5,10 @@ import { uploadFolder } from "@/lib/services/user/foldersService";
 import useUserSession from "@/hooks/useUserSession";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
+const getFileNameWithoutExtension = (fileName: string) => {
+  return fileName.replace(/\.[^/.]+$/, "");
+};
+
 const AddMenu: FC = ({ menuRef }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const folderInputRef = useRef<HTMLInputElement | null>(null);
@@ -31,7 +35,7 @@ const AddMenu: FC = ({ menuRef }) => {
     if (files) {
       const fileArray = Array.from(files);
       const fileDataArray = fileArray.map((file) => ({
-        name: file.name,
+        name: getFileNameWithoutExtension(file.name),
         type: file.type,
         size: file.size,
         file: file,
@@ -43,6 +47,9 @@ const AddMenu: FC = ({ menuRef }) => {
           userId,
           folderId
         );
+
+        // console.log(" fileDataArray:", fileDataArray);
+
         console.log("uploadFilesResponse:", uploadFilesResponse);
       } catch (error) {
         console.log(error);
@@ -110,7 +117,7 @@ const AddMenu: FC = ({ menuRef }) => {
 
       // Add the file to the files array
       filesArray.push({
-        name: fileName,
+        name: getFileNameWithoutExtension(fileName),
         type: file.type,
         size: file.size,
         file: file,

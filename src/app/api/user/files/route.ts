@@ -52,7 +52,9 @@ const fetchFilesWithSignedUrls = async (userId: string, folderId = null) => {
 const uploadToStorage = async (file: any, userId: string) => {
   try {
     const supabase = await createClient();
-    const filePath = `uploads/${file.name}`;
+    const uniqueId = crypto.randomUUID();
+    const uniqueFileName = `${uniqueId}_${file.name}`;
+    const filePath = `uploads/${userId}/${uniqueFileName}`;
     const { data, error: uploadError } = await supabase.storage
       .from("cloude")
       .upload(filePath, file, {
@@ -75,6 +77,7 @@ export async function POST(req) {
   try {
     const formData = await req.formData();
     const file = formData.get("file");
+    const fileName = formData.get("name");
     const userId = formData.get("userId");
     const folderId = formData.get("folderId") || null;
 
@@ -105,7 +108,7 @@ export async function POST(req) {
         {
           user_id: userId,
           folder_id: folderId,
-          file_name: file.name,
+          file_name: fileName,
           file_type: file.type,
           file_size: file.size,
           storage_path: filePath,

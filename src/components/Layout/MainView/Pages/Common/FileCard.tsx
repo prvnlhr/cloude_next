@@ -1,16 +1,19 @@
 "use client";
 import Link from "next/link";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { usePathname } from "next/navigation";
 import { addToStarred } from "@/lib/services/starred/starredService";
 import useUserSession from "@/hooks/useUserSession";
 import useClickOutside from "@/hooks/useClickOutside";
 import ActionMenu from "./ActionMenu";
-
+import { getSignedUrl } from "@/actions/filesAction";
+import Image from "next/image";
 interface File {
   id: string;
   file_name: string;
+  storage_path: string;
+  file_type: string;
 }
 interface FileCardProps {
   file: File;
@@ -20,16 +23,9 @@ interface FileCardProps {
 const FileCard = ({ file, setActiveModal }: FileCardProps) => {
   const pathname = usePathname();
   const session = useUserSession();
-
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const shareUrl = `${pathname}?${new URLSearchParams({
-    share: "true",
-    type: "file",
-    id: file?.id,
-  })}`;
-
   const toggleMenu = (event: React.MouseEvent) => {
     event.stopPropagation();
     setIsMenuOpen((prev) => !prev);
@@ -53,6 +49,18 @@ const FileCard = ({ file, setActiveModal }: FileCardProps) => {
   };
 
   useClickOutside(dropdownRef, () => setIsMenuOpen(false));
+
+  useEffect(() => {
+    const fetchSignedUrl = async () => {
+      const url = await getSignedUrl(file.storage_path);
+      console.log(url);
+      setSignedUrl(url);
+    };
+
+    if (file?.storage_path) {
+      fetchSignedUrl();
+    }
+  }, [file?.storage_path]);
 
   return (
     <div
@@ -99,7 +107,21 @@ const FileCard = ({ file, setActiveModal }: FileCardProps) => {
           }
           className="w-full aspect-[2/1.5]  flex items-end justify-center cursor-pointer"
         >
-          <div className="w-[90%] h-[100%] bg-[#FFFFFF] rounded-t-[8px]"></div>
+          <div
+            className="w-[90%] h-[100%] bg-[#FFFFFF] object-contain
+            flex items-center  justify-center  rounded-t-[8px] border relative overflow-hidden"
+          >
+            {signedUrl && file.file_type === "image/jpeg" ? (
+              <Image
+                src={signedUrl || "/"}
+                fill={true}
+                quality={20}
+                alt={file.file_name}
+              />
+            ) : (
+              <Icon icon="mdi-light:image" className="w-[80%] h-[80%]" />
+            )}
+          </div>
         </Link>
       </div>
     </div>

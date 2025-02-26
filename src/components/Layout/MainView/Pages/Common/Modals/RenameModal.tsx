@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { renameFile } from "@/lib/services/user/filesService";
+import useUserSession from "@/hooks/useUserSession";
+import { renameFolder } from "@/lib/services/user/foldersService";
 
 const RenameModal = ({ item, itemType, onClose }) => {
   const [newName, setNewName] = useState("");
@@ -8,6 +11,28 @@ const RenameModal = ({ item, itemType, onClose }) => {
   useEffect(() => {
     setNewName((item && item[key]) || "");
   }, [item]);
+
+  const session = useUserSession();
+
+  const handleRename = async () => {
+    try {
+      const userId = session?.userId;
+      const updateData = {
+        updateName: newName.trim(),
+        userId,
+        itemId: item.id,
+      };
+
+      const renameResponse =
+        itemType === "folder"
+          ? await renameFolder(updateData, item.id)
+          : await renameFile(updateData, item.id);
+
+      console.log(" renameResponse:", renameResponse);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div
@@ -48,7 +73,10 @@ const RenameModal = ({ item, itemType, onClose }) => {
       </div>
       {/* Share button --------------------------------------*/}
       <div className="w-full h-[50px] flex items-center justify-end">
-        <button className="w-auto h-[30px] px-[15px] rounded text-[0.8rem]  text-[#1C3553]  font-medium bg-[#E7EFFC]">
+        <button
+          onClick={handleRename}
+          className="w-auto h-[30px] px-[15px] rounded text-[0.8rem]  text-[#1C3553]  font-medium bg-[#E7EFFC]"
+        >
           Rename
         </button>
       </div>
