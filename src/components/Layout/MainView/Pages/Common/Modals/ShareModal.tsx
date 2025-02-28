@@ -95,13 +95,15 @@ const ShareModal = ({ item, itemType, onClose }) => {
             className="w-[50%] h-[50%] text-[#1C3553]"
           />
         </div>
-        <div className="h-full flex-grow flex flex-col">
+        <div className="h-full flex-grow flex flex-col justify-center">
           <p className="text-[0.8rem] ml-[15px] italic text-[#1C3553] font-medium">
             {item && item[key]}
           </p>
-          <p className="text-[0.8rem] ml-[15px] italic text-[#A2A8B2] font-medium underline">
-            {getFileExtension(item)}
-          </p>
+          {itemType === "file" && (
+            <p className="text-[0.8rem] ml-[15px] italic text-[#A2A8B2] font-medium underline">
+              {item && itemType === "file" && getFileExtension(item)}
+            </p>
+          )}
         </div>
       </div>
 
