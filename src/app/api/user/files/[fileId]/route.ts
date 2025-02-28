@@ -141,3 +141,59 @@ export async function DELETE(req) {
     );
   }
 }
+
+export async function GET(req, { params }) {
+  try {
+    const { fileId } = params;
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("userId");
+
+    console.log(userId, fileId);
+
+    // Validate required fields
+    if (!fileId || !userId) {
+      return new Response(
+        JSON.stringify({ error: "fileId and userId are required." }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    const supabase = await createClient();
+
+    // Fetch the file with matching fileId and userId
+    const { data: file, error: fetchError } = await supabase
+      .from("files")
+      .select("*")
+      .eq("id", fileId)
+      .eq("user_id", userId)
+      .single();
+
+    if (fetchError) {
+      console.error("Supabase Error:", fetchError);
+      return new Response(JSON.stringify({ error: "Failed to fetch file" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // Return the fetched file
+    return new Response(JSON.stringify({ file }), {
+      status: 200, // 200 OK for successful fetch
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("GET Error:", error);
+    return new Response(
+      JSON.stringify({
+        error: error.message || "Internal Server Error",
+        message: "Error in fetching file",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+}

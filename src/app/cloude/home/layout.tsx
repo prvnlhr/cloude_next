@@ -6,7 +6,7 @@ export default function HomeLayoutPage({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-screen w-full flex justify-center items-center bg-orange-500">
+    <div className="h-screen w-full flex justify-center items-center">
       <HomeLayout>{children}</HomeLayout>
     </div>
   );

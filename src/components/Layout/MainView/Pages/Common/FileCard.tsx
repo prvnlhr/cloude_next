@@ -3,12 +3,13 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { usePathname } from "next/navigation";
-import { addToStarred } from "@/lib/services/starred/starredService";
-import useUserSession from "@/hooks/useUserSession";
 import useClickOutside from "@/hooks/useClickOutside";
 import ActionMenu from "./ActionMenu";
 import { getSignedUrl } from "@/actions/filesAction";
 import Image from "next/image";
+import { canPreview } from "@/utils/previewUtil";
+import { getFileIcon } from "@/utils/getFileIcon";
+
 interface File {
   id: string;
   file_name: string;
@@ -22,38 +23,32 @@ interface FileCardProps {
 
 const FileCard = ({ file, setActiveModal }: FileCardProps) => {
   const pathname = usePathname();
-  const session = useUserSession();
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
   const toggleMenu = (event: React.MouseEvent) => {
     event.stopPropagation();
     setIsMenuOpen((prev) => !prev);
   };
 
-  const handleAddToStarred = async () => {
-    try {
-      const userId = session?.userId;
-
-      const markItemData = {
-        itemType: "file",
-        itemId: file?.id,
-        userId: userId,
-      };
-
-      const addToStarredResponse = await addToStarred(markItemData);
-      console.log(addToStarredResponse);
-    } catch (error) {
-      console.log(error);
-    }
+  const getBasePath = () => {
+    // Match base paths for all sections
+    const match = pathname.match(
+      /\/cloude\/home\/(my-storage|shared|starred|dashboard)/
+    );
+    return match ? match[0] : "";
   };
+
+  const basePath = getBasePath();
+  const fileLink = `${basePath}/files/${file.id}`;
 
   useClickOutside(dropdownRef, () => setIsMenuOpen(false));
 
   useEffect(() => {
     const fetchSignedUrl = async () => {
       const url = await getSignedUrl(file.storage_path);
-      console.log(url);
+      console.log("Fetched URL:", url);
       setSignedUrl(url);
     };
 
@@ -61,6 +56,11 @@ const FileCard = ({ file, setActiveModal }: FileCardProps) => {
       fetchSignedUrl();
     }
   }, [file?.storage_path]);
+
+  const previewAvailable = canPreview(file.mimeType);
+  const isVideo = ["video/mp4", "video/webm", "video/ogg"].includes(
+    file.file_type
+  );
 
   return (
     <div
@@ -75,24 +75,47 @@ const FileCard = ({ file, setActiveModal }: FileCardProps) => {
     >
       <div className="w-full h-[auto]flex flex-col">
         <Link
-          href={
-            pathname.includes("/files/")
-              ? `${pathname.replace(/files\/[^/]+$/, `files/${file.id}`)}`
-              : `${pathname}/files/${file.id}`
-          }
+          href={fileLink}
           className="w-full aspect-[2/1.5] flex items-end justify-center cursor-pointer overflow-hidden p-[8px]"
         >
           <div
-            className="w-[100%] h-[100%] bg-[#FFFFFF] object-contain
+            className="w-[100%] h-[100%] bg-[#FFFFFF] 
             flex items-center justify-center overflow-hidden relative rounded"
           >
-            {signedUrl && file.file_type === "image/jpeg" ? (
-              <Image
-                src={signedUrl || "/"}
-                fill={true}
-                quality={20}
-                alt={file.file_name}
-              />
+            {signedUrl ? (
+              isVideo ? (
+                <video
+                  src={signedUrl}
+                  className="w-full h-full object-cover rounded"
+                />
+              ) : canPreview(file.file_type) ? (
+                <Image
+                  src={signedUrl}
+                  fill={true}
+                  quality={20}
+                  alt={file.file_name}
+                  className="object-cover object-center"
+                />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-evenly bg-[#EAECEB] px-[10px]">
+                  <div className="w-[100%] h-[60px] flex items-end">
+                    <div className="h-[80%] aspect-square rounded-full bg-white flex items-center justify-center p-[8px]">
+                      <Icon
+                        icon={getFileIcon(file.file_name)}
+                        className="w-full h-full text-[#1C3553]"
+                      />
+                    </div>
+                  </div>
+                  <div className="w-full h-[calc(100%-40px)] flex flex-col items-center justify-evenly">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                      <div
+                        key={index}
+                        className="w-full h-[10px] bg-white rounded"
+                      ></div>
+                    ))}
+                  </div>
+                </div>
+              )
             ) : (
               <Icon icon="mdi-light:image" className="w-[80%] h-[80%]" />
             )}

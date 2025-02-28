@@ -41,8 +41,7 @@ export async function shareItem(shareItemData: {
         data: responseData,
       };
     }
-
-    return await response.json();
+    return responseData;
   } catch (error) {
     console.error("Error sharing content:", error);
     if (error.status && error.message) {
@@ -56,12 +55,14 @@ export async function shareItem(shareItemData: {
   }
 }
 
-export async function fetchSharedContent(userId, folderId) {
+export async function fetchSharedContent(userId, folderId, queryParams) {
   try {
     const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
-
     if (folderId) {
       params.append("folderId", encodeURIComponent(folderId));
+    }
+    if (queryParams && queryParams.myshared === "true") {
+      params.append("shareByMe", "true");
     }
 
     const response = await fetch(`${BASE_URL}/api/share?${params.toString()}`);

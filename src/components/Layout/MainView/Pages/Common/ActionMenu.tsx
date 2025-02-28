@@ -39,7 +39,12 @@ const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
       <div className="w-full h-full flex flex-col items-center justify-center">
         {actions.map((action, index) =>
           action.value === "star" ? (
-            <StarActionBtn key={index} action={action} item={item} itemType={itemType} />
+            <StarActionBtn
+              key={index}
+              action={action}
+              item={item}
+              itemType={itemType}
+            />
           ) : (
             <button
               type="button"

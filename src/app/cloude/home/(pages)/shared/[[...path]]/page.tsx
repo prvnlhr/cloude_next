@@ -36,11 +36,15 @@ interface SharedContentData {
 
 export default async function SharedPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ path: string }>;
 }) {
   const { path = [] } = await params;
   const supabase = await createClient();
+  const queryParams = Object.entries(await searchParams).length
+    ? await searchParams
+    : null;
 
   const {
     data: { user },
@@ -49,7 +53,8 @@ export default async function SharedPage({
   const userId = user.id;
   const folderId = path[0] === "folders" ? path[1] : null;
 
-  const contentData = await fetchSharedContent(userId, folderId);
+  const contentData = await fetchSharedContent(userId, folderId, queryParams);
+
   return (
     <ContentPage
       files={contentData?.files || []}

@@ -1,5 +1,7 @@
 import ContentPage from "@/components/Layout/MainView/Pages/Common/ContentPage";
+import FilePage from "@/components/Layout/MainView/Pages/FilePage/FilePage";
 import { fetchUserStorageContent } from "@/lib/services/my_storage/myStorageServices";
+import { getFile } from "@/lib/services/user/filesService";
 import { createClient } from "@/middlewares/supabase/server";
 
 export default async function MyStorage({
@@ -21,14 +23,19 @@ export default async function MyStorage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const userId = user.id;
+  const userId = user!.id;
+
+  if (path[0] === "files") {
+    const fileId = path[1];
+    const file = await getFile(userId, fileId);
+    return <FilePage file={file} />;
+  }
+
   const folderId = path[0] === "folders" ? path[1] : null;
-  let files = [];
-  let folders = [];
 
   const pageContent = await fetchUserStorageContent(userId, folderId);
-  files = pageContent.files || [];
-  folders = pageContent.folders || [];
+  const files = pageContent.files || [];
+  const folders = pageContent.folders || [];
 
   return <ContentPage files={files} folders={folders} />;
 }

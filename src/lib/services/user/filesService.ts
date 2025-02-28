@@ -19,19 +19,17 @@ export async function uploadFiles(filesDataArray, userId, folderId) {
       formData.append("userId", userId);
       formData.append("folderId", folderId || "");
 
-      console.log(" name:", fileDataObject.name);
-
       const uploadResponse = await fetch(`${BASE_URL}/api/user/files`, {
         method: "POST",
         body: formData,
       });
       console.log(index, uploadResponse);
       if (!uploadResponse.ok) {
-        // console.log(index, 'error->',uploadResponse);
         throw new Error(`Failed to upload file`);
       }
       const data = await uploadResponse.json();
       responses.push(data);
+
       index++;
     }
     await revalidatePathHandler("/cloude/home", "layout");
@@ -42,16 +40,21 @@ export async function uploadFiles(filesDataArray, userId, folderId) {
   }
 }
 
-export async function getUserFiles() {
+// -> NOT IN USE
+export async function getFile(userId, fileId) {
   try {
-    const uploadResponse = await fetch(`/api/user/files`);
+    const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
+    const uploadResponse = await fetch(
+      `${BASE_URL}/api/user/files/${fileId}?${params.toString()}`
+    );
+
     if (!uploadResponse.ok) {
-      throw new Error("Failed to upload users files");
+      throw new Error("Failed to get user's file");
     }
     return uploadResponse.json();
   } catch (error) {
     console.log(error);
-    throw new Error(`Failed to upload users files ${error}`);
+    throw new Error(`Failed to get user's file ${error}`);
   }
 }
 

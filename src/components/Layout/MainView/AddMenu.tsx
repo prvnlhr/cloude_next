@@ -35,7 +35,7 @@ const AddMenu: FC = ({ menuRef }) => {
     if (files) {
       const fileArray = Array.from(files);
       const fileDataArray = fileArray.map((file) => ({
-        name: getFileNameWithoutExtension(file.name),
+        name: file.name,
         type: file.type,
         size: file.size,
         file: file,
@@ -113,7 +113,7 @@ const AddMenu: FC = ({ menuRef }) => {
       });
 
       filesArray.push({
-        name: getFileNameWithoutExtension(fileName),
+        name: file.name,
         type: file.type,
         size: file.size,
         file: file,

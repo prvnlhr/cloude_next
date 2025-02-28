@@ -1898,3 +1898,39 @@ create index IF not exists idx_folders_is_shared on public.folders using btree (
 
 Now tell me how do i setup the ui and content showing. Iam using nextjs 15 and supabase db
 
+------------------------------------------------------------------------------------------------
+
+
+
+if i am at root or inside a folder on any page then these all can be the frontend urls
+
+  http://localhost:3000/cloude/home/my-storage
+  http://localhost:3000/cloude/home/my-storage/folders/b16dd263-36ea-4931-a3e0-57a7a9995e6a
+  http://localhost:3000/cloude/home/shared/
+  http://localhost:3000/cloude/home/shared/folders/b16dd263-36ea-4931-a3e0-57a7a9995e6a
+  http://localhost:3000/cloude/home/starred/
+
+
+  for all the above paths with /folders/folderId or without  /folders/folderId 
+
+  i want to open same page.tsx
+
+  now instead of folders if we have files the different page.tsx
+
+  how to do in nextJS app router
+
+
+
+  app/
+├── cloude/
+│   ├── home/
+│   │   ├── my-storage/
+│   │   │   ├── [[...path]]/
+│   │   │   │   └── page.tsx       // Handles /cloude/home/my-storage and /cloude/home/my-storage/folders/folderId
+│   │   ├── shared/
+│   │   │   ├── [[...path]]/
+│   │   │   │   └── page.tsx       // Handles /cloude/home/shared and /cloude/home/shared/folders/folderId
+│   │   ├── starred/
+│   │   │   └── page.tsx           // Handles /cloude/home/starred
+│   │   └── layout.tsx             // Layout for all /cloude/home routes
+├── layout.tsx                     // Root layout

@@ -21,12 +21,13 @@ export async function POST(req) {
     const supabase = await createClient();
     const folderIdMap = {};
 
-    if (folders[0]?.parentFolderId) {
+    if (folders[0].parentFolderId !== null) {
       folderIdMap[folders[0].parentFolderId] = folders[0].parentFolderId;
     }
 
-    const folderInserts = folders.map(async (folder) => {
+    for (const folder of folders) {
       const slug = slugify(folder.name, { lower: true, strict: true });
+
       const parentFolderId = folder.parentFolderId
         ? folderIdMap[folder.parentFolderId] || null
         : null;
@@ -36,7 +37,7 @@ export async function POST(req) {
         .insert([
           {
             folder_name: folder.name,
-            slug,
+            slug: slug,
             parent_folder_id: parentFolderId,
             user_id: userId,
           },
@@ -46,16 +47,15 @@ export async function POST(req) {
 
       if (folderError) {
         console.error("Error inserting folder:", folderError);
-        return null;
+        continue;
       }
 
       folderIdMap[folder.id] = folderData.id;
-    });
+    }
 
-    await Promise.all(folderInserts);
-
-    const uploadPromises = files.map(async (file, index) => {
-      const metadata = fileData[index];
+        for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const metadata = fileData[i];
       const folderId = folderIdMap[metadata.folderId];
 
       const uniqueId = crypto.randomUUID();
@@ -71,7 +71,7 @@ export async function POST(req) {
 
       if (uploadError) {
         console.error("Error uploading file:", uploadError);
-        return null;
+        continue;
       }
 
       const { error: fileError } = await supabase.from("files").insert([
@@ -88,9 +88,7 @@ export async function POST(req) {
       if (fileError) {
         console.error("Error inserting file metadata:", fileError);
       }
-    });
-
-    await Promise.all(uploadPromises);
+    }
 
     return new Response(
       JSON.stringify({ message: "Folder and files uploaded successfully" }),
