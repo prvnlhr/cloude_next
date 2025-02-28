@@ -1,13 +1,12 @@
 "use client";
 import { useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { shareItem } from "@/lib/services/shared/sharedServices";
 import useUserSession from "@/hooks/useUserSession";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Spinner } from "@heroui/spinner";
+import { getFileExtension } from "@/utils/fileExtensionUtils";
 
 const ShareModal = ({ item, itemType, onClose }) => {
-  const searchParams = useSearchParams();
   const [shareWithEmail, setShareWithEmail] = useState<string>(
     "mrtnmickae.jrl@gmail.com"
   );
@@ -45,22 +44,23 @@ const ShareModal = ({ item, itemType, onClose }) => {
     setSuccessMessage(null);
 
     try {
+      console.log(item);
       const shareItemResponse = await shareItem(shareItemData);
       setSuccessMessage("Item shared successfully!");
       if (shareItemResponse && shareItemResponse.error) {
+        console.log(shareItemResponse.error);
         throw new Error(shareItemResponse.error);
       }
       setError(null);
       setSuccessMessage(true);
+      onClose();
     } catch (error) {
-      console.error("Error sharing item:", error);
+      console.error("Error sharing item:", error.message);
       setError(error.message || "Failed to share item.");
     } finally {
       setIsSharing(false);
     }
   };
-
-  // useClickOutside(modalRef, onClose);
 
   return (
     <div
@@ -95,9 +95,14 @@ const ShareModal = ({ item, itemType, onClose }) => {
             className="w-[50%] h-[50%] text-[#1C3553]"
           />
         </div>
-        <p className="text-[0.8rem] ml-[15px] italic text-[#1C3553]  font-medium">
-          {item && item[key]}
-        </p>
+        <div className="h-full flex-grow flex flex-col">
+          <p className="text-[0.8rem] ml-[15px] italic text-[#1C3553] font-medium">
+            {item && item[key]}
+          </p>
+          <p className="text-[0.8rem] ml-[15px] italic text-[#A2A8B2] font-medium underline">
+            {getFileExtension(item)}
+          </p>
+        </div>
       </div>
 
       {/* Input Group ----------------------------- */}
@@ -113,6 +118,11 @@ const ShareModal = ({ item, itemType, onClose }) => {
             onChange={(e) => setShareWithEmail(e.target.value)}
             className="w-full h-full border border-[#D0D5DD] rounded-[5px] outline-none text-[0.8rem]  text-[#1C3553]  font-medium px-[5px]"
           />
+        </div>
+        <div className="w-full h-[30px] flex items-center justify-start">
+          <p className="text-[0.7rem] text-red-700 ml-[2px] font-medium">
+            {error}
+          </p>
         </div>
       </div>
       {/* Share button --------------------------------------*/}

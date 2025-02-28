@@ -26,12 +26,24 @@ export async function POST(req) {
       .single();
 
     if (shareWithError || !shareWithUser) {
+      console.log("shareWithError->", shareWithError);
+
+      // If no user is found, return a 404 response
+      if (!shareWithUser) {
+        return new Response(
+          JSON.stringify({
+            error: "User with this email does not exist.",
+          }),
+          { status: 404 }
+        );
+      }
+
+      // If there's a Supabase error, return a 500 response
       return new Response(
         JSON.stringify({
-          error:
-            shareWithError?.message || "User with this email does not exist.",
+          error: shareWithError.message || "Failed to fetch user details.",
         }),
-        { status: 404 }
+        { status: 500 }
       );
     }
 

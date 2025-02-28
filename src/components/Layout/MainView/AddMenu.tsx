@@ -1,9 +1,9 @@
 import { FC, useRef, ChangeEvent } from "react";
 import { useParams } from "next/navigation";
 import { uploadFiles } from "@/lib/services/user/filesService";
-import { uploadFolder } from "@/lib/services/user/foldersService";
 import useUserSession from "@/hooks/useUserSession";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { uploadFolder } from "@/lib/services/user/foldersService";
 
 const getFileNameWithoutExtension = (fileName: string) => {
   return fileName.replace(/\.[^/.]+$/, "");
@@ -47,7 +47,6 @@ const AddMenu: FC = ({ menuRef }) => {
           userId,
           folderId
         );
-
         console.log("uploadFilesResponse:", uploadFilesResponse);
       } catch (error) {
         console.log(error);
@@ -91,7 +90,7 @@ const AddMenu: FC = ({ menuRef }) => {
     Array.from(files).forEach((file) => {
       const pathParts = file.webkitRelativePath.split("/");
       const fileName = pathParts.pop();
-      let parentFolderId: string | null = null;
+      let parentFolderId: string | null = folderId;
 
       pathParts.forEach((folderName, index) => {
         const folderPath = pathParts.slice(0, index + 1).join("/");
@@ -113,7 +112,6 @@ const AddMenu: FC = ({ menuRef }) => {
         }
       });
 
-      // Add the file to the files array
       filesArray.push({
         name: getFileNameWithoutExtension(fileName),
         type: file.type,
@@ -124,15 +122,16 @@ const AddMenu: FC = ({ menuRef }) => {
       });
     });
 
+    console.log(" filesArray:", filesArray);
+    console.log(" folders:", folders);
+
     try {
-      // console.log(" folders:", folders);
-      // console.log(" filesArray:", filesArray);
-      // return;
       const uploadFolderResponse = await uploadFolder(
         filesArray,
         folders,
         userId
       );
+      console.log(" uploadFolderResponse:", uploadFolderResponse);
     } catch (error) {
       console.log(error);
     }

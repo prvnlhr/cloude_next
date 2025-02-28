@@ -3,10 +3,14 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { renameFile } from "@/lib/services/user/filesService";
 import useUserSession from "@/hooks/useUserSession";
 import { renameFolder } from "@/lib/services/user/foldersService";
+import { Spinner } from "@heroui/spinner";
 
 const RenameModal = ({ item, itemType, onClose }) => {
   const [newName, setNewName] = useState("");
   const key = itemType === "folder" ? "folder_name" : "file_name";
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     setNewName((item && item[key]) || "");
@@ -15,6 +19,9 @@ const RenameModal = ({ item, itemType, onClose }) => {
   const session = useUserSession();
 
   const handleRename = async () => {
+    setIsLoading(true);
+    setError(null);
+    setSuccess(false);
     try {
       const userId = session?.userId;
       const updateData = {
@@ -27,10 +34,14 @@ const RenameModal = ({ item, itemType, onClose }) => {
         itemType === "folder"
           ? await renameFolder(updateData, item.id)
           : await renameFile(updateData, item.id);
-
-      console.log(" renameResponse:", renameResponse);
+      setSuccess(true);
+      setIsLoading(false);
+      onClose();
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      setError(error.message || `Failed to delete ${itemType}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -75,9 +86,13 @@ const RenameModal = ({ item, itemType, onClose }) => {
       <div className="w-full h-[50px] flex items-center justify-end">
         <button
           onClick={handleRename}
-          className="w-auto h-[30px] px-[15px] rounded text-[0.8rem]  text-[#1C3553]  font-medium bg-[#E7EFFC]"
+          className="w-[80px] h-[30px] px-[15px] rounded text-[0.8rem]  text-[#1C3553]  font-medium bg-[#E7EFFC]"
         >
-          Rename
+          {isLoading ? (
+            <Spinner variant="gradient" color="default" size="sm" />
+          ) : (
+            "Rename"
+          )}
         </button>
       </div>
     </div>

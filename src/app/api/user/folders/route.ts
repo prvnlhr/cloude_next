@@ -4,12 +4,9 @@ import slugify from "slugify";
 export async function POST(req) {
   try {
     const formData = await req.formData();
-
-    // Parse folders and userId from FormData
     const folders = JSON.parse(formData.get("folders"));
     const userId = formData.get("userId");
 
-    // Extract files and their metadata
     const files = [];
     const fileData = [];
 
@@ -17,33 +14,21 @@ export async function POST(req) {
       if (key.startsWith("file-")) {
         const index = key.split("-")[1];
         files.push(value);
-        fileData.push(JSON.parse(formData.get(`fileData-${index}`))); // The metadata
+        fileData.push(JSON.parse(formData.get(`fileData-${index}`)));
       }
     }
 
-    console.log("folders:", folders);
-    console.log("fileData:", fileData);
-
-    // return new Response(
-    //   JSON.stringify({ message: "Folder and files uploaded successfully" }),
-    //   {
-    //     status: 201,
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   }
-    // );
-
     const supabase = await createClient();
-
-    // Step 1: Insert folders and create a folderIdMap
     const folderIdMap = {};
 
-    for (const folder of folders) {
-      const slug = slugify(folder.name, { lower: true, strict: true });
+    if (folders[0]?.parentFolderId) {
+      folderIdMap[folders[0].parentFolderId] = folders[0].parentFolderId;
+    }
 
+    const folderInserts = folders.map(async (folder) => {
+      const slug = slugify(folder.name, { lower: true, strict: true });
       const parentFolderId = folder.parentFolderId
-        ? folderIdMap[folder.parentFolderId] // Resolve using folderIdMap
+        ? folderIdMap[folder.parentFolderId] || null
         : null;
 
       const { data: folderData, error: folderError } = await supabase
@@ -51,7 +36,7 @@ export async function POST(req) {
         .insert([
           {
             folder_name: folder.name,
-            slug: slug,
+            slug,
             parent_folder_id: parentFolderId,
             user_id: userId,
           },
@@ -61,19 +46,16 @@ export async function POST(req) {
 
       if (folderError) {
         console.error("Error inserting folder:", folderError);
-        continue;
+        return null;
       }
 
-      // Map the temporary folder ID to the database-generated ID
       folderIdMap[folder.id] = folderData.id;
-    }
+    });
 
-    console.log("folderIdMap:", folderIdMap);
+    await Promise.all(folderInserts);
 
-    // Step 2: Insert files
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const metadata = fileData[i];
+    const uploadPromises = files.map(async (file, index) => {
+      const metadata = fileData[index];
       const folderId = folderIdMap[metadata.folderId];
 
       const uniqueId = crypto.randomUUID();
@@ -89,7 +71,7 @@ export async function POST(req) {
 
       if (uploadError) {
         console.error("Error uploading file:", uploadError);
-        continue;
+        return null;
       }
 
       const { error: fileError } = await supabase.from("files").insert([
@@ -106,7 +88,9 @@ export async function POST(req) {
       if (fileError) {
         console.error("Error inserting file metadata:", fileError);
       }
-    }
+    });
+
+    await Promise.all(uploadPromises);
 
     return new Response(
       JSON.stringify({ message: "Folder and files uploaded successfully" }),

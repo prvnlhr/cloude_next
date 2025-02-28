@@ -9,7 +9,6 @@ import useClickOutside from "@/hooks/useClickOutside";
 import ActionMenu from "./ActionMenu";
 import { getSignedUrl } from "@/actions/filesAction";
 import Image from "next/image";
-import { inherits } from "util";
 interface File {
   id: string;
   file_name: string;

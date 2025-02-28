@@ -28,15 +28,31 @@ export async function shareItem(shareItemData: {
       next: { tags: ["share"] },
     });
 
+    const responseData = await response.json();
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to share content.");
+      const errorMessage =
+        responseData.error ||
+        responseData.message ||
+        "Failed to share content.";
+
+      throw {
+        status: response.status,
+        message: errorMessage,
+        data: responseData,
+      };
     }
 
     return await response.json();
   } catch (error) {
     console.error("Error sharing content:", error);
-    throw new Error(`Failed to share content: ${error.message}`);
+    if (error.status && error.message) {
+      throw error;
+    }
+    throw {
+      status: 500,
+      message: error.message || "Network error or server unreachable",
+      data: null,
+    };
   }
 }
 
