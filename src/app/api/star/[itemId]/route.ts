@@ -1,19 +1,12 @@
 import { createClient } from "@/middlewares/supabase/server";
 import { revalidateTag } from "next/cache";
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { itemId: string } }
-) {
-  const { itemId } = params;
+export async function DELETE(req: Request) {
+  const { itemType, userId, itemId } = await req.json();
 
   try {
     const supabase = await createClient();
 
-    // Parse the request body
-    const { itemType, userId } = await req.json();
-
-    // Validate input
     if (!itemId || !itemType || !userId) {
       return new Response(
         JSON.stringify({ error: "All fields are required." }),
@@ -21,7 +14,6 @@ export async function DELETE(
       );
     }
 
-    // Check if the item exists in starred_items
     const { data: existingStar, error: checkError } = await supabase
       .from("starred_items")
       .select("id")
