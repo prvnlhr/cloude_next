@@ -2,12 +2,19 @@ import useUserSession from "@/hooks/useUserSession";
 import { deleteFile } from "@/lib/services/user/filesService";
 import { deleteFolder } from "@/lib/services/user/foldersService";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useState } from "react";
+import { Spinner } from "@heroui/spinner";
 
 const DeleteModal = ({ item, itemType, onClose }) => {
   const key = itemType === "folder" ? "folder_name" : "file_name";
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   const session = useUserSession();
   const handleDelete = async () => {
+    setIsLoading(true);
+    setError(null);
     try {
       const userId = session?.userId;
 
@@ -17,8 +24,17 @@ const DeleteModal = ({ item, itemType, onClose }) => {
           : await deleteFile(userId, item.id);
 
       console.log(" deleteResponse:", deleteResponse);
+      if (deleteResponse && deleteResponse.error) {
+        throw new Error(deleteResponse.error);
+      }
+      setSuccess(true);
+      setIsLoading(false);
+      onClose();
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      setError(error.message || `Failed to delete ${itemType}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -27,38 +43,49 @@ const DeleteModal = ({ item, itemType, onClose }) => {
       className="
         w-[250px] h-auto 
         absolute top-1/2 left-1/2 transform -translate-x-[100%] -translate-y-1/2 
-        bg-white border rounded-[8px] shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px] z-[50]"
+        bg-white border rounded-[8px] shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px] z-[50] p-[10px]"
     >
-      <div className="w-full h-[70px] flex items-center justify-center">
-        <Icon icon="solar:trash-bin-2-linear" className="w-[65%] h-[65%]" />
-      </div>
-      <div className="w-full h-[50px] flex justify-center items-center flex-col">
-        <p className="text-[0.9rem]  text-[#1C3553]  font-semibold">
-          Are your want to
+      <div className="w-full h-[30px] flex items-center justify-between">
+        <p className="text-[0.9rem] text-[#1C3553] font-medium">
+          Confirm to delete
         </p>
-        <p className="text-[0.9rem]  text-[#1C3553]  font-semibold">
-          delete this {itemType}?
-        </p>
-      </div>
-      <div className="w-full h-[40px] flex items-center justify-center">
-        <p className="text-[#708090] text-[0.8rem] font-medium italic underline">
-          {(item && item[key]) || ""}
-        </p>
-      </div>
-      <div className="w-full h-[80px] flex items-center justify-center">
         <button
           onClick={onClose}
           type="button"
-          className="w-auto h-[30px] mr-[8px] text-[0.8rem] text-[#1C3553] font-medium rounded bg-[#FAFAFA] border border-[#D0D5DD] px-[15px]"
+          className="w-[20px] border border-[#D0D5DD] h-[20px] rounded-full bg-[#E7EFFC] flex items-center justify-center"
+        >
+          <Icon
+            icon="iconamoon:close-fill"
+            className="w-[60%] h-[60%] text-[#1C3553]"
+          />
+        </button>
+      </div>
+      <div className="w-full h-[60px] flex items-center justify-center">
+        <p className="text-[0.75rem] text-[#737481] font-medium">
+          Are you sure you want to delete the selected {itemType} named
+          <span className="font-medium italic underline ml-[5px]">
+            {item && item[key]}
+          </span>
+        </p>
+      </div>
+      <div className="w-full h-[30px] flex items-center justify-evenly mt-[10px]">
+        <button
+          onClick={onClose}
+          type="button"
+          className="w-[45%] h-[30px]  text-[0.8rem] text-[#1C3553] font-medium rounded bg-[#FAFAFA] border border-[#D0D5DD] px-[15px]"
         >
           Cancel
         </button>
         <button
           type="button"
           onClick={handleDelete}
-          className="w-auto h-[30px] ml-[8px] text-[0.8rem] text-white bg-red-700 rounded font-medium px-[15px]"
+          className="w-[45%] h-[30px]  text-[0.8rem] text-white bg-red-700 rounded font-medium px-[15px] flex justify-center items-center"
         >
-          Delete
+          {isLoading ? (
+            <Spinner variant="gradient" color="default" size="sm" />
+          ) : (
+            "Delete"
+          )}
         </button>
       </div>
     </div>

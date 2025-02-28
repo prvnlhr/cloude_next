@@ -1,11 +1,10 @@
 "use client";
 import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { createClient } from "@/middlewares/supabase/client";
 import { shareItem } from "@/lib/services/shared/sharedServices";
 import useUserSession from "@/hooks/useUserSession";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import useClickOutside from "@/hooks/useClickOutside";
+import { Spinner } from "@heroui/spinner";
 
 const ShareModal = ({ item, itemType, onClose }) => {
   const searchParams = useSearchParams();
@@ -22,9 +21,12 @@ const ShareModal = ({ item, itemType, onClose }) => {
   const session = useUserSession();
 
   const handleShare = async () => {
-    const itemId = searchParams.get("id");
-    const itemType = searchParams.get("type");
+    const itemId = item.id;
     const userId = session?.userId;
+
+    console.log(" itemId:", itemId);
+    console.log(" itemType:", itemType);
+    console.log(" userId:", userId);
 
     if (!itemId || !itemType || !userId) {
       setError("Missing required data for sharing.");
@@ -45,10 +47,14 @@ const ShareModal = ({ item, itemType, onClose }) => {
     try {
       const shareItemResponse = await shareItem(shareItemData);
       setSuccessMessage("Item shared successfully!");
-      console.log("Share response:", shareItemResponse);
+      if (shareItemResponse && shareItemResponse.error) {
+        throw new Error(shareItemResponse.error);
+      }
+      setError(null);
+      setSuccessMessage(true);
     } catch (error) {
-      setError(error.message || "Failed to share item.");
       console.error("Error sharing item:", error);
+      setError(error.message || "Failed to share item.");
     } finally {
       setIsSharing(false);
     }
@@ -111,8 +117,16 @@ const ShareModal = ({ item, itemType, onClose }) => {
       </div>
       {/* Share button --------------------------------------*/}
       <div className="w-full h-[50px] flex items-center justify-end">
-        <button className="w-auto h-[30px] px-[15px] rounded text-[0.8rem]  text-[#1C3553]  font-medium bg-[#E7EFFC]">
-          Share
+        <button
+          type="button"
+          onClick={handleShare}
+          className="w-[80px] h-[30px] px-[15px] rounded text-[0.8rem]  text-[#1C3553]  font-medium bg-[#E7EFFC] border"
+        >
+          {isSharing ? (
+            <Spinner variant="gradient" color="default" size="sm" />
+          ) : (
+            "Share"
+          )}
         </button>
       </div>
     </div>
@@ -120,24 +134,3 @@ const ShareModal = ({ item, itemType, onClose }) => {
 };
 
 export default ShareModal;
-
-// <div className="w-[20ppx] h-[150px] bg-white">
-{
-  /* <h1>Share Modal</h1>
-      <div>
-        <label htmlFor="shareWithEmail">Share with:</label>
-        <input
-          id="shareWithEmail"
-          type="email"
-          value={shareWithEmail}
-          onChange={(e) => setShareWithEmail(e.target.value)}
-          placeholder="Enter email address"
-        />
-      </div>
-      <button onClick={handleShare} disabled={isSharing}>
-        {isSharing ? "Sharing..." : "Share"}
-      </button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {successMessage && <p style={{ color: "green" }}>{successMessage}</p>} */
-}
-// </div>

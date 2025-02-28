@@ -48,8 +48,6 @@ const AddMenu: FC = ({ menuRef }) => {
           folderId
         );
 
-        // console.log(" fileDataArray:", fileDataArray);
-
         console.log("uploadFilesResponse:", uploadFilesResponse);
       } catch (error) {
         console.log(error);
@@ -127,12 +125,14 @@ const AddMenu: FC = ({ menuRef }) => {
     });
 
     try {
+      // console.log(" folders:", folders);
+      // console.log(" filesArray:", filesArray);
+      // return;
       const uploadFolderResponse = await uploadFolder(
         filesArray,
         folders,
         userId
       );
-      console.log(" uploadFolderResponse:", uploadFolderResponse);
     } catch (error) {
       console.log(error);
     }

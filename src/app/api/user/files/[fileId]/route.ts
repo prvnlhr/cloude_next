@@ -61,6 +61,50 @@ export async function DELETE(req) {
 
     const supabase = await createClient();
 
+    const { data: fileExists, error: fileCheckError } = await supabase
+      .from("files")
+      .select("id, storage_path")
+      .eq("id", itemId)
+      .eq("user_id", userId)
+      .single();
+
+    if (fileCheckError && fileCheckError.code !== "PGRST116") {
+      console.error("File check error:", fileCheckError);
+      return Response.json(
+        {
+          error: "Failed to verify file ownership",
+          details: fileCheckError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    if (!fileExists) {
+      return Response.json(
+        { error: "File not found or you don't have permission to delete it" },
+        { status: 404 }
+      );
+    }
+    console.log(fileExists.storage_path);
+
+    const { data: storageData, error: storageError } = await supabase.storage
+      .from("cloude")
+      .remove([fileExists.storage_path]);
+
+    if (storageError) {
+      console.error("Storage Deletion Error:", storageError);
+      return new Response(
+        JSON.stringify({
+          error: "Failed to delete file from storage",
+          details: storageError.message,
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     // Delete the item from the files table
     const { data: deleteData, error: deleteError } = await supabase
       .from("files")

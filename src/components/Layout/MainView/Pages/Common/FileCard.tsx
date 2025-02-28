@@ -9,6 +9,7 @@ import useClickOutside from "@/hooks/useClickOutside";
 import ActionMenu from "./ActionMenu";
 import { getSignedUrl } from "@/actions/filesAction";
 import Image from "next/image";
+import { inherits } from "util";
 interface File {
   id: string;
   file_name: string;
@@ -66,15 +67,38 @@ const FileCard = ({ file, setActiveModal }: FileCardProps) => {
     <div
       className="w-[48%] sm:w-[48%] md:w-[30%] lg:w-[18%] h-auto 
       mx-[1%] my-[15px] 
-      bg-[#EAECEB] border-[1px] border-[#E4E7EC] 
+      bg-[#F4F6F6] border-[1px] border-[#E4E7EC] 
       flex flex-col 
       rounded-[10px]
       min-h-[45px]
       relative
-      shadow-[0px_0px_0px_1px_rgba(0,0,0,0.05)]
-      "
+      shadow-[0px_0px_0px_1px_rgba(0,0,0,0.05)]"
     >
       <div className="w-full h-[auto]flex flex-col">
+        <Link
+          href={
+            pathname.includes("/files/")
+              ? `${pathname.replace(/files\/[^/]+$/, `files/${file.id}`)}`
+              : `${pathname}/files/${file.id}`
+          }
+          className="w-full aspect-[2/1.5] flex items-end justify-center cursor-pointer overflow-hidden p-[8px]"
+        >
+          <div
+            className="w-[100%] h-[100%] bg-[#FFFFFF] object-contain
+            flex items-center justify-center overflow-hidden relative rounded"
+          >
+            {signedUrl && file.file_type === "image/jpeg" ? (
+              <Image
+                src={signedUrl || "/"}
+                fill={true}
+                quality={20}
+                alt={file.file_name}
+              />
+            ) : (
+              <Icon icon="mdi-light:image" className="w-[80%] h-[80%]" />
+            )}
+          </div>
+        </Link>
         <div className="w-full h-[45px] flex">
           <div className="h-full aspect-square flex-grow  overflow-hidden flex items-center justify-start">
             <p className="ml-[9%] text-[0.75rem] text-[#1C3553] font-medium truncate whitespace-nowrap">
@@ -99,30 +123,6 @@ const FileCard = ({ file, setActiveModal }: FileCardProps) => {
             )}
           </div>
         </div>
-        <Link
-          href={
-            pathname.includes("/files/")
-              ? `${pathname.replace(/files\/[^/]+$/, `files/${file.id}`)}`
-              : `${pathname}/files/${file.id}`
-          }
-          className="w-full aspect-[2/1.5]  flex items-end justify-center cursor-pointer"
-        >
-          <div
-            className="w-[90%] h-[100%] bg-[#FFFFFF] object-contain
-            flex items-center  justify-center  rounded-t-[8px] border relative overflow-hidden"
-          >
-            {signedUrl && file.file_type === "image/jpeg" ? (
-              <Image
-                src={signedUrl || "/"}
-                fill={true}
-                quality={20}
-                alt={file.file_name}
-              />
-            ) : (
-              <Icon icon="mdi-light:image" className="w-[80%] h-[80%]" />
-            )}
-          </div>
-        </Link>
       </div>
     </div>
   );

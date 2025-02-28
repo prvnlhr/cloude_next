@@ -9,10 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroui/button": "^2.2.15",
+    "@heroui/spinner": "^2.2.12",
+    "@heroui/system": "^2.4.11",
+    "@heroui/theme": "^2.4.11",
     "@hookform/resolvers": "^4.1.1",
     "@reduxjs/toolkit": "^2.6.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.48.1",
+    "framer-motion": "^12.4.7",
     "next": "15.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

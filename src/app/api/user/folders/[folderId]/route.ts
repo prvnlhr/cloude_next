@@ -64,6 +64,31 @@ export async function DELETE(req) {
 
     const supabase = await createClient();
 
+    const { data: folderExists, error: folderCheckError } = await supabase
+      .from("folders")
+      .select("id")
+      .eq("id", itemId)
+      .eq("user_id", userId)
+      .single();
+
+    if (folderCheckError && folderCheckError.code !== "PGRST116") {
+      console.error("Folder check error:", folderCheckError);
+      return Response.json(
+        {
+          error: "Failed to check folder",
+          details: folderCheckError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    if (!folderExists) {
+      return Response.json(
+        { error: "Folder not found or you don't have permission to delete it" },
+        { status: 404 }
+      );
+    }
+
     // Delete the folder from the folders table
     const { data: deleteData, error: deleteError } = await supabase
       .from("folders")

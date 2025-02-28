@@ -4,7 +4,6 @@ import { createClient } from "@/middlewares/supabase/server";
 
 export default async function MyStorage({
   params,
-  searchParams,
 }: {
   params: Promise<{ path: string }>;
 }) {
@@ -31,7 +30,5 @@ export default async function MyStorage({
   files = pageContent.files || [];
   folders = pageContent.folders || [];
 
-  return (
-    <ContentPage files={files} folders={folders} searchParams={searchParams} />
-  );
+  return <ContentPage files={files} folders={folders} />;
 }

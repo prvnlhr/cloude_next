@@ -18,6 +18,7 @@ export async function shareItem(shareItemData: {
   shareWithEmail: string;
 }): Promise<any> {
   try {
+    console.log(shareItemData);
     const response = await fetch(`${BASE_URL}/api/share/`, {
       method: "POST",
       headers: {

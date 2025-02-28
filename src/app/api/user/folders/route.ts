@@ -9,9 +9,6 @@ export async function POST(req) {
     const folders = JSON.parse(formData.get("folders"));
     const userId = formData.get("userId");
 
-    console.log("folders:", folders);
-    console.log("userId:", userId);
-
     // Extract files and their metadata
     const files = [];
     const fileData = [];
@@ -19,13 +16,23 @@ export async function POST(req) {
     for (const [key, value] of formData.entries()) {
       if (key.startsWith("file-")) {
         const index = key.split("-")[1];
-        files.push(value); // The actual File object
+        files.push(value);
         fileData.push(JSON.parse(formData.get(`fileData-${index}`))); // The metadata
       }
     }
 
-    console.log("files:", files);
+    console.log("folders:", folders);
     console.log("fileData:", fileData);
+
+    // return new Response(
+    //   JSON.stringify({ message: "Folder and files uploaded successfully" }),
+    //   {
+    //     status: 201,
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //   }
+    // );
 
     const supabase = await createClient();
 
@@ -69,12 +76,13 @@ export async function POST(req) {
       const metadata = fileData[i];
       const folderId = folderIdMap[metadata.folderId];
 
-      const storagePath = `uploads/${userId}/${metadata.name}`;
+      const uniqueId = crypto.randomUUID();
+      const uniqueFileName = `${uniqueId}_${file.name}`;
+      const storagePath = `uploads/${userId}/${uniqueFileName}`;
 
-      // Upload file to Supabase Storage
       const fileBuffer = await file.arrayBuffer();
       const { error: uploadError } = await supabase.storage
-        .from("cloude") // Replace with your bucket name
+        .from("cloude")
         .upload(storagePath, fileBuffer, {
           contentType: metadata.type,
         });
@@ -84,7 +92,6 @@ export async function POST(req) {
         continue;
       }
 
-      // Insert file metadata into the `files` table
       const { error: fileError } = await supabase.from("files").insert([
         {
           file_name: metadata.name,
