@@ -25,44 +25,12 @@ interface FolderCardProps {
 const FolderCard = ({ folder, setActiveModal }: FolderCardProps) => {
   const pathname = usePathname();
   const dropdownRef = useRef(null);
-  const session = useUserSession();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const shareUrl = `${pathname}?${new URLSearchParams({
-    share: "true",
-    type: "folder",
-    id: folder?.id,
-  })}`;
 
   const toggleActionMenu = (event: React.MouseEvent) => {
     event.stopPropagation();
     setIsMenuOpen((prev) => !prev);
-  };
-
-  const handleMarkStar = async () => {
-    try {
-      const userId = session?.userId;
-      const markItemData = {
-        itemType: "folder",
-        itemId: folder?.id,
-        userId: userId,
-      };
-      const markStarResponse = await addToStarred(markItemData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleRemoveStar = async () => {
-    try {
-      const itemId = folder?.id;
-      const userId = session?.userId;
-      const itemType = "folder";
-      const removeResponse = await removeFromStarred(itemId, itemType, userId);
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   useClickOutside(dropdownRef, () => setIsMenuOpen(false));

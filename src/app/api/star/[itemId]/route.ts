@@ -1,8 +1,8 @@
 import { createClient } from "@/middlewares/supabase/server";
-import { revalidateTag } from "next/cache";
 
 export async function DELETE(req: Request) {
   const { itemType, userId, itemId } = await req.json();
+
 
   try {
     const supabase = await createClient();
@@ -75,7 +75,6 @@ export async function DELETE(req: Request) {
       );
     }
 
-    revalidateTag("starred");
     // Return success response
     return new Response(
       JSON.stringify({

@@ -49,7 +49,7 @@ export async function removeFromStarred(starData) {
 
   try {
     const response = await fetch(`${BASE_URL}/api/star/${itemId}`, {
-      method: "DELETE", // Use DELETE for removal
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },

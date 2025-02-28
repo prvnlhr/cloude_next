@@ -1,3 +1,5 @@
+import { revalidateTagHandler } from "@/lib/revalidation";
+
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
@@ -75,5 +77,29 @@ export async function fetchSharedContent(userId, folderId, queryParams) {
   } catch (error) {
     console.error("Failed to get shared content:", error);
     throw new Error(`Failed to get shared content: ${error.message}`);
+  }
+}
+
+export async function removeFromShared({ userId, itemId, itemType }) {
+  try {
+    const response = await fetch(`${BASE_URL}/api/share/${itemId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, itemId, itemType }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Failed to remove item from shared."
+      );
+    }
+    await revalidateTagHandler("storage");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error removing from shared:", error);
+    throw new Error(`Failed to remove form shared: ${error.message}`);
   }
 }
