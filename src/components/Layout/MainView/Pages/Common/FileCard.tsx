@@ -70,9 +70,10 @@ const FileCard = ({ file, setActiveModal }: FileCardProps) => {
       rounded-[10px]
       min-h-[45px]
       relative
-      shadow-[0px_0px_0px_1px_rgba(0,0,0,0.05)]"
+      shadow-[0px_0px_0px_1px_rgba(0,0,0,0.05)]
+      "
     >
-      <div className="w-full h-[auto]flex flex-col">
+      <div className="w-full h-[auto] flex flex-col">
         <Link
           href={fileLink}
           className="w-full aspect-[2/1.5] flex items-end justify-center cursor-pointer overflow-hidden p-[8px]"

@@ -1934,3 +1934,29 @@ if i am at root or inside a folder on any page then these all can be the fronten
 │   │   │   └── page.tsx           // Handles /cloude/home/starred
 │   │   └── layout.tsx             // Layout for all /cloude/home routes
 ├── layout.tsx                     // Root layout
+
+
+----------------------------------------------
+
+here is my requirements,   
+
+i have a dashboard where i will shows files based on categories,
+like Audio, Video, Code etc.
+
+when i click on category i opens a page and url has set category name like
+/.../..../categories?category=code
+
+
+now i will make a api request to backend and fetch all the files of
+the user which falls under this category.
+
+Also on dashboard category card will show icons for each category like
+for Audio -> audio icon from iconify etc.
+
+Also each file extension will have icons like .pdf will have pdf icon.
+if no icon then its category icon.
+
+
+How to do this
+
+

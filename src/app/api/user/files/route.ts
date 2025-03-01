@@ -1,4 +1,5 @@
 import { createClient } from "@/middlewares/supabase/server";
+import { getFileExtension } from "@/utils/categoryUtils";
 
 // Function to upload a file to storage
 const uploadToStorage = async (file: any, userId: string) => {
@@ -29,9 +30,11 @@ export async function POST(req) {
   try {
     const formData = await req.formData();
     const file = formData.get("file");
-    const fileName = formData.get("name");
     const userId = formData.get("userId");
     const folderId = formData.get("folderId") || null;
+    console.log(" file:", file);
+    console.log(" userId:", userId);
+    console.log(" folderId:", folderId);
 
     if (!file || !userId) {
       return new Response(
@@ -49,6 +52,8 @@ export async function POST(req) {
 
     const filePath = await uploadToStorage(file, userId);
 
+    const ext = getFileExtension(file.name);
+
     const { data: insertData, error: insertError } = await supabase
       .from("files")
       .insert([
@@ -59,6 +64,7 @@ export async function POST(req) {
           file_type: file.type,
           file_size: file.size,
           storage_path: filePath,
+          extension: ext,
         },
       ]);
 
@@ -114,9 +120,6 @@ export async function GET(req) {
     }
 
     const { data: files, error: fetchError } = await query;
-
-    // TODO :: getting error
-    // const filesWithUrls = await fetchFilesWithSignedUrls(userId, folderId);
 
     return new Response(JSON.stringify({ files }), {
       status: 200,
