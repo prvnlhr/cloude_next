@@ -1960,3 +1960,22 @@ if no icon then its category icon.
 How to do this
 
 
+---------------------------------------------------------
+files table -> all the files user uploaded
+folders -> all the folders user uploaded
+share_items -> has data that shows what files have been shared to the user by other user.
+
+
+
+Now lets say if i just wanted to show files from files table then it would have been easy.
+But what i want is to show files from files table and also the items from share_items table.
+So the datatable on dashboard will show all the user files and also the items that are shared with him.
+Now the shared items can be file or folder.
+
+So the data table will have cols like,
+
+Name -> file name from files table, or item's name referencing the respective table(file or folder)
+Owner -> if the file is users own(files table where userId is matching is users own files) then 'You' or if shared then name of person who shared shared 
+Date Uploaded/Shared -> date created
+Type -> file/ folder
+Shared -> true/false

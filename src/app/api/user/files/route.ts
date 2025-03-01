@@ -66,10 +66,28 @@ export async function POST(req) {
           storage_path: filePath,
           extension: ext,
         },
-      ]);
+      ])
+      .select()
+      .single();
 
     if (insertError) {
       throw new Error("Failed to insert file metadata: " + insertError.message);
+    }
+    // Log the upload activity in the activities table
+    const { error: activityError } = await supabase.from("activities").insert([
+      {
+        activity_type: "upload",
+        item_type: "file",
+        file_id: insertData.id, // The ID of the inserted file
+        folder_id: null, // Ensure folder_id is null for file uploads
+        user_id: userId, // The user who uploaded the file
+        details: null, // No additional details needed for uploads
+      },
+    ]);
+
+    if (activityError) {
+      console.error("Error logging upload activity:", activityError);
+      // Optionally, you can handle this error without failing the entire operation
     }
 
     return new Response(JSON.stringify({ insertData }), {

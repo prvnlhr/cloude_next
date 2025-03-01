@@ -16,7 +16,7 @@ const page = async ({ searchParams }) => {
   const filesByCategory = await fetchFilesByCategories(userId, category);
   console.log(" filesByCategory:", filesByCategory);
 
-  return <CategoryPage files={[]} />;
+  return <CategoryPage files={filesByCategory} />;
 };
 
 export default page;

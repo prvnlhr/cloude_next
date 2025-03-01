@@ -5,10 +5,6 @@ import useUserSession from "@/hooks/useUserSession";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { uploadFolder } from "@/lib/services/user/foldersService";
 
-const getFileNameWithoutExtension = (fileName: string) => {
-  return fileName.replace(/\.[^/.]+$/, "");
-};
-
 const AddMenu: FC = ({ menuRef }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const folderInputRef = useRef<HTMLInputElement | null>(null);
@@ -47,7 +43,7 @@ const AddMenu: FC = ({ menuRef }) => {
           userId,
           folderId
         );
-        console.log("uploadFilesResponse:", uploadFilesResponse);
+        // console.log("uploadFilesResponse:", uploadFilesResponse);
       } catch (error) {
         console.log(error);
       }

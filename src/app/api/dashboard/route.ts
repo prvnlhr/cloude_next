@@ -41,29 +41,49 @@ export async function GET(req) {
       ),
     ];
 
-    // 3. Fetch 20 most recent shared files (shared by or received by the user)
-    const { data: sharedFiles, error: sharedFilesError } = await supabase
-      .from("share_items")
+    const { data: recentActivities, error: activitiesError } = await supabase
+      .from("activities")
       .select(
         `
-        id, item_type, share_timestamp, shared_by, shared_with, 
-        files(file_name, file_size, file_type, created_at), 
-        folders(folder_name, created_at), 
-        shared_by_user:users!shared_by(full_name), 
-        shared_with_user:users!shared_with(full_name)
+        id, activity_type, item_type, activity_timestamp, details,
+         file_id, folder_id,
+        files:file_id (id, file_name, file_type, file_size, storage_path, thumbnail_url),
+        folders:folder_id (id, folder_name, path)
       `
       )
-      .or(`shared_by.eq.${userId},shared_with.eq.${userId}`)
-      .order("share_timestamp", { ascending: false })
-      .limit(20);
+      .eq("user_id", userId)
+      .order("activity_timestamp", { ascending: false });
 
-    if (sharedFilesError) throw sharedFilesError;
+    if (activitiesError) throw activitiesError;
+
+    // Transform activities to include item details
+    const transformedActivities = recentActivities.map((activity) => {
+      const isFile = activity.item_type === "file";
+      const isFolder = activity.item_type === "folder";
+
+      return {
+        id: activity.id,
+        activity_type: activity.activity_type,
+        item_type: activity.item_type,
+        item_name: isFile
+          ? activity.files?.file_name
+          : activity.folders?.folder_name,
+        item_path: isFile
+          ? activity.files?.storage_path
+          : activity.folders?.path,
+        performed_by: activity.users?.email || "Unknown",
+        details: activity.details,
+        timestamp: activity.activity_timestamp,
+        file_id: isFile ? activity.file_id : null, // Include file_id only for files
+        folder_id: isFolder ? activity.folder_id : null, // Include folder_id only for folders
+      };
+    });
 
     return new Response(
       JSON.stringify({
         recentUploads,
         filesByExtensions,
-        sharedFiles,
+        recentActivities: transformedActivities,
       }),
       {
         status: 200,

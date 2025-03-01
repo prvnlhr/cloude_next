@@ -43,7 +43,7 @@ const ContentPage = ({ files, folders }) => {
     });
   };
   useEffect(() => {
-    console.log(activeModal);
+    // console.log(activeModal);
   }, [activeModal]);
 
   return (

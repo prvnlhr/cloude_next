@@ -21,7 +21,7 @@ export async function POST(req) {
     // Get the userId of the person to share with
     const { data: shareWithUser, error: shareWithError } = await supabase
       .from("users")
-      .select("user_id")
+      .select("user_id, full_name")
       .eq("email", shareWithEmail)
       .single();
 
@@ -48,6 +48,7 @@ export async function POST(req) {
     }
 
     const shareWithUserId = shareWithUser.user_id;
+    const shareWithUserName = shareWithUser.full_name;
 
     const { data: existingShare, error: checkError } = await supabase
       .from("share_items")
@@ -93,6 +94,25 @@ export async function POST(req) {
       });
     }
 
+    // Log the share activity in the activities table
+    const { error: activityError } = await supabase.from("activities").insert([
+      {
+        activity_type: "share",
+        item_type: itemType,
+        file_id: itemType === "file" ? itemId : null,
+        folder_id: itemType === "folder" ? itemId : null,
+        user_id: sharedById,
+        details: {
+          shared_with: shareWithUserId,
+          shared_with_name: shareWithUserName,
+        },
+      },
+    ]);
+
+    if (activityError) {
+      console.error("Error logging share activity:", activityError);
+    }
+
     return new Response(
       JSON.stringify({
         message: "Item shared successfully.",
@@ -111,6 +131,7 @@ export async function POST(req) {
     );
   }
 }
+
 async function getSharedWithMeData(userId, folderId) {
   const supabase = await createClient();
 

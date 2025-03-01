@@ -1,12 +1,13 @@
 import { createClient } from "@/middlewares/supabase/server";
 import { getFileExtensionsByCategory } from "@/utils/categoryUtils";
-import { getFileExtension } from "@/utils/fileExtensionUtils";
 
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
     const category = searchParams.get("category");
+    console.log(" userId:", userId);
+    console.log(" category:", category);
 
     if (!userId) {
       return new Response(JSON.stringify({ error: "UserId is required" }), {
@@ -26,6 +27,7 @@ export async function GET(req) {
     const fileExtensionsWithDots = fileExtensions.map((ext) =>
       ext.startsWith(".") ? ext.trim() : `.${ext.trim()}`
     );
+
     const supabase = await createClient();
 
     const { data: files, error } = await supabase

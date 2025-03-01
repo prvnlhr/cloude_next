@@ -1,8 +1,9 @@
 import CategoriesSection from "./Categories/CategoriesSection";
-import FilesSection from "./FilesSection/FilesSection";
+import FilesSection from "./ActivitiesSection/ActivitiesSection";
 import { RecentUploadsSection } from "./RecentUploads/RecentUploadsSection";
 const DashboardPage = ({ dashboardContent }) => {
-  const { recentUploads, filesByExtensions, sharedFiles } = dashboardContent;
+  const { recentUploads, filesByExtensions, recentActivities } =
+    dashboardContent;
   return (
     <div
       className="w-full h-full pt-[20px] overflow-y-scroll"
@@ -17,8 +18,8 @@ const DashboardPage = ({ dashboardContent }) => {
         <CategoriesSection filesByExtensions={filesByExtensions} />
       </div>
       {/* Files section ----------------------------------------------- */}
-      <div className="w-full h-[90%] mb-[20px]">
-        <FilesSection />
+      <div className="w-full h-auto mb-[20px]">
+        <FilesSection activities={recentActivities} />
       </div>
     </div>
   );

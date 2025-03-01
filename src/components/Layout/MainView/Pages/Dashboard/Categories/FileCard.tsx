@@ -3,17 +3,18 @@ import { getSignedUrl } from "@/actions/filesAction";
 import { getFileIcon, getPreviewInfo } from "@/utils/categoryUtils";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import ActionMenu from "../../Common/ActionMenu";
 
 const NonPreviewPlaceholder = (file) => {
-  const fileType = file.file.file_type;
+  console.log(file.file.file_name);
   return (
     <div className="w-full h-full flex flex-col items-center justify-evenly bg-[#EAECEB] px-[10px]">
       <div className="w-[100%] h-[60px] flex items-end">
         <div className="h-[80%] aspect-square rounded-full bg-white flex items-center justify-center p-[8px]">
           <Icon
-            icon={getFileIcon(fileType, "")}
+            icon={getFileIcon(file.file.file_name, false)}
             className="w-full h-full text-[#1C3553]"
           />
         </div>
@@ -29,12 +30,13 @@ const NonPreviewPlaceholder = (file) => {
 
 const FileCard = ({ file }) => {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
-  const { canPreview, type } = getPreviewInfo(file.file_type);
+  const { canPreview, type } = getPreviewInfo(file.file_name);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchSignedUrl = async () => {
       const url = await getSignedUrl(file.storage_path);
-      console.log("Fetched URL:", url);
       setSignedUrl(url);
     };
 
@@ -42,6 +44,7 @@ const FileCard = ({ file }) => {
       fetchSignedUrl();
     }
   }, [file?.storage_path]);
+
   return (
     <div
       className="
@@ -56,7 +59,7 @@ const FileCard = ({ file }) => {
     >
       <div className="w-full h-auto flex flex-col">
         <Link
-          href={"/"}
+          href={`/cloude/home/my-storage/files/${file.id}`}
           className="w-full aspect-[2/1.5] flex items-end justify-center cursor-pointer overflow-hidden p-[8px]"
         >
           <div
@@ -64,13 +67,20 @@ const FileCard = ({ file }) => {
             flex items-center justify-center overflow-hidden relative rounded"
           >
             {canPreview && signedUrl ? (
-              <Image
-                src={signedUrl}
-                fill={true}
-                quality={20}
-                alt={file.file_name}
-                className="object-cover object-center"
-              />
+              type === "image" ? (
+                <Image
+                  src={signedUrl}
+                  fill={true}
+                  quality={20}
+                  alt={file.file_name}
+                  className="object-cover object-center"
+                />
+              ) : (
+                <video
+                  className="w-full h-full object-cover object-center"
+                  src={signedUrl}
+                />
+              )
             ) : (
               <NonPreviewPlaceholder file={file} />
             )}
@@ -82,12 +92,10 @@ const FileCard = ({ file }) => {
               {file?.file_name}
             </p>
           </div>
-          <div className="h-[100%] aspect-square  flex items-center justify-center cursor-pointer">
-            <Icon
-              icon="qlementine-icons:menu-dots-16"
-              className="w-[40%] h-[40%] text-[#1C3553]"
-            />
-          </div>
+          <button
+            disabled
+            className="h-[100%] aspect-square  flex items-center justify-center cursor-pointer"
+          ></button>
         </div>
       </div>
     </div>

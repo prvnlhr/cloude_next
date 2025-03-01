@@ -4,6 +4,7 @@ export async function PATCH(req) {
   try {
     const { itemId, userId, updateName } = await req.json();
 
+    // Validate required fields
     if (!itemId || !updateName || !userId) {
       return new Response(
         JSON.stringify({ error: "All fields are required." }),
@@ -13,11 +14,32 @@ export async function PATCH(req) {
 
     const supabase = await createClient();
 
+    // Fetch the current folder name before renaming
+    const { data: currentFolder, error: fetchError } = await supabase
+      .from("folders")
+      .select("folder_name")
+      .eq("id", itemId)
+      .eq("user_id", userId)
+      .single();
+
+    if (fetchError || !currentFolder) {
+      console.error("Error fetching current folder:", fetchError);
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch current folder details." }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    const oldName = currentFolder.folder_name;
+
+    // Rename the folder in the `folders` table
     const { data: renameData, error: renameError } = await supabase
       .from("folders")
       .update({ folder_name: updateName })
       .eq("id", itemId)
-      .eq("user_id", userId);
+      .eq("user_id", userId)
+      .select()
+      .single();
 
     if (renameError) {
       console.error("Supabase Error:", renameError);
@@ -29,6 +51,24 @@ export async function PATCH(req) {
         }
       );
     }
+
+    // Log the rename activity in the activities table
+    const { error: activityError } = await supabase.from("activities").insert([
+      {
+        activity_type: "rename",
+        item_type: "folder",
+        file_id: null, // Ensure file_id is null for folder renames
+        folder_id: itemId, // The ID of the renamed folder
+        user_id: userId, // The user who renamed the folder
+        details: { old_name: oldName, new_name: updateName }, // Store old and new names
+      },
+    ]);
+
+    if (activityError) {
+      console.error("Error logging rename activity:", activityError);
+      // Optionally, you can handle this error without failing the entire operation
+    }
+
     return new Response(JSON.stringify({ renameData }), {
       status: 200, // 200 OK for successful updates
       headers: {
@@ -49,7 +89,6 @@ export async function PATCH(req) {
     );
   }
 }
-
 export async function DELETE(req) {
   try {
     const { itemId, userId } = await req.json();

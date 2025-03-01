@@ -137,6 +137,7 @@ const extensionToCategory: Record<FileExtension, Category> = {
   ".deb": "Executable",
   ".rpm": "Executable",
   ".msi": "Executable",
+  ".dll": "Executable",
 
   // Font Extensions
   ".ttf": "Font",
@@ -205,6 +206,9 @@ function normalizeString(input: string): string {
 export function getCategoryByFileExtension(
   fileExtension: FileExtension | null
 ): Category {
+  if (extensionToCategory[fileExtension]) {
+    console.log("yes", fileExtension);
+  }
   return fileExtension ? extensionToCategory[fileExtension] : "Other";
 }
 
@@ -225,6 +229,11 @@ export function getFileIcon(
     return getCategoryIcon(category);
   } else {
     const normalizedFileExtension = normalizeString(fileExtension);
+    console.log(
+      fileName,
+      fileExtension,
+      fileTypeIcons[normalizedFileExtension]
+    );
     return (
       fileTypeIcons[normalizedFileExtension as FileExtension] ||
       getCategoryIcon(getCategoryByFileExtension(fileExtension))

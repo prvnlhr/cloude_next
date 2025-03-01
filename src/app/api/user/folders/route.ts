@@ -1,4 +1,5 @@
 import { createClient } from "@/middlewares/supabase/server";
+import { getFileExtension } from "@/utils/categoryUtils";
 import slugify from "slugify";
 
 export async function POST(req) {
@@ -18,6 +19,9 @@ export async function POST(req) {
       }
     }
 
+    // keeping track of parent folder id -> will be used later for inserting into activities
+    let parentFolderId = null;
+
     const supabase = await createClient();
     const folderIdMap = {};
 
@@ -28,7 +32,7 @@ export async function POST(req) {
     for (const folder of folders) {
       const slug = slugify(folder.name, { lower: true, strict: true });
 
-      const parentFolderId = folder.parentFolderId
+      const currentParentFolderId = folder.parentFolderId
         ? folderIdMap[folder.parentFolderId] || null
         : null;
 
@@ -38,7 +42,7 @@ export async function POST(req) {
           {
             folder_name: folder.name,
             slug: slug,
-            parent_folder_id: parentFolderId,
+            parent_folder_id: currentParentFolderId,
             user_id: userId,
           },
         ])
@@ -51,9 +55,13 @@ export async function POST(req) {
       }
 
       folderIdMap[folder.id] = folderData.id;
+
+      if (!parentFolderId && !folder.parentFolderId) {
+        parentFolderId = folderData.id;
+      }
     }
 
-        for (let i = 0; i < files.length; i++) {
+    for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const metadata = fileData[i];
       const folderId = folderIdMap[metadata.folderId];
@@ -74,6 +82,8 @@ export async function POST(req) {
         continue;
       }
 
+      const ext = getFileExtension(file.name);
+
       const { error: fileError } = await supabase.from("files").insert([
         {
           file_name: metadata.name,
@@ -82,11 +92,34 @@ export async function POST(req) {
           storage_path: storagePath,
           folder_id: folderId,
           user_id: metadata.userId,
+          extension: ext,
         },
       ]);
 
       if (fileError) {
         console.error("Error inserting file metadata:", fileError);
+      }
+    }
+
+    console.log(" parentFolderId:.............", parentFolderId);
+    // Log the parent folder creation activity at the end
+    if (parentFolderId) {
+      const { error: activityError } = await supabase
+        .from("activities")
+        .insert([
+          {
+            activity_type: "upload",
+            item_type: "folder",
+            file_id: null,
+            folder_id: parentFolderId,
+            user_id: userId,
+            details: null,
+          },
+        ]);
+
+      if (activityError) {
+        console.error("Error logging folder upload activity:", activityError);
+        // Optionally, you can handle this error without failing the entire operation
       }
     }
 

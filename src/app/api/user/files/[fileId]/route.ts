@@ -1,9 +1,9 @@
 import { createClient } from "@/middlewares/supabase/server";
-
 export async function PATCH(req) {
   try {
     const { itemId, userId, updateName } = await req.json();
 
+    // Validate required fields
     if (!itemId || !updateName || !userId) {
       return new Response(
         JSON.stringify({ error: "All fields are required." }),
@@ -13,11 +13,32 @@ export async function PATCH(req) {
 
     const supabase = await createClient();
 
+    // Fetch the current file name before renaming
+    const { data: currentFile, error: fetchError } = await supabase
+      .from("files")
+      .select("file_name")
+      .eq("id", itemId)
+      .eq("user_id", userId)
+      .single();
+
+    if (fetchError || !currentFile) {
+      console.error("Error fetching current file:", fetchError);
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch current file details." }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    const oldName = currentFile.file_name;
+
+    // Rename the file in the `files` table
     const { data: renameData, error: renameError } = await supabase
       .from("files")
       .update({ file_name: updateName })
       .eq("id", itemId)
-      .eq("user_id", userId);
+      .eq("user_id", userId)
+      .select()
+      .single();
 
     if (renameError) {
       console.error("Supabase Error:", renameError);
@@ -26,6 +47,24 @@ export async function PATCH(req) {
         headers: { "Content-Type": "application/json" },
       });
     }
+
+    // Log the rename activity in the activities table
+    const { error: activityError } = await supabase.from("activities").insert([
+      {
+        activity_type: "rename",
+        item_type: "file",
+        file_id: itemId, // The ID of the renamed file
+        folder_id: null, // Ensure folder_id is null for file renames
+        user_id: userId, // The user who renamed the file
+        details: { old_name: oldName, new_name: updateName }, // Store old and new names
+      },
+    ]);
+
+    if (activityError) {
+      console.error("Error logging rename activity:", activityError);
+      // Optionally, you can handle this error without failing the entire operation
+    }
+
     return new Response(JSON.stringify({ renameData }), {
       status: 200, // 200 OK for successful updates
       headers: {

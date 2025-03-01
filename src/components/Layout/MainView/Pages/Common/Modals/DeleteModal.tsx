@@ -23,7 +23,7 @@ const DeleteModal = ({ item, itemType, onClose }) => {
           ? await deleteFolder(userId, item.id)
           : await deleteFile(userId, item.id);
 
-      console.log(" deleteResponse:", deleteResponse);
+      // console.log(" deleteResponse:", deleteResponse);
       if (deleteResponse && deleteResponse.error) {
         throw new Error(deleteResponse.error);
       }
