@@ -58,13 +58,21 @@ const ContentPage = ({ files, folders }) => {
         <div className="w-full h-[40px] flex items-start border-b-[1px] border-b-[#D0D5DD]">
           <Link
             href={"/cloude/home/shared"}
-            className="w-auto h-[30px] bg-[#E4E7EC] rounded flex items-center justify-center border border-[#D0D5DD] ml-[5px] px-[15px] text-[#1C3553] text-[0.8rem] font-medium"
+            className={`w-auto h-[30px]  flex items-center justify-center border-b-[${
+              !isShareByMe ? 1 : 0
+            }px] border-b-[#1C3553] mr-[5px] px-[15px] text-[${
+              !isShareByMe ? "#1C3553" : "#A2A8B2"
+            }] text-[0.8rem] font-medium`}
           >
             Shared with Me
           </Link>
           <Link
             href={`${basePath}?myshared=true`}
-            className="w-auto h-[30px] bg-[#E4E7EC] rounded flex items-center justify-center border border-[#D0D5DD] ml-[5px] px-[15px] text-[#1C3553] text-[0.8rem] font-medium"
+            className={`w-auto h-[30px] flex items-center justify-center border-b-[${
+              isShareByMe ? 1 : 0
+            }px] border-b-[#1C3553] ml-[10px] px-[15px] text-[${
+              isShareByMe ? "#1C3553" : "#A2A8B2"
+            }] text-[0.8rem] font-medium`}
           >
             Shared by Me
           </Link>

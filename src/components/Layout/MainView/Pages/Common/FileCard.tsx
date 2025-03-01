@@ -57,7 +57,6 @@ const FileCard = ({ file, setActiveModal }: FileCardProps) => {
     }
   }, [file?.storage_path]);
 
-  const previewAvailable = canPreview(file.mimeType);
   const isVideo = ["video/mp4", "video/webm", "video/ogg"].includes(
     file.file_type
   );
