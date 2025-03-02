@@ -45,6 +45,16 @@ const Searchbar: FC = () => {
     [debouncedSearch]
   );
 
+  const clearResults = () => {
+    setSearchResults({ files: [], folders: [], shared_items: [] });
+    setSearchKey("");
+  };
+
+  const hasResults =
+    searchResults.files.length > 0 ||
+    searchResults.folders.length > 0 ||
+    searchResults.shared_items.length > 0;
+
   return (
     <div className="w-[200px] rounded-[5px] h-[30px] ml-[20px] flex items-center border-[1px] border-[#D0D5DD]">
       <div className="h-full flex-grow px-[10px] flex items-center">
@@ -60,12 +70,16 @@ const Searchbar: FC = () => {
           <Spinner variant="gradient" color="primary" size="sm" />
         ) : (
           <Icon
-            icon="mynaui:search"
-            className="w-[65%] h-[65%] text-[#635DB0]"
+            onClick={clearResults}
+            icon={hasResults ? "iconamoon:close-duotone" : "mynaui:search"}
+            className="w-[65%] h-[65%] text-[#635DB0] cursor-pointer"
           />
         )}
       </div>
-      <SearchModal searchResults={searchResults}  setSearchResults={setSearchResults}/>
+      <SearchModal
+        searchResults={searchResults}
+        setSearchResults={setSearchResults}
+      />
     </div>
   );
 };

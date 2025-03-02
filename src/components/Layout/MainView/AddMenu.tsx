@@ -4,10 +4,13 @@ import { uploadFiles } from "@/lib/services/user/filesService";
 import useUserSession from "@/hooks/useUserSession";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { uploadFolder } from "@/lib/services/user/foldersService";
+import { useToast } from "@/context/ToastContext";
 
 const AddMenu: FC = ({ menuRef }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const folderInputRef = useRef<HTMLInputElement | null>(null);
+
+  const { showToast } = useToast();
 
   const params = useParams();
   const session = useUserSession();
@@ -41,9 +44,9 @@ const AddMenu: FC = ({ menuRef }) => {
         const uploadFilesResponse = await uploadFiles(
           fileDataArray,
           userId,
-          folderId
+          folderId,
+          showToast
         );
-        // console.log("uploadFilesResponse:", uploadFilesResponse);
       } catch (error) {
         console.log(error);
       }
@@ -125,7 +128,8 @@ const AddMenu: FC = ({ menuRef }) => {
       const uploadFolderResponse = await uploadFolder(
         filesArray,
         folders,
-        userId
+        userId,
+        showToast
       );
       console.log(" uploadFolderResponse:", uploadFolderResponse);
     } catch (error) {

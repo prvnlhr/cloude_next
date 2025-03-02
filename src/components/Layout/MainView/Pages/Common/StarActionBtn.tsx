@@ -1,3 +1,4 @@
+import { useToast } from "@/context/ToastContext";
 import useUserSession from "@/hooks/useUserSession";
 import {
   addToStarred,
@@ -7,6 +8,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 const StarActionBtn = ({ action, item, itemType }) => {
   const session = useUserSession();
+  const { showToast } = useToast();
   const handleStarClick = async () => {
     const starData = {
       itemId: item.id,
@@ -15,8 +17,8 @@ const StarActionBtn = ({ action, item, itemType }) => {
     };
 
     const starResponse = item.is_starred
-      ? await removeFromStarred(starData)
-      : await addToStarred(starData);
+      ? await removeFromStarred(starData, showToast)
+      : await addToStarred(starData, showToast);
     console.log(" starResponse:", starResponse);
     try {
     } catch (error) {

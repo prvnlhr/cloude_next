@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
-import { HeroUIProvider } from "@heroui/system";
 import { Providers } from "@/app/provider";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Cloud.e",
@@ -86,6 +86,7 @@ export default function RootLayout({
           ${satoshi.className} antialiased`}
       >
         <Providers>{children}</Providers>
+        <Toaster position="top-right" expand={false} richColors closeButton />
       </body>
     </html>
   );

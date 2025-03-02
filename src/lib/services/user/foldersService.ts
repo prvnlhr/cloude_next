@@ -3,7 +3,12 @@ import { revalidateTagHandler } from "@/lib/revalidation";
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-export async function uploadFolder(filesArray, foldersArray, userId) {
+export async function uploadFolder(
+  filesArray,
+  foldersArray,
+  userId,
+  showToast
+) {
   try {
     const formData = new FormData();
     formData.append("folders", JSON.stringify(foldersArray));
@@ -22,6 +27,14 @@ export async function uploadFolder(filesArray, foldersArray, userId) {
         })
       );
     });
+    const folderName = foldersArray[0].name;
+
+    // show loading toast
+    const toastId = showToast(
+      "loading",
+      "Uploading Folder",
+      `Uploading ${folderName}...`
+    );
 
     const uploadResponse = await fetch(`${BASE_URL}/api/user/folders`, {
       method: "POST",
@@ -32,6 +45,14 @@ export async function uploadFolder(filesArray, foldersArray, userId) {
 
     if (!uploadResponse.ok) {
       console.error("Upload Folder Error:", result.error || result.message);
+
+      showToast(
+        "error",
+        "Upload Failed",
+        `Failed to upload ${folderName}: ${result.error || result.message}`,
+        toastId
+      );
+
       throw new Error(
         result.error ||
           result.message ||
@@ -42,6 +63,14 @@ export async function uploadFolder(filesArray, foldersArray, userId) {
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
 
+    // show success toast
+    showToast(
+      "success",
+      "Upload Successful",
+      `Uploaded ${folderName} successfully!`,
+      toastId
+    );
+
     console.log("Upload Folder Success:", result.message);
     return result.data;
   } catch (error) {
@@ -50,7 +79,7 @@ export async function uploadFolder(filesArray, foldersArray, userId) {
   }
 }
 
-export async function renameFolder(updateData, folderId) {
+export async function renameFolder(updateData, folderId, showToast) {
   try {
     const renameResponse = await fetch(
       `${BASE_URL}/api/user/folders/${folderId}`,
@@ -67,6 +96,11 @@ export async function renameFolder(updateData, folderId) {
 
     if (!renameResponse.ok) {
       console.error("Rename Folder Error:", result.error || result.message);
+      showToast(
+        "error",
+        `Renaming folder failed`,
+        `${result.error || result.message}`
+      );
       throw new Error(
         result.error || result.message || "Failed to rename folder"
       );
@@ -74,6 +108,8 @@ export async function renameFolder(updateData, folderId) {
 
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
+
+    showToast("success", `Folder renamed successfully`, ``);
 
     console.log("Rename Folder Success:", result.message);
     return result.data;

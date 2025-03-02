@@ -4,6 +4,7 @@ import { renameFile } from "@/lib/services/user/filesService";
 import useUserSession from "@/hooks/useUserSession";
 import { renameFolder } from "@/lib/services/user/foldersService";
 import { Spinner } from "@heroui/spinner";
+import { useToast } from "@/context/ToastContext";
 const RenameModal = ({ item, itemType, onClose }) => {
   const [baseName, setBaseName] = useState("");
   const [extension, setExtension] = useState("");
@@ -11,15 +12,16 @@ const RenameModal = ({ item, itemType, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (item && item[key]) {
       const lastDotIndex = item[key].lastIndexOf(".");
       if (lastDotIndex !== -1) {
-        setBaseName(item[key].slice(0, lastDotIndex)); // 'project'
-        setExtension(item[key].slice(lastDotIndex)); // '.pdf'
+        setBaseName(item[key].slice(0, lastDotIndex));
+        setExtension(item[key].slice(lastDotIndex));
       } else {
-        setBaseName(item[key]); // In case there's no extension
+        setBaseName(item[key]);
         setExtension("");
       }
     }
@@ -34,7 +36,7 @@ const RenameModal = ({ item, itemType, onClose }) => {
 
     try {
       const userId = session?.userId;
-      const newFileName = baseName.trim() + extension; // Combine base name with extension
+      const newFileName = baseName.trim() + extension;
 
       const updateData = {
         updateName: newFileName,
@@ -44,8 +46,8 @@ const RenameModal = ({ item, itemType, onClose }) => {
 
       const renameResponse =
         itemType === "folder"
-          ? await renameFolder(updateData, item.id)
-          : await renameFile(updateData, item.id);
+          ? await renameFolder(updateData, item.id, showToast)
+          : await renameFile(updateData, item.id, showToast);
 
       setSuccess(true);
       onClose();

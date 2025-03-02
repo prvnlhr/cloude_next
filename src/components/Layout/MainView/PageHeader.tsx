@@ -49,8 +49,7 @@ const PageHeader: FC = () => {
           flex items-center justify-center 
           cursor-pointer
           mr-[15px]
-          rounded
-          "
+          rounded"
           onClick={toggleMenu}
         >
           <div className="h-[100%] aspect-[1/1] flex items-center justify-center black">

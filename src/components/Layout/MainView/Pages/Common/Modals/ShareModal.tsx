@@ -5,6 +5,7 @@ import useUserSession from "@/hooks/useUserSession";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Spinner } from "@heroui/spinner";
 import { getFileExtension } from "@/utils/fileExtensionUtils";
+import { useToast } from "@/context/ToastContext";
 
 const ShareModal = ({ item, itemType, onClose }) => {
   const [shareWithEmail, setShareWithEmail] = useState<string>(
@@ -16,7 +17,7 @@ const ShareModal = ({ item, itemType, onClose }) => {
   const [isSharing, setIsSharing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
+  const { showToast } = useToast();
   const session = useUserSession();
 
   const handleShare = async () => {
@@ -45,7 +46,7 @@ const ShareModal = ({ item, itemType, onClose }) => {
 
     try {
       console.log(item);
-      const shareItemResponse = await shareItem(shareItemData);
+      const shareItemResponse = await shareItem(shareItemData, showToast);
       setSuccessMessage("Item shared successfully!");
       if (shareItemResponse && shareItemResponse.error) {
         console.log(shareItemResponse.error);

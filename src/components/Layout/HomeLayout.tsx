@@ -3,6 +3,7 @@ import { useState } from "react";
 import Sidebar from "./Sidebar/Sidebar";
 import Navbar from "./Navbar/Navbar";
 import MainView from "./MainView/MainView";
+
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   const [showSidebar, setShowSidebar] = useState<boolean>(false);
   const toggleSidebarShow = () => {

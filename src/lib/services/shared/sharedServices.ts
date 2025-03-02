@@ -1,5 +1,10 @@
 import { revalidateTagHandler } from "@/lib/revalidation";
 
+export function capitalize(word: string): string {
+  if (!word) return "";
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
@@ -47,7 +52,7 @@ export async function fetchSharedContent(userId, folderId, queryParams) {
   }
 }
 
-export async function shareItem(shareItemData) {
+export async function shareItem(shareItemData, showToast) {
   const { itemId, itemType, sharedById, shareWithEmail } = shareItemData;
 
   try {
@@ -63,10 +68,18 @@ export async function shareItem(shareItemData) {
 
     if (!response.ok) {
       console.error("Share Item Error:", result.error || result.message);
+      showToast(
+        "error",
+        `Failed to share ${capitalize(itemType)}`,
+        `${result.error || result.message}`
+      );
       throw new Error(
         result.error || result.message || "Failed to share item."
       );
     }
+
+    // show success toast
+    showToast("success", `${capitalize(itemType)} Shared successfully`, "");
 
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");

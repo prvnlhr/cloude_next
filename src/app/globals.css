@@ -27,3 +27,27 @@ p {
 input {
   color: #1c3553;
 }
+
+/* ----------- */
+
+.Toastify__toast {
+  font-family: "Satoshi", sans-serif !important;
+  font-weight: 500;
+  color: #1c3553;
+  border: 1px solid #d0d5dd !important;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
+}
+
+.Toastify__toast-body {
+  padding: 12px;
+  border: 1px solid #d0d5dd !important;
+}
+
+.Toastify__toast-container--top-right .Toastify__toast {
+  margin-bottom: 10px !important; /* Add spacing between stacked toasts */
+}
+
+/* Ensure updated toasts maintain the stacked layout */
+.Toastify__toast-container--top-right .Toastify__toast--update {
+  margin-bottom: 10px !important; /* Add spacing for updated toasts */
+}

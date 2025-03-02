@@ -1,9 +1,8 @@
 import { FC } from "react";
 import PageHeader from "./PageHeader";
-
 const MainView: FC = ({ children }) => {
   return (
-    <div className="w-full h-[calc(100%-80px)] flex flex-col">
+    <div className="w-full h-[calc(100%-80px)] flex flex-col relative">
       <PageHeader />
       <div className="w-[100%] h-[calc(100%-70px)] px-[20px]">{children}</div>
     </div>

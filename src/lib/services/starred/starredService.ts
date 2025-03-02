@@ -1,5 +1,5 @@
 import { revalidateTagHandler } from "@/lib/revalidation";
-
+import { capitalize } from "../shared/sharedServices";
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
@@ -34,7 +34,7 @@ export async function fetchStarredContent(userId, folderId) {
   }
 }
 
-export async function addToStarred(starData) {
+export async function addToStarred(starData, showToast) {
   const { itemId, itemType, userId } = starData;
 
   if (!itemId || !userId) {
@@ -54,10 +54,22 @@ export async function addToStarred(starData) {
 
     if (!response.ok) {
       console.error("Add to Starred Error:", result.error || result.message);
+      showToast(
+        "error",
+        `Adding ${capitalize(starData.itemType)} to starred failed`,
+        `${result.error || result.message}`
+      );
       throw new Error(
         result.error || result.message || "Failed to add item to starred."
       );
     }
+
+    // show success toast
+    showToast(
+      "success",
+      `${capitalize(starData.itemType)} added to starred`,
+      ``
+    );
 
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
@@ -71,7 +83,7 @@ export async function addToStarred(starData) {
   }
 }
 
-export async function removeFromStarred(starData) {
+export async function removeFromStarred(starData, showToast) {
   const { itemId, itemType, userId } = starData;
 
   if (!itemId || !userId) {
@@ -94,6 +106,11 @@ export async function removeFromStarred(starData) {
         "Remove from Starred Error:",
         result.error || result.message
       );
+      showToast(
+        "error",
+        `Removing ${capitalize(starData.itemType)} from starred failed`,
+        `${result.error || result.message}`
+      );
       throw new Error(
         result.error || result.message || "Failed to remove item from starred."
       );
@@ -102,6 +119,13 @@ export async function removeFromStarred(starData) {
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
     await revalidateTagHandler("starred");
+
+    // show success toast
+    showToast(
+      "success",
+      `${capitalize(starData.itemType)} removed to starred`,
+      ``
+    );
 
     console.log("Remove from Starred Success:", result.message);
     return result.data;
