@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
 import { login } from "@/actions/auth";
+import { Spinner } from "@heroui/spinner";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -16,7 +17,7 @@ const SignInPage: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -105,10 +106,14 @@ const SignInPage: React.FC = () => {
         {/* SUBMIT BUTTON ---------------------------------------------------------- */}
         <div className="w-full h-[100px] mb-[0px] flex flex-col justify-evenly items-center">
           <button
-            className="w-[100%] h-[30px] border-none bg-[#635DB0] text-white text-[0.7rem]"
+            className="w-[100%] h-[30px] border-none bg-[#635DB0] text-white text-[0.8rem] flex  justify-center items-center"
             type="submit"
           >
-            Sign In
+            {isSubmitting ? (
+              <Spinner variant="gradient" color="default" size="sm" />
+            ) : (
+              "Sign In"
+            )}
           </button>
           <p className="text-[0.8rem] text-[#1C3553] font-medium">
             Not yet registered?

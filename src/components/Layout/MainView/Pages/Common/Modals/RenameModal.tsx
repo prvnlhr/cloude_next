@@ -103,7 +103,7 @@ const RenameModal = ({ item, itemType, onClose }) => {
           className="w-[80px] h-[30px] px-[15px] rounded text-[0.8rem] text-[#1C3553] font-medium bg-[#E7EFFC]"
         >
           {isLoading ? (
-            <Spinner variant="gradient" color="default" size="sm" />
+            <Spinner variant="gradient" color="primary" size="sm" />
           ) : (
             "Rename"
           )}

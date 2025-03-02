@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
 import { signup } from "@/actions/auth";
+import { Spinner } from "@heroui/spinner";
 
 // Zod schema for form validation
 const signUpSchema = z
@@ -24,7 +25,7 @@ const SignUpPage = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -164,10 +165,14 @@ const SignUpPage = () => {
         {/* SUBMIT BUTTON ---------------------------------------------------------- */}
         <div className="w-full h-[100px] mb-[0px] flex flex-col justify-evenly items-center">
           <button
-            className="w-[100%] h-[30px] border-none bg-[#635DB0] text-white text-[0.7rem]"
+            className="w-[100%] h-[30px] border-none bg-[#635DB0] text-white text-[0.8rem] flex  justify-center items-center"
             type="submit"
           >
-            Sign Up
+            {isSubmitting ? (
+              <Spinner variant="gradient" color="default" size="sm" />
+            ) : (
+              "Sign Up"
+            )}
           </button>
           <p className="text-[0.8rem] text-[#1C3553] font-medium">
             Already registered?

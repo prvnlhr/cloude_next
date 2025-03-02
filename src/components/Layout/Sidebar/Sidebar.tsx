@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import AppLogo from "./AppLogo";
 import HamburgerIcon from "../../Icons/HamburgerIcon";
@@ -7,20 +7,25 @@ import { usePathname } from "next/navigation";
 import { Routes } from "@/lib/homeRoutes";
 import { signout } from "@/actions/auth";
 import useUserSession from "@/hooks/useUserSession";
+import { Spinner } from "@heroui/spinner";
 
 const Sidebar: FC = ({ toggleSidebarShow }) => {
   const pathname = usePathname();
   const session = useUserSession();
+  const [isSigningOut, setIsSigningOut] = useState();
 
   const [showLogoutOption, setShowLogoutOption] = useState(false);
 
   const handleLogout = async () => {
+    setIsSigningOut(true);
     try {
       const signoutResponse = await signout();
       console.log(" signoutResponse:", signoutResponse);
       console.log("User logged out successfully");
     } catch (error) {
       console.error("Error logging out:", error);
+    } finally {
+      setIsSigningOut(false);
     }
   };
 
@@ -74,7 +79,11 @@ const Sidebar: FC = ({ toggleSidebarShow }) => {
             onClick={handleLogout}
             className="w-[80%] h-[30px] min-h-[30px] flex justify-center items-center bg-red-200 border border-red-600"
           >
-            <p className="text-[0.8rem] font-medium text-red-600">Logout</p>
+            {isSigningOut ? (
+              <Spinner variant="gradient" color="danger" size="sm" />
+            ) : (
+              <p className="text-[0.8rem] font-medium text-red-600">Logout</p>
+            )}
           </button>
         </div>
         <div
