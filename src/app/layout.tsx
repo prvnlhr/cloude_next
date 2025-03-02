@@ -3,6 +3,7 @@ import "./globals.css";
 import localFont from "next/font/local";
 import { Providers } from "@/app/provider";
 import { Toaster } from "sonner";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 export const metadata: Metadata = {
   title: "Cloud.e",
@@ -86,7 +87,23 @@ export default function RootLayout({
           ${satoshi.className} antialiased`}
       >
         <Providers>{children}</Providers>
-        <Toaster position="top-right" expand={false} richColors closeButton />
+        <Toaster
+          position="top-right"
+          expand={false}
+          richColors
+          closeButton
+          icons={{
+            success: (
+              <Icon
+                icon="ep:success-filled"
+                className="text-[#36BF76] w-[20px] h-[20px]"
+              />
+            ),
+          }}
+          style={{
+            fontFamily: "Satoshi",
+          }}
+        />
       </body>
     </html>
   );
