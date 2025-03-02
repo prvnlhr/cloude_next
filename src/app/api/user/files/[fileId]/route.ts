@@ -183,11 +183,12 @@ export async function DELETE(req) {
 
 export async function GET(req, { params }) {
   try {
-    const { fileId } = params;
+    const { fileId } = await params;
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
 
-    console.log(userId, fileId);
+    console.log(" fileId--------------:", fileId);
+    console.log(" userId--------------:", userId);
 
     // Validate required fields
     if (!fileId || !userId) {
@@ -205,7 +206,7 @@ export async function GET(req, { params }) {
       .select("*")
       .eq("id", fileId)
       .eq("user_id", userId)
-      .single();
+      .maybeSingle();
 
     if (fetchError) {
       console.error("Supabase Error:", fetchError);
@@ -215,9 +216,16 @@ export async function GET(req, { params }) {
       });
     }
 
+    if (!file) {
+      return new Response(JSON.stringify({ error: "File not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     // Return the fetched file
     return new Response(JSON.stringify({ file }), {
-      status: 200, // 200 OK for successful fetch
+      status: 200,
       headers: {
         "Content-Type": "application/json",
       },

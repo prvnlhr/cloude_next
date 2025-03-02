@@ -1,6 +1,11 @@
 import ContentPage from "@/components/Layout/MainView/Pages/Common/ContentPage";
+import FilePage from "@/components/Layout/MainView/Pages/FilePage/FilePage";
 import SharedContentPage from "@/components/Layout/MainView/Pages/SharedFilesPage/SharedByMeContentPage";
-import { fetchSharedContent } from "@/lib/services/shared/sharedServices";
+import {
+  fetchSharedContent,
+  getSharedFile,
+} from "@/lib/services/shared/sharedServices";
+import { getFile } from "@/lib/services/user/filesService";
 import { createClient } from "@/middlewares/supabase/server";
 
 interface File {
@@ -51,29 +56,20 @@ export default async function SharedPage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const userId = user.id;
+  const userId = user!.id;
   const folderId = path[0] === "folders" ? path[1] : null;
 
+  if (path[0] === "files") {
+    const itemId = path[1];
+    const file = await getSharedFile(userId, itemId);
+    return <FilePage file={file} />;
+  }
   const contentData = await fetchSharedContent(userId, folderId, queryParams);
-  console.log("queryParams", queryParams);
-  return (
-    <>
-      {/* {queryParams ? (
-        <SharedContentPage
-          files={contentData?.files || []}
-          folders={contentData?.folders || []}
-        />
-      ) : (
-        <SharedContentPage
-          files={contentData?.files || []}
-          folders={contentData?.folders || []}
-        />
-      )} */}
 
-      <ContentPage
-        files={contentData?.files || []}
-        folders={contentData?.folders || []}
-      />
-    </>
+  return (
+    <ContentPage
+      files={contentData?.files || []}
+      folders={contentData?.folders || []}
+    />
   );
 }

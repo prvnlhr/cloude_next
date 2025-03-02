@@ -135,7 +135,7 @@ const AddMenu: FC = ({ menuRef }) => {
 
   return (
     <div
-      className={`w-auto h-[auto] flex flex-col absolute top-[75px] right-[20px] bg-white shadow-[rgba(100,100,111,0.2)_0px_7px_29px_0px] p-[5px] rounded border`}
+      className={`z-[50] w-auto h-[auto] flex flex-col absolute top-[75px] right-[20px] bg-white shadow-[rgba(100,100,111,0.2)_0px_7px_29px_0px] p-[5px] rounded border`}
       ref={menuRef}
     >
       <div className="w-full h-full flex flex-col items-center justify-center">

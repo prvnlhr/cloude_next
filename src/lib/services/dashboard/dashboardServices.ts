@@ -3,7 +3,6 @@ const BASE_URL: string =
 
 export async function fetchDashboardContent(userId) {
   try {
-    console.log(userId);
     const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
 
     const response = await fetch(
@@ -31,4 +30,3 @@ export async function fetchDashboardContent(userId) {
     };
   }
 }
-

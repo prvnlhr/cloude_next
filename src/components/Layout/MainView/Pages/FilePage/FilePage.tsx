@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 const FilePage = ({ file }) => {
+  console.log(" file:", file);
   const [signedUrl, setSignedUrl] = useState(null);
 
   const router = useRouter();

@@ -12,7 +12,7 @@ export default async function Dashboard() {
   const userId = user!.id;
 
   const dashboardContent = await fetchDashboardContent(userId);
-  console.log(" dashboardContent:", dashboardContent);
+  // console.log(" dashboardContent:", dashboardContent);
 
   return <DashboardPage dashboardContent={dashboardContent} />;
 }

@@ -1,6 +1,5 @@
 import {
   revalidatePathHandler,
-  revalidateTagHandler,
 } from "@/lib/revalidation";
 
 const BASE_URL: string =
@@ -40,7 +39,7 @@ export async function uploadFiles(filesDataArray, userId, folderId) {
   }
 }
 
-// -> NOT IN USE
+
 export async function getFile(userId, fileId) {
   try {
     const params = new URLSearchParams({ userId: encodeURIComponent(userId) });

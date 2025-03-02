@@ -47,7 +47,7 @@ const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
   return (
     <div
       ref={dropdownRef}
-      className="w-auto h-auto flex flex-col absolute top-0 right-[5px] bg-white shadow-[rgba(100,100,111,0.2)_0px_7px_29px_0px] p-[5px] rounded border"
+      className="z-[50] w-auto h-auto flex flex-col absolute top-0 right-[5px] bg-white shadow-[rgba(100,100,111,0.2)_0px_7px_29px_0px] p-[5px] rounded border"
     >
       <div className="w-full h-full flex flex-col items-center justify-center">
         {actions.map((action, index) =>

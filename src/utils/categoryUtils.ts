@@ -207,7 +207,6 @@ export function getCategoryByFileExtension(
   fileExtension: FileExtension | null
 ): Category {
   if (extensionToCategory[fileExtension]) {
-    console.log("yes", fileExtension);
   }
   return fileExtension ? extensionToCategory[fileExtension] : "Other";
 }

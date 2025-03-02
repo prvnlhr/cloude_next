@@ -103,3 +103,20 @@ export async function removeFromShared({ userId, itemId, itemType }) {
     throw new Error(`Failed to remove form shared: ${error.message}`);
   }
 }
+
+export async function getSharedFile(userId, itemId) {
+  try {
+    const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
+    const response = await fetch(
+      `${BASE_URL}/api/share/${itemId}?${params.toString()}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to get user's shared file");
+    }
+    return response.json();
+  } catch (error) {
+    console.log(error);
+    throw new Error(`Failed to get user's shared file ${error}`);
+  }
+}
