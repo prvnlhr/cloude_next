@@ -1,4 +1,4 @@
-import { revalidatePathHandler } from "@/lib/revalidation";
+import { revalidateTagHandler } from "@/lib/revalidation";
 
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
@@ -39,6 +39,9 @@ export async function uploadFolder(filesArray, foldersArray, userId) {
       );
     }
 
+    await revalidateTagHandler("storage");
+    await revalidateTagHandler("dashboard");
+
     console.log("Upload Folder Success:", result.message);
     return result.data;
   } catch (error) {
@@ -69,6 +72,9 @@ export async function renameFolder(updateData, folderId) {
       );
     }
 
+    await revalidateTagHandler("storage");
+    await revalidateTagHandler("dashboard");
+
     console.log("Rename Folder Success:", result.message);
     return result.data;
   } catch (error) {
@@ -98,6 +104,9 @@ export async function deleteFolder(userId, itemId) {
         result.error || result.message || "Failed to delete folder"
       );
     }
+
+    await revalidateTagHandler("storage");
+    await revalidateTagHandler("dashboard");
 
     console.log("Delete Folder Success:", result.message);
     return result.data;

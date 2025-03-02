@@ -1,5 +1,8 @@
+import { revalidateTagHandler } from "@/lib/revalidation";
+
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
 export async function uploadFiles(filesDataArray, userId, folderId) {
   const responses = [];
   try {
@@ -26,6 +29,8 @@ export async function uploadFiles(filesDataArray, userId, folderId) {
         );
       }
 
+      await revalidateTagHandler("storage");
+      await revalidateTagHandler("dashboard");
       console.log("Upload Success:", result.message);
       responses.push(result.data);
     }
@@ -78,6 +83,8 @@ export async function renameFile(updateData, fileId) {
         result.error || result.message || "Failed to rename file"
       );
     }
+    await revalidateTagHandler("storage");
+    await revalidateTagHandler("dashboard");
 
     console.log("Rename Success:", result.message);
     return result.data;
@@ -86,7 +93,6 @@ export async function renameFile(updateData, fileId) {
     throw new Error(`Failed to rename user's file: ${error.message}`);
   }
 }
-
 
 export async function deleteFile(userId, itemId) {
   try {
@@ -106,6 +112,8 @@ export async function deleteFile(userId, itemId) {
         result.error || result.message || "Failed to delete file"
       );
     }
+    await revalidateTagHandler("storage");
+    await revalidateTagHandler("dashboard");
 
     console.log("Delete Success:", result.message);
     return result.data;

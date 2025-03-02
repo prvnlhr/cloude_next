@@ -6,7 +6,8 @@ export async function fetchDashboardContent(userId) {
     const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
 
     const response = await fetch(
-      `${BASE_URL}/api/dashboard?${params.toString()}`
+      `${BASE_URL}/api/dashboard?${params.toString()}`,
+      { next: { revalidate: false, tags: ["dashboard"] } }
     );
 
     const result = await response.json();

@@ -12,6 +12,41 @@ const BASE_URL: string =
  * @returns The response data from the API.
  * @throws An error if the API request fails.
  */
+
+export async function fetchSharedContent(userId, folderId, queryParams) {
+  try {
+    const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
+
+    if (folderId) {
+      params.append("folderId", encodeURIComponent(folderId));
+    }
+    if (queryParams && queryParams.myshared === "true") {
+      params.append("shareByMe", "true");
+    }
+
+    const response = await fetch(`${BASE_URL}/api/share?${params.toString()}`, {
+      next: { revalidate: false, tags: ["shared"] },
+    });
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error(
+        "Fetch Shared Content Error:",
+        result.error || result.message
+      );
+      throw new Error(
+        result.error || result.message || "Failed to fetch shared content."
+      );
+    }
+
+    console.log("Fetch Shared Content Success:", result.message);
+    return result.data;
+  } catch (error) {
+    console.error("Fetch Shared Content Error:", error);
+    throw new Error(`Failed to fetch shared content: ${error.message}`);
+  }
+}
+
 export async function shareItem(shareItemData) {
   const { itemId, itemType, sharedById, shareWithEmail } = shareItemData;
 
@@ -33,6 +68,9 @@ export async function shareItem(shareItemData) {
       );
     }
 
+    await revalidateTagHandler("storage");
+    await revalidateTagHandler("dashboard");
+    await revalidateTagHandler("starred");
     console.log("Share Item Success:", result.message);
     return result.data;
   } catch (error) {
@@ -41,37 +79,6 @@ export async function shareItem(shareItemData) {
   }
 }
 
-export async function fetchSharedContent(userId, folderId, queryParams) {
-  try {
-    const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
-
-    if (folderId) {
-      params.append("folderId", encodeURIComponent(folderId));
-    }
-    if (queryParams && queryParams.myshared === "true") {
-      params.append("shareByMe", "true");
-    }
-
-    const response = await fetch(`${BASE_URL}/api/share?${params.toString()}`);
-    const result = await response.json();
-
-    if (!response.ok) {
-      console.error(
-        "Fetch Shared Content Error:",
-        result.error || result.message
-      );
-      throw new Error(
-        result.error || result.message || "Failed to fetch shared content."
-      );
-    }
-
-    console.log("Fetch Shared Content Success:", result.message);
-    return result.data;
-  } catch (error) {
-    console.error("Fetch Shared Content Error:", error);
-    throw new Error(`Failed to fetch shared content: ${error.message}`);
-  }
-}
 export async function removeFromShared({ userId, itemId, itemType }) {
   try {
     const response = await fetch(`${BASE_URL}/api/share/${itemId}`, {
@@ -94,6 +101,9 @@ export async function removeFromShared({ userId, itemId, itemType }) {
       );
     }
 
+    await revalidateTagHandler("storage");
+    await revalidateTagHandler("dashboard");
+    await revalidateTagHandler("starred");
     console.log("Remove from Shared Success:", result.message);
     return result.data;
   } catch (error) {

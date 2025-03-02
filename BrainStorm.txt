@@ -1979,3 +1979,9 @@ Owner -> if the file is users own(files table where userId is matching is users 
 Date Uploaded/Shared -> date created
 Type -> file/ folder
 Shared -> true/false
+
+
+
+TODO :
+delete file when folder is delete from storage
+if a item is already shared show in share modal 

@@ -1,12 +1,13 @@
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
 export async function fetchUserStorageContent(userId, folderId) {
   try {
     const params = new URLSearchParams({ userId, folderId });
 
     const [filesResponse, foldersResponse] = await Promise.all([
       fetch(`${BASE_URL}/api/user/files?${params.toString()}`, {
-        next: { tags: ["storage"] },
+        next: { revalidate: false, tags: ["storage"] },
       }),
       fetch(`${BASE_URL}/api/user/folders?${params.toString()}`),
     ]);
