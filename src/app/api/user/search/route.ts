@@ -1,5 +1,14 @@
 import { createClient } from "@/middlewares/supabase/server";
 
+const createResponse = (status, data = null, error = null, message = null) => {
+  return new Response(JSON.stringify({ status, data, error, message }), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
 const isValidUUID = (id) =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 
@@ -9,9 +18,7 @@ export async function GET(req) {
   const userId = searchParams.get("userId");
 
   if (!searchKey || !userId) {
-    return new Response(JSON.stringify({ error: "Missing parameters" }), {
-      status: 400,
-    });
+    return createResponse(400, null, "Missing parameters");
   }
 
   const supabase = await createClient();
@@ -83,7 +90,6 @@ export async function GET(req) {
         name: item.file_name,
         type: "file",
         is_shared: false,
-
         extension: item.extension,
       }));
 
@@ -115,11 +121,19 @@ export async function GET(req) {
       ],
     };
 
-    return new Response(JSON.stringify(result), { status: 200 });
+    return createResponse(
+      200,
+      result,
+      null,
+      "Search results fetched successfully"
+    );
   } catch (error) {
     console.error("Search Error:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-    });
+    return createResponse(
+      500,
+      null,
+      error.message,
+      "Error in fetching search results"
+    );
   }
 }

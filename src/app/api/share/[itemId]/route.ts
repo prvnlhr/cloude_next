@@ -1,22 +1,27 @@
 import { createClient } from "@/middlewares/supabase/server";
 
+const createResponse = (status, data = null, error = null, message = null) => {
+  return new Response(JSON.stringify({ status, data, error, message }), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+// DELETE : delete a item(unshare) to user -------------------------------------------------------------------------------------------
 export async function DELETE(req) {
-  const { userId, itemId, itemType } = await req.json();
-
-  console.log(" itemId:", itemId);
-  console.log(" userId:", userId);
-  console.log(" itemType:", itemType);
-
   try {
-    const supabase = await createClient();
-    if (!itemId || !userId) {
-      return new Response(
-        JSON.stringify({ error: "All fields are required." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+    const { userId, itemId, itemType } = await req.json();
+
+    if (!itemId || !userId || !itemType) {
+      return createResponse(400, null, "All fields are required.");
     }
 
-    const { data: deleteData, deleteError } = await supabase
+    const supabase = await createClient();
+
+    // Delete the shared item
+    const { data: deleteData, error: deleteError } = await supabase
       .from("share_items")
       .delete()
       .eq(itemType === "file" ? "file_id" : "folder_id", itemId)
@@ -24,159 +29,70 @@ export async function DELETE(req) {
 
     if (deleteError) {
       console.error("Error removing shared item:", deleteError);
-      return new Response(
-        JSON.stringify({
-          error: "Failed to remove item from starred.",
-          details: deleteError.message,
-        }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
-      );
+      return createResponse(500, null, "Failed to remove item from shared.");
     }
-    return new Response(
-      JSON.stringify({
-        message: "Item removed from shared successfully.",
-        itemId,
-        userId,
-      }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+
+    return createResponse(
+      200,
+      { itemId, userId },
+      null,
+      "Item removed from shared successfully."
     );
   } catch (error) {
     console.error("Error in share item DELETE route:", error);
-    return new Response(
-      JSON.stringify({
-        error: "An unexpected error occurred.",
-        details: error.message,
-      }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+    return createResponse(
+      500,
+      null,
+      error.message,
+      "An unexpected error occurred."
     );
   }
 }
 
+// GET : get a item which is shared with user ----------------------------------------------------------------------------------------
 export async function GET(req, { params }) {
   try {
-    const { itemId } = await params;
+    const { itemId } = params;
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
 
-    console.log(" itemId--------------xxxxxx:", itemId);
-    console.log(" userId--------------xxxxxx:", userId);
-
-    // Validate required fields
     if (!itemId || !userId) {
-      return new Response(
-        JSON.stringify({ error: "itemId and userId are required." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+      return createResponse(400, null, "itemId and userId are required.");
     }
 
     const supabase = await createClient();
 
-    // Fetch the file with matching itemId and userId
+    // Fetch the shared file with matching itemId and userId
     const { data: sharedFiles, error: sharedFilesError } = await supabase
       .from("share_items")
       .select("file_id, files(*)")
       .eq("shared_with", userId)
       .eq("item_type", "file")
+      .eq("file_id", itemId)
       .single();
 
     if (sharedFilesError) {
       console.error("Supabase Error:", sharedFilesError);
-      return new Response(JSON.stringify({ error: "Failed to fetch file" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      return createResponse(500, null, "Failed to fetch shared file.");
     }
 
     if (!sharedFiles) {
-      return new Response(JSON.stringify({ error: "File not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
+      return createResponse(404, null, "Shared file not found.");
     }
 
-    console.log(" sharedFiles:", sharedFiles);
-    // Return the fetched file
-    return new Response(JSON.stringify({ file: sharedFiles.files }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return createResponse(
+      200,
+      { file: sharedFiles.files },
+      null,
+      "Shared file fetched successfully."
+    );
   } catch (error) {
     console.error("GET Error:", error);
-    return new Response(
-      JSON.stringify({
-        error: error.message || "Internal Server Error",
-        message: "Error in fetching file",
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+    return createResponse(
+      500,
+      null,
+      error.message,
+      "Error in fetching shared file."
     );
   }
 }
-
-// export async function GET(req, { params }) {
-//   try {
-//     const { fileId } = await params;
-//     const { searchParams } = new URL(req.url);
-//     const userId = searchParams.get("userId");
-
-//     console.log(" fileId--------------:", fileId);
-//     console.log(" userId--------------:", userId);
-
-//     // Validate required fields
-//     if (!fileId || !userId) {
-//       return new Response(
-//         JSON.stringify({ error: "fileId and userId are required." }),
-//         { status: 400, headers: { "Content-Type": "application/json" } }
-//       );
-//     }
-
-//     const supabase = await createClient();
-
-//     // Fetch the file with matching fileId and userId
-//     const { data: file, error: fetchError } = await supabase
-//       .from("files")
-//       .select("*")
-//       .eq("id", fileId)
-//       .eq("user_id", userId)
-//       .maybeSingle();
-
-//     if (fetchError) {
-//       console.error("Supabase Error:", fetchError);
-//       return new Response(JSON.stringify({ error: "Failed to fetch file" }), {
-//         status: 500,
-//         headers: { "Content-Type": "application/json" },
-//       });
-//     }
-
-//     if (!file) {
-//       return new Response(JSON.stringify({ error: "File not found" }), {
-//         status: 404,
-//         headers: { "Content-Type": "application/json" },
-//       });
-//     }
-
-//     // Return the fetched file
-//     return new Response(JSON.stringify({ file }), {
-//       status: 200,
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
-//   } catch (error) {
-//     console.error("GET Error:", error);
-//     return new Response(
-//       JSON.stringify({
-//         error: error.message || "Internal Server Error",
-//         message: "Error in fetching file",
-//       }),
-//       {
-//         status: 500,
-//         headers: { "Content-Type": "application/json" },
-//       }
-//     );
-//   }
-// }

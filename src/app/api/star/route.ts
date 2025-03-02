@@ -1,15 +1,22 @@
 import { createClient } from "@/middlewares/supabase/server";
 
+const createResponse = (status, data = null, error = null, message = null) => {
+  return new Response(JSON.stringify({ status, data, error, message }), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+//  POST : Add an item to starred -------------------------------------------------------------------------------------------------
 export async function POST(req) {
   try {
     const supabase = await createClient();
 
     const { itemId, itemType, userId } = await req.json();
     if (!itemId || !itemType || !userId) {
-      return new Response(
-        JSON.stringify({ error: "All fields are required." }),
-        { status: 400 }
-      );
+      return createResponse(400, null, "All fields are required.");
     }
 
     const { data: existingStar, error: checkError } = await supabase
@@ -22,20 +29,11 @@ export async function POST(req) {
 
     if (checkError) {
       console.error("Error checking existing star:", checkError);
-      return new Response(
-        JSON.stringify({
-          error: "Error checking existing star.",
-          details: checkError.message,
-        }),
-        { status: 500 }
-      );
+      return createResponse(500, null, "Error checking existing star.");
     }
 
     if (existingStar) {
-      return new Response(
-        JSON.stringify({ message: "Item is already added to Starred." }),
-        { status: 409 }
-      );
+      return createResponse(409, null, "Item is already added to Starred.");
     }
 
     const insertData = {
@@ -53,13 +51,7 @@ export async function POST(req) {
 
     if (insertError) {
       console.error("Error inserting starred item:", insertError);
-      return new Response(
-        JSON.stringify({
-          error: "Failed to mark item as starred.",
-          details: insertError.message,
-        }),
-        { status: 500 }
-      );
+      return createResponse(500, null, "Failed to mark item as starred.");
     }
 
     const updateTable = itemType === "file" ? "files" : "folders";
@@ -71,43 +63,36 @@ export async function POST(req) {
 
     if (updateError) {
       console.error("Error updating is_starred in table:", updateError);
-      return new Response(
-        JSON.stringify({
-          error: "Failed to update is_starred in the respective table.",
-          details: updateError.message,
-        }),
-        { status: 500 }
+      return createResponse(
+        500,
+        null,
+        "Failed to update is_starred in the respective table."
       );
     }
 
-    // Return success response
-    return new Response(
-      JSON.stringify({
-        message: "Item added to Starred successfully.",
-        starredItem,
-      }),
-      { status: 200 }
+    return createResponse(
+      200,
+      starredItem,
+      null,
+      "Item added to Starred successfully."
     );
   } catch (error) {
     console.error("Error at Star file POST:", error);
-    return new Response(
-      JSON.stringify({
-        error: error.message,
-        message:
-          "An unexpected error occurred while marking the item as starred.",
-      }),
-      { status: 500 }
+    return createResponse(
+      500,
+      null,
+      error.message,
+      "An unexpected error occurred while marking the item as starred."
     );
   }
 }
 
+// GET : all starred items -----------------------------------------------------------------------------------------------------------------------
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
   const folderId = searchParams.get("folderId");
   const supabase = await createClient();
-  console.log("userId:", userId);
-  console.log("folderId:", folderId);
 
   try {
     // 1. If folderId is provided, check access using Recursive CTE
@@ -119,10 +104,7 @@ export async function GET(req) {
         });
 
       if (accessError || !accessibleFolders) {
-        return new Response(
-          JSON.stringify({ error: "Access denied or folder not found." }),
-          { status: 403 }
-        );
+        return createResponse(403, null, "Access denied or folder not found.");
       }
 
       // 2. Fetch subfolders and files within the provided folderId
@@ -140,14 +122,11 @@ export async function GET(req) {
         throw new Error("Error fetching folders or files.");
       }
 
-      return new Response(
-        JSON.stringify({
-          folders,
-          files,
-        }),
-        {
-          status: 200,
-        }
+      return createResponse(
+        200,
+        { folders, files },
+        null,
+        "Folders and files fetched successfully."
       );
     } else {
       // 3. If folderId is null, we're at the root level. Fetch only shared items at the root level
@@ -157,9 +136,6 @@ export async function GET(req) {
           .select("folder_id, folders(*)")
           .eq("starred_by", userId)
           .eq("item_type", "folder");
-
-      // console.log("starredFolders:", starredFolders);
-      // console.log("starredFoldersError:", starredFoldersError);
 
       const { data: sharedFiles, error: sharedFilesError } = await supabase
         .from("starred_items")
@@ -175,18 +151,15 @@ export async function GET(req) {
       const folders = starredFolders.map((item) => item.folders);
       const files = sharedFiles.map((item) => item.files);
 
-      return new Response(JSON.stringify({ folders, files }), {
-        status: 200,
-      });
+      return createResponse(
+        200,
+        { folders, files },
+        null,
+        "Starred folders and files fetched successfully."
+      );
     }
   } catch (error) {
     console.error("Failed to get starred content:", error);
-    return new Response(
-      JSON.stringify({
-        error: "Something went wrong.",
-        details: error.message,
-      }),
-      { status: 500 }
-    );
+    return createResponse(500, null, error.message, "Something went wrong.");
   }
 }

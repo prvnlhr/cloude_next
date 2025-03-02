@@ -22,20 +22,28 @@ export async function uploadFolder(filesArray, foldersArray, userId) {
         })
       );
     });
+
     const uploadResponse = await fetch(`${BASE_URL}/api/user/folders`, {
       method: "POST",
       body: formData,
     });
 
+    const result = await uploadResponse.json();
+
     if (!uploadResponse.ok) {
-      throw new Error(`Failed to upload folder and its content`);
+      console.error("Upload Folder Error:", result.error || result.message);
+      throw new Error(
+        result.error ||
+          result.message ||
+          "Failed to upload folder and its content"
+      );
     }
-    await revalidatePathHandler("/cloude/home", "layout");
-    const data = await uploadResponse.json();
-    return data;
+
+    console.log("Upload Folder Success:", result.message);
+    return result.data;
   } catch (error) {
-    console.log(error);
-    throw new Error(`Failed to upload users files ${error}`);
+    console.error("Upload Folder Error:", error);
+    throw new Error(`Failed to upload folder: ${error.message}`);
   }
 }
 
@@ -52,16 +60,20 @@ export async function renameFolder(updateData, folderId) {
       }
     );
 
+    const result = await renameResponse.json();
+
     if (!renameResponse.ok) {
-      const errorData = await renameResponse.json();
-      throw new Error(errorData.message || "Failed to rename file.");
+      console.error("Rename Folder Error:", result.error || result.message);
+      throw new Error(
+        result.error || result.message || "Failed to rename folder"
+      );
     }
-    await revalidatePathHandler("/cloude/home", "layout");
-    const data = await renameResponse.json();
-    return data;
+
+    console.log("Rename Folder Success:", result.message);
+    return result.data;
   } catch (error) {
-    console.error("Failed to rename file:", error);
-    throw new Error(`Failed to rename user's file: ${error.message}`);
+    console.error("Rename Folder Error:", error);
+    throw new Error(`Failed to rename folder: ${error.message}`);
   }
 }
 
@@ -78,17 +90,19 @@ export async function deleteFolder(userId, itemId) {
       }
     );
 
+    const result = await deleteResponse.json();
+
     if (!deleteResponse.ok) {
-      const errorData = await deleteResponse.json();
-      throw new Error(errorData.message || "Failed to delete folder.");
+      console.error("Delete Folder Error:", result.error || result.message);
+      throw new Error(
+        result.error || result.message || "Failed to delete folder"
+      );
     }
 
-    await revalidatePathHandler("/cloude/home", "layout");
-
-    const data = await deleteResponse.json();
-    return data;
+    console.log("Delete Folder Success:", result.message);
+    return result.data;
   } catch (error) {
-    console.error("Failed to delete folder:", error);
-    throw new Error(`Failed to delete user's folder: ${error.message}`);
+    console.error("Delete Folder Error:", error);
+    throw new Error(`Failed to delete folder: ${error.message}`);
   }
 }

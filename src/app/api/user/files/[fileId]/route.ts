@@ -1,14 +1,22 @@
 import { createClient } from "@/middlewares/supabase/server";
+
+const createResponse = (status, data = null, error = null, message = null) => {
+  return new Response(JSON.stringify({ status, data, error, message }), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+// PATCH : rename a file with id ------------------------------------------------------------------------------------------------------------------
 export async function PATCH(req) {
   try {
     const { itemId, userId, updateName } = await req.json();
 
     // Validate required fields
     if (!itemId || !updateName || !userId) {
-      return new Response(
-        JSON.stringify({ error: "All fields are required." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+      return createResponse(400, null, "All fields are required.");
     }
 
     const supabase = await createClient();
@@ -23,10 +31,7 @@ export async function PATCH(req) {
 
     if (fetchError || !currentFile) {
       console.error("Error fetching current file:", fetchError);
-      return new Response(
-        JSON.stringify({ error: "Failed to fetch current file details." }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
-      );
+      return createResponse(500, null, "Failed to fetch current file details.");
     }
 
     const oldName = currentFile.file_name;
@@ -42,10 +47,7 @@ export async function PATCH(req) {
 
     if (renameError) {
       console.error("Supabase Error:", renameError);
-      return new Response(JSON.stringify({ error: "Failed to rename file" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      return createResponse(500, null, "Failed to rename file.");
     }
 
     // Log the rename activity in the activities table
@@ -53,49 +55,32 @@ export async function PATCH(req) {
       {
         activity_type: "rename",
         item_type: "file",
-        file_id: itemId, // The ID of the renamed file
-        folder_id: null, // Ensure folder_id is null for file renames
-        user_id: userId, // The user who renamed the file
-        details: { old_name: oldName, new_name: updateName }, // Store old and new names
+        file_id: itemId,
+        folder_id: null,
+        user_id: userId,
+        details: { old_name: oldName, new_name: updateName },
       },
     ]);
 
     if (activityError) {
       console.error("Error logging rename activity:", activityError);
-      // Optionally, you can handle this error without failing the entire operation
     }
 
-    return new Response(JSON.stringify({ renameData }), {
-      status: 200, // 200 OK for successful updates
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return createResponse(200, renameData, null, "File renamed successfully.");
   } catch (error) {
     console.error("PATCH Error:", error);
-    return new Response(
-      JSON.stringify({
-        error: error.message || "Internal Server Error",
-        message: "Error in renaming file",
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return createResponse(500, null, error.message, "Error in renaming file.");
   }
 }
 
+// DELETE : delete a file with id ------------------------------------------------------------------------------------------------------------------
 export async function DELETE(req) {
   try {
     const { itemId, userId } = await req.json();
 
     // Check for required fields
     if (!itemId || !userId) {
-      return new Response(
-        JSON.stringify({ error: "Item ID and User ID are required." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+      return createResponse(400, null, "Item ID and User ID are required.");
     }
 
     const supabase = await createClient();
@@ -109,22 +94,16 @@ export async function DELETE(req) {
 
     if (fileCheckError && fileCheckError.code !== "PGRST116") {
       console.error("File check error:", fileCheckError);
-      return Response.json(
-        {
-          error: "Failed to verify file ownership",
-          details: fileCheckError.message,
-        },
-        { status: 500 }
-      );
+      return createResponse(500, null, "Failed to verify file ownership.");
     }
 
     if (!fileExists) {
-      return Response.json(
-        { error: "File not found or you don't have permission to delete it" },
-        { status: 404 }
+      return createResponse(
+        404,
+        null,
+        "File not found or you don't have permission to delete it."
       );
     }
-    console.log(fileExists.storage_path);
 
     const { data: storageData, error: storageError } = await supabase.storage
       .from("cloude")
@@ -132,16 +111,7 @@ export async function DELETE(req) {
 
     if (storageError) {
       console.error("Storage Deletion Error:", storageError);
-      return new Response(
-        JSON.stringify({
-          error: "Failed to delete file from storage",
-          details: storageError.message,
-        }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return createResponse(500, null, "Failed to delete file from storage.");
     }
 
     // Delete the item from the files table
@@ -151,51 +121,28 @@ export async function DELETE(req) {
       .eq("id", itemId)
       .eq("user_id", userId);
 
-    // Handle Supabase error
     if (deleteError) {
       console.error("Supabase Error:", deleteError);
-      return new Response(JSON.stringify({ error: "Failed to delete file." }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      return createResponse(500, null, "Failed to delete file.");
     }
 
-    return new Response(JSON.stringify({ deleteData }), {
-      status: 200, // 200 OK for successful deletion
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return createResponse(200, deleteData, null, "File deleted successfully.");
   } catch (error) {
     console.error("DELETE Error:", error);
-    return new Response(
-      JSON.stringify({
-        error: error.message || "Internal Server Error",
-        message: "Error in deleting file.",
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return createResponse(500, null, error.message, "Error in deleting file.");
   }
 }
 
+// GET : get a file with id ------------------------------------------------------------------------------------------------------------------
 export async function GET(req, { params }) {
   try {
-    const { fileId } = await params;
+    const { fileId } = params;
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
 
-    console.log(" fileId--------------:", fileId);
-    console.log(" userId--------------:", userId);
-
     // Validate required fields
     if (!fileId || !userId) {
-      return new Response(
-        JSON.stringify({ error: "fileId and userId are required." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+      return createResponse(400, null, "fileId and userId are required.");
     }
 
     const supabase = await createClient();
@@ -210,37 +157,16 @@ export async function GET(req, { params }) {
 
     if (fetchError) {
       console.error("Supabase Error:", fetchError);
-      return new Response(JSON.stringify({ error: "Failed to fetch file" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      return createResponse(500, null, "Failed to fetch file.");
     }
 
     if (!file) {
-      return new Response(JSON.stringify({ error: "File not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
+      return createResponse(404, null, "File not found.");
     }
 
-    // Return the fetched file
-    return new Response(JSON.stringify({ file }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return createResponse(200, file, null, "File fetched successfully.");
   } catch (error) {
     console.error("GET Error:", error);
-    return new Response(
-      JSON.stringify({
-        error: error.message || "Internal Server Error",
-        message: "Error in fetching file",
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return createResponse(500, null, error.message, "Error in fetching file.");
   }
 }

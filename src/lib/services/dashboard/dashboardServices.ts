@@ -9,24 +9,22 @@ export async function fetchDashboardContent(userId) {
       `${BASE_URL}/api/dashboard?${params.toString()}`
     );
 
+    const result = await response.json();
+
     if (!response.ok) {
-      const responseData = await response.json();
-      throw {
-        status: response.status,
-        message:
-          responseData.error ||
-          responseData.message ||
-          "Failed to fetch dashboard content.",
-        data: responseData,
-      };
+      console.error(
+        "Fetch Dashboard Content Error:",
+        result.error || result.message
+      );
+      throw new Error(
+        result.error || result.message || "Failed to fetch dashboard content."
+      );
     }
 
-    return await response.json();
+    console.log("Fetch Dashboard Content Success:", result.message);
+    return result.data;
   } catch (error) {
-    throw {
-      status: error.status || 500,
-      message: error.message || "Network error or server unreachable",
-      data: error.data || null,
-    };
+    console.error("Fetch Dashboard Content Error:", error);
+    throw new Error(`Failed to fetch dashboard content: ${error.message}`);
   }
 }

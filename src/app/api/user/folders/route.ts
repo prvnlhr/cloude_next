@@ -2,6 +2,18 @@ import { createClient } from "@/middlewares/supabase/server";
 import { getFileExtension } from "@/utils/categoryUtils";
 import slugify from "slugify";
 
+// Helper function to standardize API responses
+const createResponse = (status, data = null, error = null, message = null) => {
+  return new Response(JSON.stringify({ status, data, error, message }), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+// POST : UPLOAD A FOLDER AND ITS CONTENT --------------------------------------------------------------------------------------------------
+
 export async function POST(req) {
   try {
     const formData = await req.formData();
@@ -19,7 +31,7 @@ export async function POST(req) {
       }
     }
 
-    // keeping track of parent folder id -> will be used later for inserting into activities
+    // Keeping track of parent folder id -> will be used later for inserting into activities
     let parentFolderId = null;
 
     const supabase = await createClient();
@@ -101,7 +113,6 @@ export async function POST(req) {
       }
     }
 
-    console.log(" parentFolderId:.............", parentFolderId);
     // Log the parent folder creation activity at the end
     if (parentFolderId) {
       const { error: activityError } = await supabase
@@ -119,34 +130,27 @@ export async function POST(req) {
 
       if (activityError) {
         console.error("Error logging folder upload activity:", activityError);
-        // Optionally, you can handle this error without failing the entire operation
       }
     }
 
-    return new Response(
-      JSON.stringify({ message: "Folder and files uploaded successfully" }),
-      {
-        status: 201,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+    return createResponse(
+      201,
+      null,
+      null,
+      "Folder and files uploaded successfully"
     );
   } catch (error) {
     console.error("POST Error:", error);
-    return new Response(
-      JSON.stringify({
-        error: error.message,
-        message: "Error in uploading folder",
-      }),
-      {
-        status: 500,
-      }
+    return createResponse(
+      500,
+      null,
+      error.message,
+      "Error in uploading folder"
     );
   }
 }
 
-// get all folders
+//  GET ALL FOLDERS AND ITS CONTENT ---------------------------------------------------------------------------------------------------------
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
@@ -155,12 +159,7 @@ export async function GET(req) {
     const folderId = folderIdRaw === "null" ? null : folderIdRaw;
 
     if (!userId) {
-      return new Response(JSON.stringify({ error: "UserId is required" }), {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      return createResponse(400, null, "UserId is required");
     }
 
     const supabase = await createClient();
@@ -175,22 +174,18 @@ export async function GET(req) {
 
     const { data: folders, error: fetchError } = await query;
 
-    return new Response(JSON.stringify({ folders }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    if (fetchError) {
+      throw new Error("Failed to fetch folders: " + fetchError.message);
+    }
+
+    return createResponse(200, folders, null, "Folders fetched successfully");
   } catch (error) {
     console.error("GET Error:", error);
-    return new Response(
-      JSON.stringify({
-        error: error,
-        message: "Error in fetching folders of user",
-      }),
-      {
-        status: 500,
-      }
+    return createResponse(
+      500,
+      null,
+      error.message,
+      "Error in fetching folders of user"
     );
   }
 }

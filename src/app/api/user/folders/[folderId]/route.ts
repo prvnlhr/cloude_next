@@ -1,15 +1,22 @@
 import { createClient } from "@/middlewares/supabase/server";
 
+const createResponse = (status, data = null, error = null, message = null) => {
+  return new Response(JSON.stringify({ status, data, error, message }), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+// PATCH : rename the folder ----------------------------------------------------------------------------------------------------
 export async function PATCH(req) {
   try {
     const { itemId, userId, updateName } = await req.json();
 
     // Validate required fields
     if (!itemId || !updateName || !userId) {
-      return new Response(
-        JSON.stringify({ error: "All fields are required." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+      return createResponse(400, null, "All fields are required.");
     }
 
     const supabase = await createClient();
@@ -24,9 +31,10 @@ export async function PATCH(req) {
 
     if (fetchError || !currentFolder) {
       console.error("Error fetching current folder:", fetchError);
-      return new Response(
-        JSON.stringify({ error: "Failed to fetch current folder details." }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
+      return createResponse(
+        500,
+        null,
+        "Failed to fetch current folder details."
       );
     }
 
@@ -43,13 +51,7 @@ export async function PATCH(req) {
 
     if (renameError) {
       console.error("Supabase Error:", renameError);
-      return new Response(
-        JSON.stringify({ error: "Failed to rename folder" }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return createResponse(500, null, "Failed to rename folder.");
     }
 
     // Log the rename activity in the activities table
@@ -66,39 +68,33 @@ export async function PATCH(req) {
 
     if (activityError) {
       console.error("Error logging rename activity:", activityError);
-      // Optionally, you can handle this error without failing the entire operation
     }
 
-    return new Response(JSON.stringify({ renameData }), {
-      status: 200, // 200 OK for successful updates
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return createResponse(
+      200,
+      renameData,
+      null,
+      "Folder renamed successfully."
+    );
   } catch (error) {
     console.error("PATCH Error:", error);
-    return new Response(
-      JSON.stringify({
-        error: error.message || "Internal Server Error",
-        message: "Error in renaming folder",
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+    return createResponse(
+      500,
+      null,
+      error.message,
+      "Error in renaming folder."
     );
   }
 }
+
+// DELETE : Delete a folder by id ----------------------------------------------------------------------------------------------------
 export async function DELETE(req) {
   try {
     const { itemId, userId } = await req.json();
 
     // Check for required fields
     if (!itemId || !userId) {
-      return new Response(
-        JSON.stringify({ error: "Folder ID and User ID are required." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+      return createResponse(400, null, "Folder ID and User ID are required.");
     }
 
     const supabase = await createClient();
@@ -112,19 +108,14 @@ export async function DELETE(req) {
 
     if (folderCheckError && folderCheckError.code !== "PGRST116") {
       console.error("Folder check error:", folderCheckError);
-      return Response.json(
-        {
-          error: "Failed to check folder",
-          details: folderCheckError.message,
-        },
-        { status: 500 }
-      );
+      return createResponse(500, null, "Failed to check folder.");
     }
 
     if (!folderExists) {
-      return Response.json(
-        { error: "Folder not found or you don't have permission to delete it" },
-        { status: 404 }
+      return createResponse(
+        404,
+        null,
+        "Folder not found or you don't have permission to delete it."
       );
     }
 
@@ -135,35 +126,24 @@ export async function DELETE(req) {
       .eq("id", itemId)
       .eq("user_id", userId);
 
-    // Handle Supabase error
     if (deleteError) {
       console.error("Supabase Error:", deleteError);
-      return new Response(
-        JSON.stringify({ error: "Failed to delete folder." }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return createResponse(500, null, "Failed to delete folder.");
     }
 
-    return new Response(JSON.stringify({ deleteData }), {
-      status: 200, // 200 OK for successful deletion
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return createResponse(
+      200,
+      deleteData,
+      null,
+      "Folder deleted successfully."
+    );
   } catch (error) {
     console.error("DELETE Error:", error);
-    return new Response(
-      JSON.stringify({
-        error: error.message || "Internal Server Error",
-        message: "Error in deleting folder.",
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+    return createResponse(
+      500,
+      null,
+      error.message,
+      "Error in deleting folder."
     );
   }
 }

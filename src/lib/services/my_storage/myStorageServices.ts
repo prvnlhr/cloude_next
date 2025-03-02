@@ -1,18 +1,6 @@
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
-/**
- * Fetches files and folders for a specific user and folder from the storage API.
- * @param userId - The ID of the user.
- * @param folderId - The ID of the folder to fetch content from.
- * @returns An object containing `files` and `folders`.
- * @throws An error if the request fails or the response is invalid.
- */
-
-export async function fetchUserStorageContent(
-  userId: string,
-  folderId: string
-): Promise<{ files: any[]; folders: any[] }> {
+export async function fetchUserStorageContent(userId, folderId) {
   try {
     const params = new URLSearchParams({ userId, folderId });
 
@@ -23,16 +11,42 @@ export async function fetchUserStorageContent(
       fetch(`${BASE_URL}/api/user/folders?${params.toString()}`),
     ]);
 
-    if (!filesResponse.ok || !foldersResponse.ok) {
-      throw new Error("Failed to fetch storage content: API request failed.");
+    const filesResult = await filesResponse.json();
+    const foldersResult = await foldersResponse.json();
+
+    if (!filesResponse.ok) {
+      console.error(
+        "Fetch Files Error:",
+        filesResult.error || filesResult.message
+      );
+      throw new Error(
+        filesResult.error || filesResult.message || "Failed to fetch files."
+      );
     }
 
-    const { files } = await filesResponse.json();
-    const { folders } = await foldersResponse.json();
+    if (!foldersResponse.ok) {
+      console.error(
+        "Fetch Folders Error:",
+        foldersResult.error || foldersResult.message
+      );
+      throw new Error(
+        foldersResult.error ||
+          foldersResult.message ||
+          "Failed to fetch folders."
+      );
+    }
 
-    return { files, folders };
+    console.log("Fetch Storage Content Success:", {
+      filesMessage: filesResult.message,
+      foldersMessage: foldersResult.message,
+    });
+
+    return {
+      files: filesResult.data,
+      folders: foldersResult.data,
+    };
   } catch (error) {
-    console.error("Error fetching storage content:", error);
+    console.error("Fetch Storage Content Error:", error);
     throw new Error(`Failed to fetch storage content: ${error.message}`);
   }
 }

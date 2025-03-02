@@ -1,6 +1,16 @@
 import { createClient } from "@/middlewares/supabase/server";
 import { getFileExtension } from "@/utils/categoryUtils";
 
+// Helper function for API responses
+const createResponse = (status, data = null, error = null, message = null) => {
+  return new Response(JSON.stringify({ status, data, error, message }), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
 // Function to upload a file to storage
 const uploadToStorage = async (file: any, userId: string) => {
   try {
@@ -25,33 +35,20 @@ const uploadToStorage = async (file: any, userId: string) => {
   }
 };
 
-//  Upload File
+// POST : UPLOAD FILE -----------------------------------------------------------------------------------------------------------------
 export async function POST(req) {
   try {
     const formData = await req.formData();
     const file = formData.get("file");
     const userId = formData.get("userId");
     const folderId = formData.get("folderId") || null;
-    console.log(" file:", file);
-    console.log(" userId:", userId);
-    console.log(" folderId:", folderId);
 
     if (!file || !userId) {
-      return new Response(
-        JSON.stringify({ error: "File and UserId are required" }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      return createResponse(400, null, "File and UserId are required");
     }
 
     const supabase = await createClient();
-
     const filePath = await uploadToStorage(file, userId);
-
     const ext = getFileExtension(file.name);
 
     const { data: insertData, error: insertError } = await supabase
@@ -73,44 +70,36 @@ export async function POST(req) {
     if (insertError) {
       throw new Error("Failed to insert file metadata: " + insertError.message);
     }
-    // Log the upload activity in the activities table
+
+    // Add upload activity
     const { error: activityError } = await supabase.from("activities").insert([
       {
         activity_type: "upload",
         item_type: "file",
-        file_id: insertData.id, // The ID of the inserted file
-        folder_id: null, // Ensure folder_id is null for file uploads
-        user_id: userId, // The user who uploaded the file
-        details: null, // No additional details needed for uploads
+        file_id: insertData.id,
+        folder_id: null,
+        user_id: userId,
+        details: null,
       },
     ]);
 
     if (activityError) {
       console.error("Error logging upload activity:", activityError);
-      // Optionally, you can handle this error without failing the entire operation
     }
 
-    return new Response(JSON.stringify({ insertData }), {
-      status: 201,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return createResponse(201, insertData, null, "File uploaded successfully");
   } catch (error) {
     console.error("POST Error:", error);
-    return new Response(
-      JSON.stringify({
-        error: error,
-        message: "Error in uploading file/files",
-      }),
-      {
-        status: 500,
-      }
+    return createResponse(
+      500,
+      null,
+      error.message,
+      "Error in uploading file/files"
     );
   }
 }
 
-// Get all files of user
+// GET : ALL USER"S FILES  -------------------------------------------------------------------------------------------------------------------------------------
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
@@ -119,42 +108,32 @@ export async function GET(req) {
     const folderId = folderIdRaw === "null" ? null : folderIdRaw;
 
     if (!userId) {
-      return new Response(JSON.stringify({ error: "UserId is required" }), {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      return createResponse(400, null, "UserId is required");
     }
 
     const supabase = await createClient();
-
     let query = supabase.from("files").select("*").eq("user_id", userId);
 
     if (folderId !== null) {
       query = query.eq("folder_id", folderId);
     } else {
-      query = query.is("folder_id", null); // Use .is() for NULL checks
+      query = query.is("folder_id", null);
     }
 
     const { data: files, error: fetchError } = await query;
 
-    return new Response(JSON.stringify({ files }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    if (fetchError) {
+      throw new Error("Failed to fetch files: " + fetchError.message);
+    }
+
+    return createResponse(200, files, null, "Files fetched successfully");
   } catch (error) {
     console.error("GET Error:", error);
-    return new Response(
-      JSON.stringify({
-        error: error,
-        message: "Error in fetching files of user",
-      }),
-      {
-        status: 500,
-      }
+    return createResponse(
+      500,
+      null,
+      error.message,
+      "Error in fetching files of user"
     );
   }
 }

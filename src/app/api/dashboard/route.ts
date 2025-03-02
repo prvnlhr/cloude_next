@@ -1,14 +1,22 @@
 import { createClient } from "@/middlewares/supabase/server";
 
+const createResponse = (status, data = null, error = null, message = null) => {
+  return new Response(JSON.stringify({ status, data, error, message }), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+// GET : dashboard content -> recent uploaded files, folder categories, activities -------------------------------------------------------
+
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
 
   if (!userId) {
-    return new Response(JSON.stringify({ message: "User ID is required" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+    return createResponse(400, null, "User ID is required.");
   }
 
   const supabase = await createClient();
@@ -22,7 +30,11 @@ export async function GET(req) {
       .order("created_at", { ascending: false })
       .limit(10);
 
-    if (recentUploadsError) throw recentUploadsError;
+    if (recentUploadsError) {
+      throw new Error(
+        "Failed to fetch recent uploads: " + recentUploadsError.message
+      );
+    }
 
     // 2. Fetch all file categories uploaded by the user
     const { data: allFiles, error: allFilesError } = await supabase
@@ -30,9 +42,11 @@ export async function GET(req) {
       .select("id, file_name, file_type, created_at")
       .eq("user_id", userId);
 
-    if (allFilesError) throw allFilesError;
+    if (allFilesError) {
+      throw new Error("Failed to fetch all files: " + allFilesError.message);
+    }
 
-    // 2. Extract unique file extensions
+    // Extract unique file extensions
     const filesByExtensions = [
       ...new Set(
         allFiles
@@ -41,12 +55,13 @@ export async function GET(req) {
       ),
     ];
 
+    // 3. Fetch recent activities
     const { data: recentActivities, error: activitiesError } = await supabase
       .from("activities")
       .select(
         `
         id, activity_type, item_type, activity_timestamp, details,
-         file_id, folder_id,
+        file_id, folder_id,
         files:file_id (id, file_name, file_type, file_size, storage_path, thumbnail_url),
         folders:folder_id (id, folder_name, path)
       `
@@ -54,7 +69,11 @@ export async function GET(req) {
       .eq("user_id", userId)
       .order("activity_timestamp", { ascending: false });
 
-    if (activitiesError) throw activitiesError;
+    if (activitiesError) {
+      throw new Error(
+        "Failed to fetch recent activities: " + activitiesError.message
+      );
+    }
 
     // Transform activities to include item details
     const transformedActivities = recentActivities.map((activity) => {
@@ -79,28 +98,23 @@ export async function GET(req) {
       };
     });
 
-    return new Response(
-      JSON.stringify({
+    return createResponse(
+      200,
+      {
         recentUploads,
         filesByExtensions,
         recentActivities: transformedActivities,
-      }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      }
+      },
+      null,
+      "Dashboard content fetched successfully."
     );
   } catch (error) {
     console.error("GET Error:", error);
-    return new Response(
-      JSON.stringify({
-        error: error.message,
-        message: "Error in fetching dashboard content",
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+    return createResponse(
+      500,
+      null,
+      error.message,
+      "Error in fetching dashboard content."
     );
   }
 }

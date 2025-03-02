@@ -1,14 +1,8 @@
-import {
-  revalidatePathHandler,
-} from "@/lib/revalidation";
-
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
 export async function uploadFiles(filesDataArray, userId, folderId) {
   const responses = [];
   try {
-    let index = 1;
     for (const fileDataObject of filesDataArray) {
       const formData = new FormData();
       formData.append("file", fileDataObject.file);
@@ -22,23 +16,25 @@ export async function uploadFiles(filesDataArray, userId, folderId) {
         method: "POST",
         body: formData,
       });
-      console.log(index, uploadResponse);
-      if (!uploadResponse.ok) {
-        throw new Error(`Failed to upload file`);
-      }
-      const data = await uploadResponse.json();
-      responses.push(data);
 
-      index++;
+      const result = await uploadResponse.json();
+
+      if (!uploadResponse.ok) {
+        console.error("Upload Error:", result.error || result.message);
+        throw new Error(
+          result.error || result.message || "Failed to upload file"
+        );
+      }
+
+      console.log("Upload Success:", result.message);
+      responses.push(result.data);
     }
-    await revalidatePathHandler("/cloude/home", "layout");
     return responses;
   } catch (error) {
-    console.log(error);
-    throw new Error(`Failed to upload users files ${error}`);
+    console.error("Upload Files Error:", error);
+    throw new Error(`Failed to upload files: ${error.message}`);
   }
 }
-
 
 export async function getFile(userId, fileId) {
   try {
@@ -47,13 +43,20 @@ export async function getFile(userId, fileId) {
       `${BASE_URL}/api/user/files/${fileId}?${params.toString()}`
     );
 
+    const result = await uploadResponse.json();
+
     if (!uploadResponse.ok) {
-      throw new Error("Failed to get user's file");
+      console.error("Get File Error:", result.error || result.message);
+      throw new Error(
+        result.error || result.message || "Failed to get user's file"
+      );
     }
-    return uploadResponse.json();
+
+    console.log("Get File Success:", result.message);
+    return result.data;
   } catch (error) {
-    console.log(error);
-    throw new Error(`Failed to get user's file ${error}`);
+    console.error("Get File Error:", error);
+    throw new Error(`Failed to get user's file: ${error.message}`);
   }
 }
 
@@ -67,18 +70,23 @@ export async function renameFile(updateData, fileId) {
       body: JSON.stringify(updateData),
     });
 
+    const result = await renameResponse.json();
+
     if (!renameResponse.ok) {
-      const errorData = await renameResponse.json();
-      throw new Error(errorData.message || "Failed to rename file.");
+      console.error("Rename Error:", result.error || result.message);
+      throw new Error(
+        result.error || result.message || "Failed to rename file"
+      );
     }
-    await revalidatePathHandler("/cloude/home", "layout");
-    const data = await renameResponse.json();
-    return data;
+
+    console.log("Rename Success:", result.message);
+    return result.data;
   } catch (error) {
-    console.error("Failed to rename file:", error);
+    console.error("Rename File Error:", error);
     throw new Error(`Failed to rename user's file: ${error.message}`);
   }
 }
+
 
 export async function deleteFile(userId, itemId) {
   try {
@@ -90,17 +98,19 @@ export async function deleteFile(userId, itemId) {
       body: JSON.stringify({ itemId, userId }),
     });
 
+    const result = await deleteResponse.json();
+
     if (!deleteResponse.ok) {
-      const errorData = await deleteResponse.json();
-      throw new Error(errorData.message || "Failed to delete file.");
+      console.error("Delete Error:", result.error || result.message);
+      throw new Error(
+        result.error || result.message || "Failed to delete file"
+      );
     }
 
-    await revalidatePathHandler("/cloude/home", "layout");
-
-    const data = await deleteResponse.json();
-    return data;
+    console.log("Delete Success:", result.message);
+    return result.data;
   } catch (error) {
-    console.error("Failed to delete file:", error);
+    console.error("Delete File Error:", error);
     throw new Error(`Failed to delete user's file: ${error.message}`);
   }
 }

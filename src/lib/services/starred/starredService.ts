@@ -1,13 +1,5 @@
-import { revalidateTagHandler } from "@/lib/revalidation";
-
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
-interface AddToStarredParams {
-  itemId: string;
-  itemType: string;
-  userId: string;
-}
 
 export async function addToStarred(starData) {
   const { itemId, itemType, userId } = starData;
@@ -15,6 +7,7 @@ export async function addToStarred(starData) {
   if (!itemId || !userId) {
     throw new Error("Both itemId and userId are required.");
   }
+
   try {
     const response = await fetch(`${BASE_URL}/api/star/`, {
       method: "POST",
@@ -24,18 +17,19 @@ export async function addToStarred(starData) {
       body: JSON.stringify({ itemId, itemType, userId }),
     });
 
+    const result = await response.json();
+
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to add item to star.");
+      console.error("Add to Starred Error:", result.error || result.message);
+      throw new Error(
+        result.error || result.message || "Failed to add item to starred."
+      );
     }
 
-    await revalidateTagHandler("starred");
-    await revalidateTagHandler("storage");
-
-    const data = await response.json();
-    return data;
+    console.log("Add to Starred Success:", result.message);
+    return result.data;
   } catch (error) {
-    console.error("Error adding to starred:", error);
+    console.error("Add to Starred Error:", error);
     throw new Error(`Failed to add to starred: ${error.message}`);
   }
 }
@@ -56,19 +50,22 @@ export async function removeFromStarred(starData) {
       body: JSON.stringify({ itemId, itemType, userId }),
     });
 
+    const result = await response.json();
+
     if (!response.ok) {
-      const errorData = await response.json();
+      console.error(
+        "Remove from Starred Error:",
+        result.error || result.message
+      );
       throw new Error(
-        errorData.message || "Failed to remove item from starred."
+        result.error || result.message || "Failed to remove item from starred."
       );
     }
-    await revalidateTagHandler("starred");
-    await revalidateTagHandler("storage");
-    const data = await response.json();
-    console.log("Item removed from starred successfully:", data);
-    return data;
+
+    console.log("Remove from Starred Success:", result.message);
+    return result.data;
   } catch (error) {
-    console.error("Error removing from starred:", error);
+    console.error("Remove from Starred Error:", error);
     throw new Error(`Failed to remove from starred: ${error.message}`);
   }
 }
@@ -81,17 +78,23 @@ export async function fetchStarredContent(userId, folderId) {
       params.append("folderId", encodeURIComponent(folderId));
     }
 
-    const response = await fetch(`${BASE_URL}/api/star?${params.toString()}`, {
-      next: { tags: ["starred"] },
-    });
+    const response = await fetch(`${BASE_URL}/api/star?${params.toString()}`);
+    const result = await response.json();
+
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Unknown error occurred");
+      console.error(
+        "Fetch Starred Content Error:",
+        result.error || result.message
+      );
+      throw new Error(
+        result.error || result.message || "Failed to fetch starred content."
+      );
     }
-    const data = await response.json();
-    return data;
+
+    console.log("Fetch Starred Content Success:", result.message);
+    return result.data;
   } catch (error) {
-    console.error("Failed to get starred content:", error);
-    throw new Error(`Failed to get starred content: ${error.message}`);
+    console.error("Fetch Starred Content Error:", error);
+    throw new Error(`Failed to fetch starred content: ${error.message}`);
   }
 }
