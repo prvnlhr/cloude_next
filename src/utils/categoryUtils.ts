@@ -228,11 +228,6 @@ export function getFileIcon(
     return getCategoryIcon(category);
   } else {
     const normalizedFileExtension = normalizeString(fileExtension);
-    console.log(
-      fileName,
-      fileExtension,
-      fileTypeIcons[normalizedFileExtension]
-    );
     return (
       fileTypeIcons[normalizedFileExtension as FileExtension] ||
       getCategoryIcon(getCategoryByFileExtension(fileExtension))

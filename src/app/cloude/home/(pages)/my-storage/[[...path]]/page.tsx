@@ -34,6 +34,7 @@ export default async function MyStorage({
   const folderId = path[0] === "folders" ? path[1] : null;
 
   const pageContent = await fetchUserStorageContent(userId, folderId);
+  // console.log(" pageContent:", pageContent);
   const files = pageContent.files || [];
   const folders = pageContent.folders || [];
 

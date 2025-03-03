@@ -9,7 +9,7 @@ const createResponse = (status, data = null, error = null, message = null) => {
   });
 };
 
-// DELETE : delete a item(unshare) to user -------------------------------------------------------------------------------------------
+// -------------------------------------------
 export async function DELETE(req) {
   try {
     const { userId, itemId, itemType } = await req.json();
@@ -20,8 +20,36 @@ export async function DELETE(req) {
 
     const supabase = await createClient();
 
-    // Delete the shared item
-    const { data: deleteData, error: deleteError } = await supabase
+    // Find all users who received access from userId for this item
+    const { data: sharedUsers, error: fetchError } = await supabase
+      .from("share_items")
+      .select("id, shared_with")
+      .eq("shared_by", userId)
+      .eq(itemType === "file" ? "file_id" : "folder_id", itemId);
+
+    if (fetchError) {
+      console.error("Error fetching shared users:", fetchError);
+      return createResponse(500, null, "Failed to fetch shared users.");
+    }
+
+    // Recursively delete all shares from the users who were shared by userId
+    if (sharedUsers.length > 0) {
+      const sharedWithIds = sharedUsers.map((row) => row.shared_with);
+
+      const { error: recursiveDeleteError } = await supabase
+        .from("share_items")
+        .delete()
+        .in("shared_by", sharedWithIds)
+        .eq(itemType === "file" ? "file_id" : "folder_id", itemId);
+
+      if (recursiveDeleteError) {
+        console.error("Error removing indirect shares:", recursiveDeleteError);
+        return createResponse(500, null, "Failed to remove indirect shares.");
+      }
+    }
+
+    // Delete the original shared item
+    const { error: deleteError } = await supabase
       .from("share_items")
       .delete()
       .eq(itemType === "file" ? "file_id" : "folder_id", itemId)
@@ -36,7 +64,7 @@ export async function DELETE(req) {
       200,
       { itemId, userId },
       null,
-      "Item removed from shared successfully."
+      "Item removed from shared successfully, including indirect shares."
     );
   } catch (error) {
     console.error("Error in share item DELETE route:", error);
@@ -55,6 +83,7 @@ export async function GET(req, { params }) {
     const { itemId } = params;
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
+    console.log(" userIdccccccccccccccccccccccccc:", userId);
 
     if (!itemId || !userId) {
       return createResponse(400, null, "itemId and userId are required.");
@@ -69,7 +98,7 @@ export async function GET(req, { params }) {
       .eq("shared_with", userId)
       .eq("item_type", "file")
       .eq("file_id", itemId)
-      .single();
+      .maybeSingle();
 
     if (sharedFilesError) {
       console.error("Supabase Error:", sharedFilesError);
@@ -77,12 +106,12 @@ export async function GET(req, { params }) {
     }
 
     if (!sharedFiles) {
-      return createResponse(404, null, "Shared file not found.");
+      return createResponse(200, {}, null, "Shared file not found.");
     }
 
     return createResponse(
       200,
-      { file: sharedFiles.files },
+      { ...sharedFiles.files },
       null,
       "Shared file fetched successfully."
     );

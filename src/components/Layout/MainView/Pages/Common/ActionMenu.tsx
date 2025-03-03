@@ -1,11 +1,12 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import StarActionBtn from "./StarActionBtn";
-import { usePathname } from "next/navigation";
+import useUserSession from "@/hooks/useUserSession";
+import StarActionBtn from "./StarActionBtn"; // Import the StarActionBtn component
 
 const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
-  const pathname = usePathname();
+  const session = useUserSession();
+  const userId = session?.userId;
 
-  const actions = [
+  const allActions = [
     {
       label: "Rename",
       icon: "mingcute:edit-line",
@@ -28,13 +29,30 @@ const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
     },
   ];
 
+  const accessLevel = item.access_level || "READ";
+
+  // Check if the   user is the owner of the item
+  const isOwner = userId === item.user_id;
+
+  const accessLevelMap = {
+    FULL: new Set(["rename", "share", "delete", "star"]),
+    WRITE: new Set(["rename", "star"]),
+    READ: new Set(["star"]),
+  };
+
+  const isActionAllowed = (actionValue) => {
+    // Owners have full access to all actions
+    if (isOwner) return true;
+
+    return accessLevelMap[accessLevel].has(actionValue);
+  };
+
+  // Handle action click
   const handleActionClick = (action) => {
-    if (action.value !== "star") {
+    if (isActionAllowed(action.value)) {
       setActiveModal({ value: action.value, item, type: itemType });
     }
   };
-
-  const isSharedItem = item.is_shared;
 
   return (
     <div
@@ -42,44 +60,53 @@ const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
       className="z-[50] w-auto h-auto flex flex-col absolute top-0 right-[5px] bg-white shadow-[rgba(100,100,111,0.2)_0px_7px_29px_0px] p-[5px] rounded border"
     >
       <div className="w-full h-full flex flex-col items-center justify-center">
-        {actions.map((action, index) =>
-          action.value === "star" ? (
-            <StarActionBtn
-              key={index}
-              action={action}
-              item={item}
-              itemType={itemType}
-            />
-          ) : (
+        {allActions.map((action, index) => {
+          const isAllowed = isActionAllowed(action.value);
+
+          // If the action is "star", show StarActionBtn component
+          if (action.value === "star") {
+            return (
+              <StarActionBtn
+                key={index}
+                action={action}
+                item={item}
+                itemType={itemType}
+                isAllowed={isAllowed}
+              />
+            );
+          }
+
+          // For other actions, show the default button
+          return (
             <button
               type="button"
               onClick={() => handleActionClick(action)}
               key={index}
-              className={`w-full h-[35px] flex items-center justify-start cursor-pointer px-[10px] rounded ${
-                isSharedItem
-                  ? "cursor-not-allowed opacity-50"
-                  : "hover:bg-[#EAECEB]"
+              className={`w-full h-[35px] flex items-center justify-start px-[10px] rounded ${
+                isAllowed
+                  ? "cursor-pointer hover:bg-[#EAECEB]"
+                  : "cursor-not-allowed opacity-50"
               }`}
-              disabled={isSharedItem}
+              disabled={!isAllowed}
             >
               <div className="h-full aspect-[1/2] flex items-center justify-center">
                 <Icon
                   icon={action.icon}
                   className={`w-[75%] h-[75%] ${
-                    isSharedItem ? "text-[#A2A8B2]" : "text-[#1C3553]"
+                    isAllowed ? "text-[#1C3553]" : "text-[#A2A8B2]"
                   }`}
                 />
               </div>
               <p
                 className={`text-[0.75rem] font-medium ml-[9px] whitespace-nowrap ${
-                  isSharedItem ? "text-[#A2A8B2]" : "text-[#1C3553]"
+                  isAllowed ? "text-[#1C3553]" : "text-[#A2A8B2]"
                 }`}
               >
                 {action.label}
               </p>
             </button>
-          )
-        )}
+          );
+        })}
       </div>
     </div>
   );

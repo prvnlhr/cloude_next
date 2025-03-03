@@ -1,13 +1,20 @@
 import { createClient } from "@/middlewares/supabase/server";
 import { getFileExtensionsByCategory } from "@/utils/categoryUtils";
 
+const createResponse = (status, data = null, error = null, message = null) => {
+  return new Response(JSON.stringify({ status, data, error, message }), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
-    const category = searchParams.get("category");
-    console.log(" userId:", userId);
-    console.log(" category:", category);
+    const category = searchParams.get("category_name");
 
     if (!userId) {
       return new Response(JSON.stringify({ error: "UserId is required" }), {
@@ -17,10 +24,7 @@ export async function GET(req) {
     }
 
     if (!category) {
-      return new Response(JSON.stringify({ error: "Category is required" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+      return createResponse(400, null, "Category is required");
     }
     const fileExtensions = getFileExtensionsByCategory(category);
 
@@ -38,10 +42,12 @@ export async function GET(req) {
       .order("created_at", { ascending: false });
     if (error) throw error;
 
-    return new Response(JSON.stringify({ files }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return createResponse(
+      200,
+      files,
+      null,
+      `Files fetched by ${category} successfull`
+    );
   } catch (error) {
     console.error("API Error:", error);
     return new Response(

@@ -12,11 +12,23 @@ const createResponse = (status, data = null, error = null, message = null) => {
 // PATCH : rename the folder ----------------------------------------------------------------------------------------------------
 export async function PATCH(req) {
   try {
-    const { itemId, userId, updateName } = await req.json();
+    const { itemId, userId, updateName, itemOwnerId, accessLevel } =
+      await req.json();
 
     // Validate required fields
     if (!itemId || !updateName || !userId) {
       return createResponse(400, null, "All fields are required.");
+    }
+
+    const isShared = itemOwnerId !== userId;
+    const isAllowed = accessLevel === "FULL" || accessLevel === "WRITE";
+
+    if (isShared && !isAllowed) {
+      return createResponse(
+        403,
+        null,
+        "Insufficient permissions to rename file."
+      );
     }
 
     const supabase = await createClient();
@@ -26,7 +38,6 @@ export async function PATCH(req) {
       .from("folders")
       .select("folder_name")
       .eq("id", itemId)
-      .eq("user_id", userId)
       .single();
 
     if (fetchError || !currentFolder) {
@@ -45,7 +56,6 @@ export async function PATCH(req) {
       .from("folders")
       .update({ folder_name: updateName })
       .eq("id", itemId)
-      .eq("user_id", userId)
       .select()
       .single();
 
@@ -90,11 +100,22 @@ export async function PATCH(req) {
 // DELETE : Delete a folder by id ----------------------------------------------------------------------------------------------------
 export async function DELETE(req) {
   try {
-    const { itemId, userId } = await req.json();
+    const { itemId, userId, accessLevel, itemOwnerId } = await req.json();
 
     // Check for required fields
     if (!itemId || !userId) {
       return createResponse(400, null, "Folder ID and User ID are required.");
+    }
+
+    const isShared = itemOwnerId !== userId;
+    const isAllowed = accessLevel === "FULL";
+
+    if (isShared && !isAllowed) {
+      return createResponse(
+        403,
+        null,
+        "You do not have permission to delete this shared file."
+      );
     }
 
     const supabase = await createClient();
@@ -103,7 +124,6 @@ export async function DELETE(req) {
       .from("folders")
       .select("id")
       .eq("id", itemId)
-      .eq("user_id", userId)
       .single();
 
     if (folderCheckError && folderCheckError.code !== "PGRST116") {
@@ -124,7 +144,6 @@ export async function DELETE(req) {
       .from("folders")
       .delete()
       .eq("id", itemId)
-      .eq("user_id", userId);
 
     if (deleteError) {
       console.error("Supabase Error:", deleteError);

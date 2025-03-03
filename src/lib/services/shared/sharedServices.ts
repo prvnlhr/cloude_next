@@ -53,7 +53,8 @@ export async function fetchSharedContent(userId, folderId, queryParams) {
 }
 
 export async function shareItem(shareItemData, showToast) {
-  const { itemId, itemType, sharedById, shareWithEmail } = shareItemData;
+  const { itemId, itemType, sharedById, shareWithEmail, accessLevel } =
+    shareItemData;
 
   try {
     const response = await fetch(`${BASE_URL}/api/share/`, {
@@ -61,7 +62,13 @@ export async function shareItem(shareItemData, showToast) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ itemId, itemType, sharedById, shareWithEmail }),
+      body: JSON.stringify({
+        itemId,
+        itemType,
+        sharedById,
+        shareWithEmail,
+        accessLevel,
+      }),
     });
 
     const result = await response.json();

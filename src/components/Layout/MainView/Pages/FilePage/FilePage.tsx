@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 const FilePage = ({ file }) => {
-  console.log(" file:", file);
   const [signedUrl, setSignedUrl] = useState(null);
 
   const router = useRouter();
@@ -16,16 +15,16 @@ const FilePage = ({ file }) => {
     router.back(); // Navigate to the previous page
   };
 
-  console.log(file);
+  console.log(file.storage_path);
   const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     const fetchSignedUrl = async () => {
-      const url = await getSignedUrl(file.file.storage_path);
+      const url = await getSignedUrl(file.storage_path);
       setSignedUrl(url);
     };
     fetchSignedUrl();
-  }, [file.file.storage_path]);
+  }, [file.storage_path]);
 
   const handleDownload = () => {
     if (signedUrl) {
@@ -39,7 +38,7 @@ const FilePage = ({ file }) => {
   };
 
   const getFilePreview = () => {
-    const { file_type, file_name } = file.file;
+    const { file_type, file_name } = file;
     const fileIcon = getFileIcon(file_name);
 
     // Video
@@ -87,7 +86,7 @@ const FilePage = ({ file }) => {
         <div className="h-[70%] aspect-video bg-white border border-[#E4E7EC] flex flex-col items-center justify-center">
           <div className="w-full h-[100px] flex justify-evenly items-center flex-col">
             <p className="text-[1.2rem] text-[#1C3553] font-medium">
-              {file.file.file_name}
+              {file.file_name}
             </p>
             <p className="text-[0.8rem] text-[#1C3553] font-medium">
               Preview not available
@@ -124,12 +123,12 @@ const FilePage = ({ file }) => {
           </button>
           <div className="h-full w-[30px] flex items-center justify-center">
             <Icon
-              icon={getFileIcon(file.file.file_name)}
+              icon={getFileIcon(file.file_name)}
               className="w-full h-full text-[#A2A8B2] mr-[5px]"
             />
           </div>
           <p className="text-[1.1rem] text-[#1C3553] font-medium ml-[2px]">
-            {file.file.file_name}
+            {file.file_name}
           </p>
         </div>
         <button

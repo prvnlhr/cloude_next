@@ -120,7 +120,13 @@ export async function renameFolder(updateData, folderId, showToast) {
   }
 }
 
-export async function deleteFolder(userId, itemId) {
+export async function deleteFolder(
+  userId,
+  itemId,
+  accessLevel,
+  itemOwnerId,
+  showToast
+) {
   try {
     const deleteResponse = await fetch(
       `${BASE_URL}/api/user/folders/${itemId}`,
@@ -129,7 +135,7 @@ export async function deleteFolder(userId, itemId) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ itemId, userId }),
+        body: JSON.stringify({ itemId, userId, accessLevel, itemOwnerId }),
       }
     );
 
@@ -137,10 +143,18 @@ export async function deleteFolder(userId, itemId) {
 
     if (!deleteResponse.ok) {
       console.error("Delete Folder Error:", result.error || result.message);
+
+      showToast(
+        "error",
+        `Deleting folder failed`,
+        `${result.error || result.message}`
+      );
       throw new Error(
         result.error || result.message || "Failed to delete folder"
       );
     }
+
+    showToast("success", `Folder deleted successfully`, ``);
 
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");

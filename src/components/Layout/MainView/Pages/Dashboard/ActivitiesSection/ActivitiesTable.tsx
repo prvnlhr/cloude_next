@@ -16,25 +16,26 @@ const ActivitiesTable = ({ activities }) => {
     });
   };
 
-  // Generates URL for navigation based on item type & activity
   const getLinkUrl = (itemType, itemId, activityType) => {
-    const pageMap = {
-      share: "sharred",
-      upload: "my-storage",
-      rename: "my-storage",
-    };
-
-    return `/cloude/home/${pageMap[activityType]}/${itemType === "folder" ? "folders" : "files"}/${itemId}`;
+    return `/cloude/home/my-storage/${
+      itemType === "folder" ? "folders" : "files"
+    }/${itemId}`;
   };
 
   return (
-    <div className="w-full h-full overflow-auto" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+    <div
+      className="w-full h-full overflow-auto"
+      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+    >
       <table className="min-w-full border-collapse">
         {/* Table Head */}
         <thead className="bg-[#EEEEEE] sticky top-0 z-10">
           <tr className="text-left text-[#1C3553] text-[0.8rem]">
             {columns.map((col) => (
-              <th key={col} className="px-4 py-2 capitalize whitespace-nowrap border-x border-[#E4E4E4]">
+              <th
+                key={col}
+                className="px-4 py-2 capitalize whitespace-nowrap border-x border-[#E4E4E4]"
+              >
                 {col}
               </th>
             ))}
@@ -44,29 +45,57 @@ const ActivitiesTable = ({ activities }) => {
         {/* Table Body */}
         <tbody>
           {activities.map((activity, index) => {
-            const { item_type, activity_type, timestamp, item_name, file_id, folder_id } = activity;
+            const {
+              item_type,
+              activity_type,
+              timestamp,
+              item_name,
+              file_id,
+              folder_id,
+            } = activity;
             const itemId = item_type === "folder" ? folder_id : file_id;
 
             return (
-              <tr key={index} className="border border-[#E4E4E4] hover:bg-gray-100">
+              <tr
+                key={index}
+                className="border border-[#E4E4E4] hover:bg-gray-100"
+              >
                 {/* Name with Icon */}
                 <td className="px-4 py-2 border border-[#E4E4E4] whitespace-nowrap text-[#1C3553] text-[0.8rem]">
-                  <Link href={getLinkUrl(item_type, itemId, activity_type)} aria-label={`Open ${item_name}`}>
+                  <Link
+                    href={getLinkUrl(item_type, itemId, activity_type)}
+                    aria-label={`Open ${item_name}`}
+                  >
                     <div className="flex items-center">
-                      <Icon icon={item_type === "folder" ? "solar:folder-bold" : "tabler:file-filled"} />
-                      <p className="ml-2">{capitalize(item_name)}</p>
+                      <Icon
+                        icon={
+                          item_type === "folder"
+                            ? "solar:folder-bold"
+                            : "tabler:file-filled"
+                        }
+                      />
+                      <p className="ml-2 font-medium">
+                        {capitalize(item_name)}
+                      </p>
                     </div>
                   </Link>
                 </td>
 
                 {/* Type */}
-                <td className="px-4 py-2 border border-[#E4E4E4] whitespace-nowrap text-[#1C3553] text-[0.8rem]">
+                <td className="px-4 py-2 border border-[#E4E4E4] whitespace-nowrap text-[#1C3553] font-medium text-[0.8rem]">
                   {capitalize(item_type)}
                 </td>
 
                 {/* Activity */}
                 <td className="px-4 py-2 border border-[#E4E4E4] whitespace-nowrap text-[#1C3553] text-[0.8rem]">
-                  {capitalize(activity_type)}
+                  {activity_type === "share"
+                    ? "You Shared with"
+                    : capitalize(activity_type)}
+                  {activity_type === "share" && (
+                    <p className="font-medium">
+                      {activity.details.shared_with_name}
+                    </p>
+                  )}
                 </td>
 
                 {/* Date */}

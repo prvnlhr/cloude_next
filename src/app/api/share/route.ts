@@ -14,10 +14,17 @@ export async function POST(req) {
   try {
     const supabase = await createClient();
 
-    const { itemId, itemType, sharedById, shareWithEmail } = await req.json();
+    const { itemId, itemType, sharedById, shareWithEmail, accessLevel } =
+      await req.json();
 
     // Validate required fields
-    if (!itemId || !itemType || !sharedById || !shareWithEmail) {
+    if (
+      !itemId ||
+      !itemType ||
+      !sharedById ||
+      !shareWithEmail ||
+      !accessLevel
+    ) {
       return createResponse(400, null, "All fields are required.");
     }
 
@@ -71,6 +78,7 @@ export async function POST(req) {
       shared_with: shareWithUserId,
       file_id: itemType === "file" ? itemId : null,
       folder_id: itemType === "folder" ? itemId : null,
+      access_level: accessLevel,
     };
 
     const { data: sharedItem, error: insertError } = await supabase
@@ -149,8 +157,10 @@ async function getSharedWithMeData(userId, folderId) {
   const supabase = await createClient();
 
   if (folderId) {
-    // Check folder access
-    const { data: accessibleFolders, error: accessError } = await supabase.rpc(
+    // We are inside a shared folder -> we needs to access the content(files/sub folder) inside it
+    // Check folder access -> since the folder was not directly shared we need to check if any of its
+    // ancestors were shared or not. If yes then only we return its nested content
+    const { data: accessData, error: accessError } = await supabase.rpc(
       "check_folder_access",
       {
         user_id: userId,
@@ -158,9 +168,18 @@ async function getSharedWithMeData(userId, folderId) {
       }
     );
 
-    if (accessError || !accessibleFolders) {
+    console.log(" accessData:", accessData);
+    console.log(" accessError:", accessError);
+    if (
+      accessError ||
+      !accessData ||
+      accessData.length === 0 ||
+      !accessData[0].is_shared
+    ) {
       throw new Error("Access denied or folder not found.");
     }
+
+    const accessLevel = accessData[0].access_level;
 
     // Fetch subfolders and files within the provided folderId
     const { data: folders, error: foldersError } = await supabase
@@ -177,18 +196,27 @@ async function getSharedWithMeData(userId, folderId) {
       throw new Error("Error fetching folders or files.");
     }
 
-    return { folders, files };
+    return {
+      folders: folders.map((folder) => ({
+        ...folder,
+        access_level: accessLevel,
+      })),
+      files: files.map((file) => ({
+        ...file,
+        access_level: accessLevel,
+      })),
+    };
   } else {
     // Fetch shared items at the root level
     const { data: sharedFolders, error: sharedFoldersError } = await supabase
       .from("share_items")
-      .select("folder_id, folders(*)")
+      .select("folder_id, access_level, folders(*)")
       .eq("shared_with", userId)
       .eq("item_type", "folder");
 
     const { data: sharedFiles, error: sharedFilesError } = await supabase
       .from("share_items")
-      .select("file_id, files(*)")
+      .select("file_id, access_level, files(*)")
       .eq("shared_with", userId)
       .eq("item_type", "file");
 
@@ -196,20 +224,27 @@ async function getSharedWithMeData(userId, folderId) {
       throw new Error("Error fetching shared folders or files.");
     }
 
-    // Extract folders and files from the join result
-    const folders = sharedFolders.map((item) => item.folders);
-    const files = sharedFiles.map((item) => item.files);
+    const folders = sharedFolders.map((item) => ({
+      ...item.folders,
+      access_level: item.access_level,
+    }));
+
+    const files = sharedFiles.map((item) => ({
+      ...item.files,
+      access_level: item.access_level,
+    }));
 
     return { folders, files };
   }
 }
 
-//  GET : get all the share content of a user ------------------------------------------------------------------------------
+// GET : get all the share content of a user ------------------------------------------------------------------------------
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
   const folderId = searchParams.get("folderId");
   const shareByMe = searchParams.get("shareByMe");
+  console.log(" shareByMe:xxxxxxxxxxxxxxxxxxxxxxxxxxx", shareByMe);
 
   try {
     let folders, files;

@@ -14,6 +14,7 @@ export async function fetchStarredContent(userId, folderId) {
     const response = await fetch(`${BASE_URL}/api/star?${params.toString()}`, {
       next: { revalidate: false, tags: ["starred"] },
     });
+
     const result = await response.json();
 
     if (!response.ok) {
@@ -35,7 +36,7 @@ export async function fetchStarredContent(userId, folderId) {
 }
 
 export async function addToStarred(starData, showToast) {
-  const { itemId, itemType, userId, itemOwnerId } = starData;
+  const { itemId, itemType, userId, itemOwnerId, accessLevel } = starData;
 
   if (!itemId || !userId) {
     throw new Error("Both itemId and userId are required.");
@@ -53,7 +54,13 @@ export async function addToStarred(starData, showToast) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ itemId, itemType, userId, itemOwnerId }),
+      body: JSON.stringify({
+        itemId,
+        itemType,
+        userId,
+        itemOwnerId,
+        accessLevel,
+      }),
     });
 
     const result = await response.json();
@@ -129,17 +136,19 @@ export async function removeFromStarred(starData, showToast) {
       );
     }
 
-    await revalidateTagHandler("storage");
-    await revalidateTagHandler("dashboard");
-    await revalidateTagHandler("starred");
-
-    // show success toast
     showToast(
       "success",
       `${capitalize(starData.itemType)} removed from starred`,
       ``,
       toastId
     );
+
+    
+    await revalidateTagHandler("storage");
+    await revalidateTagHandler("dashboard");
+    await revalidateTagHandler("starred");
+
+    // show success toast
 
     console.log("Remove from Starred Success:", result.message);
     return result.data;

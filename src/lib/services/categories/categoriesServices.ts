@@ -28,6 +28,7 @@ export async function fetchFilesByCategories(userId, category) {
       );
     }
 
+    console.log(" result:", result.data);
     console.log("Fetch Files by Category Success:", result.message);
     return result.data;
   } catch (error) {

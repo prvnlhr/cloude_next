@@ -9,6 +9,7 @@ export async function fetchUserStorageContent(userId, folderId) {
       fetch(`${BASE_URL}/api/user/files?${params.toString()}`, {
         next: { revalidate: false, tags: ["storage"] },
       }),
+
       fetch(`${BASE_URL}/api/user/folders?${params.toString()}`),
     ]);
 

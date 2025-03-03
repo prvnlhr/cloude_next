@@ -38,12 +38,23 @@ const RenameModal = ({ item, itemType, onClose }) => {
       const userId = session?.userId;
       const newFileName = baseName.trim() + extension;
 
+      const accessLevel =
+        userId === item.user_id ? "FULL" : item.access_level || "READ";
+
       const updateData = {
         updateName: newFileName,
         userId,
         itemId: item.id,
+        itemOwnerId: item.user_id,
+        accessLevel,
       };
 
+      const is_shared = item?.is_shared
+        ? item.is_shared
+        : userId !== item.user_id;
+      console.log(" is_shared:", is_shared);
+      console.log(item);
+      // return;
       const renameResponse =
         itemType === "folder"
           ? await renameFolder(updateData, item.id, showToast)
@@ -100,7 +111,7 @@ const RenameModal = ({ item, itemType, onClose }) => {
       <div className="w-full h-[50px] flex items-center justify-end">
         <button
           onClick={handleRename}
-          className="w-[80px] h-[30px] px-[15px] rounded text-[0.8rem] text-[#1C3553] font-medium bg-[#E7EFFC]"
+          className="w-[80px] h-[30px] px-[15px] flex items-center justify-center rounded text-[0.8rem] text-[#1C3553] font-medium bg-[#E7EFFC]"
         >
           {isLoading ? (
             <Spinner variant="gradient" color="primary" size="sm" />

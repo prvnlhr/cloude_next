@@ -5,10 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import ActionMenu from "../../Common/ActionMenu";
 
 const NonPreviewPlaceholder = (file) => {
-  console.log(file.file.file_name);
   return (
     <div className="w-full h-full flex flex-col items-center justify-evenly bg-[#EAECEB] px-[10px]">
       <div className="w-[100%] h-[60px] flex items-end">

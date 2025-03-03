@@ -168,7 +168,7 @@ const AddMenu: FC = ({ menuRef }) => {
           </div>
           <p className="text-[0.7rem] text-[#1C3553] ml-[9px]">Folder upload</p>
         </button>
-        <button
+        {/* <button
           type="button"
           className="w-full h-[35px] flex items-center justify-start cursor-pointer text-[#1C3553] text-[0.9rem] font-medium  hover:bg-[#EAECEB] px-[10px] rounded"
         >
@@ -179,7 +179,7 @@ const AddMenu: FC = ({ menuRef }) => {
             />
           </div>
           <p className="text-[0.7rem] text-[#1C3553] ml-[9px]">Create folder</p>
-        </button>
+        </button> */}
       </div>
 
       <>

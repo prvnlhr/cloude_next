@@ -14,7 +14,7 @@ const page = async ({ searchParams }) => {
   const { category } = (await searchParams) || "";
 
   const filesByCategory = await fetchFilesByCategories(userId, category);
-  console.log(" filesByCategory:", filesByCategory);
+  // console.log(" filesByCategory:", filesByCategory);
 
   return <CategoryPage files={filesByCategory} />;
 };

@@ -4,6 +4,7 @@ import { deleteFolder } from "@/lib/services/user/foldersService";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
 import { Spinner } from "@heroui/spinner";
+import { useToast } from "@/context/ToastContext";
 
 const DeleteModal = ({ item, itemType, onClose }) => {
   const key = itemType === "folder" ? "folder_name" : "file_name";
@@ -12,16 +13,26 @@ const DeleteModal = ({ item, itemType, onClose }) => {
   const [success, setSuccess] = useState(false);
 
   const session = useUserSession();
+  const {showToast} = useToast();
+
   const handleDelete = async () => {
     setIsLoading(true);
     setError(null);
     try {
       const userId = session?.userId;
 
+      const accessLevel =
+        userId === item.user_id ? "FULL" : item.access_level || "READ";
+
+      const itemOwnerId = item.user_id;
+      console.log(" accessLevel:", accessLevel);
+
+      console.log(" item:", item);
+      // return;
       const deleteResponse =
         itemType === "folder"
-          ? await deleteFolder(userId, item.id)
-          : await deleteFile(userId, item.id);
+          ? await deleteFolder(userId, item.id, accessLevel, itemOwnerId,showToast)
+          : await deleteFile(userId, item.id, accessLevel, itemOwnerId,showToast);
 
       // console.log(" deleteResponse:", deleteResponse);
       if (deleteResponse && deleteResponse.error) {

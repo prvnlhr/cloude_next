@@ -138,10 +138,10 @@ export async function renameFile(updateData, fileId, showToast) {
         result.error || result.message || "Failed to rename file"
       );
     }
-    await revalidateTagHandler("storage");
-    await revalidateTagHandler("dashboard");
 
     showToast("success", `File renamed successfully`, ``);
+    await revalidateTagHandler("storage");
+    await revalidateTagHandler("dashboard");
 
     console.log("Rename Success:", result.message);
     return result.data;
@@ -151,24 +151,37 @@ export async function renameFile(updateData, fileId, showToast) {
   }
 }
 
-export async function deleteFile(userId, itemId) {
+export async function deleteFile(
+  userId,
+  itemId,
+  accessLevel,
+  itemOwnerId,
+  showToast
+) {
   try {
     const deleteResponse = await fetch(`${BASE_URL}/api/user/files/${itemId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ itemId, userId }),
+      body: JSON.stringify({ itemId, userId, accessLevel, itemOwnerId }),
     });
 
     const result = await deleteResponse.json();
 
     if (!deleteResponse.ok) {
       console.error("Delete Error:", result.error || result.message);
+      showToast(
+        "error",
+        `Deleting File failed`,
+        `${result.error || result.message}`
+      );
       throw new Error(
         result.error || result.message || "Failed to delete file"
       );
     }
+    showToast("success", `File deleted successfully`, ``);
+
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
 

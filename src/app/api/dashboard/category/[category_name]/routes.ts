@@ -9,6 +9,7 @@ const createResponse = (status, data = null, error = null, message = null) => {
   });
 };
 
+// -> NOT IN USE
 // GET : all items for a particular category -----------------------------------------------------------------------------------------
 export async function GET(req) {
   const { searchParams } = new URL(req.url);

@@ -7,12 +7,37 @@ import { Spinner } from "@heroui/spinner";
 import { getFileExtension } from "@/utils/fileExtensionUtils";
 import { useToast } from "@/context/ToastContext";
 
+const accessLevelMap = {
+  READ: "Read-Only",
+  WRITE: "Write Access",
+  FULL: "Full Access",
+};
+const accessLevelsData = [
+  {
+    key: "FULL",
+    title: accessLevelMap.FULL,
+    description: "Can read, edit, share, and delete",
+  },
+  {
+    key: "WRITE",
+    title: accessLevelMap.WRITE,
+    description: "Can read and edit",
+  },
+  {
+    key: "READ",
+    title: accessLevelMap.READ,
+    description: "Can view only",
+  },
+];
 const ShareModal = ({ item, itemType, onClose }) => {
   const [shareWithEmail, setShareWithEmail] = useState<string>(
     "mrtnmickae.jrl@gmail.com"
   );
   const modalRef = useRef(null);
   const key = itemType === "folder" ? "folder_name" : "file_name";
+
+  const [showAccessLevels, setShowAccessLevels] = useState(false);
+  const [accessLevel, setAccessLevel] = useState("READ");
 
   const [isSharing, setIsSharing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,12 +63,12 @@ const ShareModal = ({ item, itemType, onClose }) => {
       itemType,
       sharedById: userId,
       shareWithEmail,
+      accessLevel,
     };
 
     setIsSharing(true);
     setError(null);
     setSuccessMessage(null);
-
     try {
       console.log(item);
       const shareItemResponse = await shareItem(shareItemData, showToast);
@@ -129,11 +154,50 @@ const ShareModal = ({ item, itemType, onClose }) => {
         </div>
       </div>
       {/* Share button --------------------------------------*/}
-      <div className="w-full h-[50px] flex items-center justify-end">
+      <div className="w-full h-[50px] flex items-center justify-between">
+        <div className="w-[65%] h-full flex items-center justify-center relative mr-[2%]">
+          <div className="w-[calc(100%-20px)] h-[100%] border outline-none rounded px-[10px] text-[0.8rem] font-medium text-[#1C3553] flex items-center">
+            {accessLevelMap[accessLevel]}
+          </div>
+          <div
+            className="h-full w-[20px] flex items-center  justify-center cursor-pointer"
+            onClick={() => setShowAccessLevels((prev) => !prev)}
+          >
+            <Icon
+              icon="lucide:chevron-down"
+              className="w-[100%] h-[100%] text-[black]"
+            />
+          </div>
+
+          {showAccessLevels && (
+            <div
+              className="
+            absolute w-[200px] h-auto flex flex-col 
+            bottom-[50px] bg-white p-[10px] 
+            shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px] 
+            rounded border"
+            >
+              {accessLevelsData.map((level) => (
+                <div
+                  key={level.key}
+                  className="w-full h-[60px] text-[0.8rem] text-[#1C3553] font-medium flex flex-col justify-center hover:bg-[#EAECEB] px-[8px] rounded"
+                  onClick={() => {
+                    setAccessLevel(level.key);
+                    setShowAccessLevels(false);
+                  }}
+                >
+                  <p className="font-semibold">{level.title}</p>
+                  <p className="text-gray-600">{level.description}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         <button
           type="button"
           onClick={handleShare}
-          className="w-[80px] h-[30px] px-[15px] rounded text-[0.8rem]  text-[#1C3553]  font-medium bg-[#E7EFFC] border"
+          className="w-[30%] h-[30px] px-[15px] flex items-center justify-center rounded text-[0.8rem]  text-[#1C3553] font-medium bg-[#E7EFFC] border"
         >
           {isSharing ? (
             <Spinner variant="gradient" color="primary" size="sm" />
