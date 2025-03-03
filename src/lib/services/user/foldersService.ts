@@ -108,6 +108,7 @@ export async function renameFolder(updateData, folderId, showToast) {
 
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
+    await revalidateTagHandler("starred");
 
     showToast("success", `Folder renamed successfully`, ``);
 

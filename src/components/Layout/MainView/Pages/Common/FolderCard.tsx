@@ -2,11 +2,6 @@
 import { useState, useRef } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { usePathname } from "next/navigation";
-import useUserSession from "@/hooks/useUserSession";
-import {
-  addToStarred,
-  removeFromStarred,
-} from "@/lib/services/starred/starredService";
 
 import useClickOutside from "@/hooks/useClickOutside";
 import ActionMenu from "./ActionMenu";

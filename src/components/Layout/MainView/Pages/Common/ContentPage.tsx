@@ -1,7 +1,7 @@
 "use client";
 import FolderCard from "./FolderCard";
 import FileCard from "./FileCard";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DeleteModal from "./Modals/DeleteModal";
 import ShareModal from "./Modals/ShareModal";
 import RenameModal from "./Modals/RenameModal";

@@ -41,6 +41,12 @@ export async function addToStarred(starData, showToast) {
     throw new Error("Both itemId and userId are required.");
   }
 
+  const toastId = showToast(
+    "loading",
+    `Adding ${capitalize(starData.itemType)} to Starred`,
+    ``
+  );
+
   try {
     const response = await fetch(`${BASE_URL}/api/star/`, {
       method: "POST",
@@ -57,7 +63,8 @@ export async function addToStarred(starData, showToast) {
       showToast(
         "error",
         `Adding ${capitalize(starData.itemType)} to starred failed`,
-        `${result.error || result.message}`
+        `${result.error || result.message}`,
+        toastId
       );
       throw new Error(
         result.error || result.message || "Failed to add item to starred."
@@ -68,7 +75,8 @@ export async function addToStarred(starData, showToast) {
     showToast(
       "success",
       `${capitalize(starData.itemType)} added to starred`,
-      ``
+      ``,
+      toastId
     );
 
     await revalidateTagHandler("storage");
@@ -89,7 +97,11 @@ export async function removeFromStarred(starData, showToast) {
   if (!itemId || !userId) {
     throw new Error("Both itemId and userId are required.");
   }
-
+  const toastId = showToast(
+    "loading",
+    `Removing ${capitalize(starData.itemType)} from Starred`,
+    ``
+  );
   try {
     const response = await fetch(`${BASE_URL}/api/star/${itemId}`, {
       method: "DELETE",
@@ -109,7 +121,8 @@ export async function removeFromStarred(starData, showToast) {
       showToast(
         "error",
         `Removing ${capitalize(starData.itemType)} from starred failed`,
-        `${result.error || result.message}`
+        `${result.error || result.message}`,
+        toastId
       );
       throw new Error(
         result.error || result.message || "Failed to remove item from starred."
@@ -123,8 +136,9 @@ export async function removeFromStarred(starData, showToast) {
     // show success toast
     showToast(
       "success",
-      `${capitalize(starData.itemType)} removed to starred`,
-      ``
+      `${capitalize(starData.itemType)} removed from starred`,
+      ``,
+      toastId
     );
 
     console.log("Remove from Starred Success:", result.message);

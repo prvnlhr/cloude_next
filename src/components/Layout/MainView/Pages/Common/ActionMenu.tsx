@@ -34,15 +34,7 @@ const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
     }
   };
 
-  const getBasePath = () => {
-    const match = pathname.match(
-      /\/cloude\/home\/(my-storage|shared|starred|dashboard)/
-    );
-    return match ? match[0] : "";
-  };
-
-  const basePath = getBasePath();
-  const isSharedPage = basePath.split("/").includes("shared");
+  const isSharedItem = item.is_shared;
 
   return (
     <div
@@ -64,23 +56,23 @@ const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
               onClick={() => handleActionClick(action)}
               key={index}
               className={`w-full h-[35px] flex items-center justify-start cursor-pointer px-[10px] rounded ${
-                isSharedPage
+                isSharedItem
                   ? "cursor-not-allowed opacity-50"
                   : "hover:bg-[#EAECEB]"
               }`}
-              disabled={isSharedPage}
+              disabled={isSharedItem}
             >
               <div className="h-full aspect-[1/2] flex items-center justify-center">
                 <Icon
                   icon={action.icon}
                   className={`w-[75%] h-[75%] ${
-                    isSharedPage ? "text-[#A2A8B2]" : "text-[#1C3553]"
+                    isSharedItem ? "text-[#A2A8B2]" : "text-[#1C3553]"
                   }`}
                 />
               </div>
               <p
                 className={`text-[0.75rem] font-medium ml-[9px] whitespace-nowrap ${
-                  isSharedPage ? "text-[#A2A8B2]" : "text-[#1C3553]"
+                  isSharedItem ? "text-[#A2A8B2]" : "text-[#1C3553]"
                 }`}
               >
                 {action.label}

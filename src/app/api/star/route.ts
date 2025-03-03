@@ -16,11 +16,6 @@ export async function POST(req) {
 
     const { itemId, itemType, userId, itemOwnerId } = await req.json();
 
-    console.log(" itemOwnerId:", itemOwnerId);
-    console.log(" userId:", userId);
-    console.log(" itemType:", itemType);
-    console.log(" itemId:", itemId);
-
     if (!itemId || !itemType || !userId || !itemOwnerId) {
       return createResponse(400, null, "All fields are required.");
     }
@@ -107,14 +102,25 @@ export async function GET(req) {
   try {
     // 1. If folderId is provided, check access using Recursive CTE
     if (folderId) {
-      const { data: accessibleFolders, error: accessError } =
-        await supabase.rpc("check_folder_starred", {
+      console.log("folderId:.......................... YESSSSSSSSSS", folderId);
+      const { data: accessCheck, error: accessError } = await supabase.rpc(
+        "check_folder_starred",
+        {
           user_id: userId,
           folder_id: folderId,
-        });
+        }
+      );
+      console.log(" accessError:", accessError);
+      console.log(" accessCheck:", accessCheck);
 
-      if (accessError || !accessibleFolders) {
+      if (accessError || !accessCheck) {
         return createResponse(403, null, "Access denied or folder not found.");
+      }
+
+      const { is_starred, is_shared } = accessCheck[0] || {};
+
+      if (!is_starred) {
+        return createResponse(403, null, "Folder is not starred.");
       }
 
       // 2. Fetch subfolders and files within the provided folderId
@@ -132,6 +138,11 @@ export async function GET(req) {
         throw new Error("Error fetching folders or files.");
       }
 
+      if (is_shared) {
+        folders.forEach((f) => (f.is_shared = true));
+        files.forEach((f) => (f.is_shared = true));
+      }
+
       return createResponse(
         200,
         { folders, files },
@@ -139,17 +150,16 @@ export async function GET(req) {
         "Folders and files fetched successfully."
       );
     } else {
-      // 3. If folderId is null, we're at the root level. Fetch only starred items at the root level
       const { data: starredFolders, error: starredFoldersError } =
         await supabase
           .from("starred_items")
-          .select("folder_id, folders(*)")
+          .select("folder_id, is_shared, shared_by, folders(*)")
           .eq("starred_by", userId)
           .eq("item_type", "folder");
 
       const { data: sharedFiles, error: sharedFilesError } = await supabase
         .from("starred_items")
-        .select("file_id, files(*)")
+        .select("file_id, is_shared, shared_by, files(*)")
         .eq("starred_by", userId)
         .eq("item_type", "file");
 
@@ -157,9 +167,19 @@ export async function GET(req) {
         throw new Error("Error fetching shared folders or files.");
       }
 
-      // Extract the folders and files from the join result
-      const folders = starredFolders.map((item) => item.folders);
-      const files = sharedFiles.map((item) => item.files);
+      const folders = starredFolders.map(
+        ({ folders, is_shared, shared_by }) => ({
+          ...folders,
+          is_shared,
+          shared_by,
+        })
+      );
+
+      const files = sharedFiles.map(({ files, is_shared, shared_by }) => ({
+        ...files,
+        is_shared,
+        shared_by,
+      }));
 
       return createResponse(
         200,
