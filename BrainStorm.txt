@@ -1980,8 +1980,12 @@ Date Uploaded/Shared -> date created
 Type -> file/ folder
 Shared -> true/false
 
-
+--------------------------------------------------------------------------------------
 
 TODO :
 delete file when folder is delete from storage
 if a item is already shared show in share modal 
+
+UI
+Auth form styling
+

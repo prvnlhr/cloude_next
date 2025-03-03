@@ -10,7 +10,6 @@ const createResponse = (status, data = null, error = null, message = null) => {
 };
 
 // POST : share a item(file or folder with other user) -----------------------------------------------------------------------------------------------
-
 export async function POST(req) {
   try {
     const supabase = await createClient();
@@ -116,6 +115,36 @@ export async function POST(req) {
 }
 
 // Helper functions
+async function getSharedByMeData(userId, folderId) {
+  const supabase = await createClient();
+
+  let query = supabase
+    .from("share_items")
+    .select("folder_id, folders(*), file_id, files(*)")
+    .eq("shared_by", userId);
+
+  // Filter by folderId if provided
+  if (folderId) {
+    query = query.eq("folders.parent_folder_id", folderId);
+  }
+
+  const { data: sharedItems, error } = await query;
+
+  if (error) {
+    throw new Error("Error fetching shared items by the user.");
+  }
+
+  // Extract folders and files from the result
+  const folders = sharedItems
+    .filter((item) => item.folders)
+    .map((item) => item.folders);
+  const files = sharedItems
+    .filter((item) => item.files)
+    .map((item) => item.files);
+
+  return { folders, files };
+}
+
 async function getSharedWithMeData(userId, folderId) {
   const supabase = await createClient();
 
@@ -173,35 +202,6 @@ async function getSharedWithMeData(userId, folderId) {
 
     return { folders, files };
   }
-}
-async function getSharedByMeData(userId, folderId) {
-  const supabase = await createClient();
-
-  let query = supabase
-    .from("share_items")
-    .select("folder_id, folders(*), file_id, files(*)")
-    .eq("shared_by", userId);
-
-  // Filter by folderId if provided
-  if (folderId) {
-    query = query.eq("folders.parent_folder_id", folderId);
-  }
-
-  const { data: sharedItems, error } = await query;
-
-  if (error) {
-    throw new Error("Error fetching shared items by the user.");
-  }
-
-  // Extract folders and files from the result
-  const folders = sharedItems
-    .filter((item) => item.folders)
-    .map((item) => item.folders);
-  const files = sharedItems
-    .filter((item) => item.files)
-    .map((item) => item.files);
-
-  return { folders, files };
 }
 
 //  GET : get all the share content of a user ------------------------------------------------------------------------------

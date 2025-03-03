@@ -1,11 +1,9 @@
 import ContentPage from "@/components/Layout/MainView/Pages/Common/ContentPage";
 import FilePage from "@/components/Layout/MainView/Pages/FilePage/FilePage";
-import SharedContentPage from "@/components/Layout/MainView/Pages/SharedFilesPage/SharedByMeContentPage";
 import {
   fetchSharedContent,
   getSharedFile,
 } from "@/lib/services/shared/sharedServices";
-import { getFile } from "@/lib/services/user/filesService";
 import { createClient } from "@/middlewares/supabase/server";
 
 interface File {

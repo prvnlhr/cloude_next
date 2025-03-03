@@ -9,13 +9,23 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 const StarActionBtn = ({ action, item, itemType }) => {
   const session = useUserSession();
   const { showToast } = useToast();
+
+  const userId = session?.userId;
+
   const handleStarClick = async () => {
     const starData = {
       itemId: item.id,
       itemType,
-      userId: session?.userId,
+      userId,
+      itemOwnerId: item.user_id,
     };
 
+    console.log(" userId:", userId);
+    console.log(" owner:", item.user_id);
+    console.log(" item:", item);
+    console.log(" starData:", starData);
+
+    // return;
     const starResponse = item.is_starred
       ? await removeFromStarred(starData, showToast)
       : await addToStarred(starData, showToast);

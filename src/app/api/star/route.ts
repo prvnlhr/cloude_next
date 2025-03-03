@@ -14,8 +14,14 @@ export async function POST(req) {
   try {
     const supabase = await createClient();
 
-    const { itemId, itemType, userId } = await req.json();
-    if (!itemId || !itemType || !userId) {
+    const { itemId, itemType, userId, itemOwnerId } = await req.json();
+
+    console.log(" itemOwnerId:", itemOwnerId);
+    console.log(" userId:", userId);
+    console.log(" itemType:", itemType);
+    console.log(" itemId:", itemId);
+
+    if (!itemId || !itemType || !userId || !itemOwnerId) {
       return createResponse(400, null, "All fields are required.");
     }
 
@@ -36,11 +42,15 @@ export async function POST(req) {
       return createResponse(409, null, "Item is already added to Starred.");
     }
 
+    const shared = itemOwnerId !== userId;
+
     const insertData = {
       starred_by: userId,
       item_type: itemType,
       file_id: itemType === "file" ? itemId : null,
       folder_id: itemType === "folder" ? itemId : null,
+      is_shared: shared,
+      shared_by: shared ? itemOwnerId : null,
     };
 
     // Insert the starred item
@@ -129,7 +139,7 @@ export async function GET(req) {
         "Folders and files fetched successfully."
       );
     } else {
-      // 3. If folderId is null, we're at the root level. Fetch only shared items at the root level
+      // 3. If folderId is null, we're at the root level. Fetch only starred items at the root level
       const { data: starredFolders, error: starredFoldersError } =
         await supabase
           .from("starred_items")

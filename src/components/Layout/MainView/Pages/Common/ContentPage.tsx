@@ -1,7 +1,6 @@
 "use client";
 import FolderCard from "./FolderCard";
 import FileCard from "./FileCard";
-// import { headers } from "next/headers";
 import { useEffect, useState } from "react";
 import DeleteModal from "./Modals/DeleteModal";
 import ShareModal from "./Modals/ShareModal";
@@ -11,14 +10,9 @@ import Link from "next/link";
 import SharedByMeContentPage from "../SharedFilesPage/SharedByMeContentPage";
 
 const ContentPage = ({ files, folders }) => {
-  // const headerList = await headers();
-  // const pathname = headerList.get("x-current-path");
-  // const basePath = pathname?.replace(/\/folders\/[^/]+$/, "") || "";
-  // const searchParamsObj = (await searchParams) || {};
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isShareByMe = searchParams.get("myshared");
-  // console.log(" myshared:", myshared);
 
   const getBasePath = () => {
     // Match base paths for all sections
@@ -42,9 +36,8 @@ const ContentPage = ({ files, folders }) => {
       item: undefined,
     });
   };
-  useEffect(() => {
-    // console.log(activeModal);
-  }, [activeModal]);
+
+  // useEffect(() => {}, [activeModal]);
 
   return (
     <div
@@ -54,6 +47,7 @@ const ContentPage = ({ files, folders }) => {
         msOverflowStyle: "none",
       }}
     >
+      {/* If Shared Page, below tab bar will be shown*/}
       {isSharedPage && (
         <div className="w-full h-[40px] flex items-start border-b-[1px] border-b-[#D0D5DD]">
           <Link

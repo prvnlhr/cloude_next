@@ -1,19 +1,8 @@
 "use client";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
 import SharedByMeFolderCard from "./SharedByMeFolderCard";
 import SharedByMeFileCard from "./SharedByMeFileCard";
 
 const SharedByMeContentPage = ({ files, folders }) => {
-  const pathname = usePathname();
-  const getBasePath = () => {
-    // Match base paths for all sections
-    const match = pathname.match(
-      /\/cloude\/home\/(my-storage|shared|starred|dashboard)/
-    );
-    return match ? match[0] : "";
-  };
-
   return (
     <div
       className="w-full h-full flex flex-col overflow-y-scroll pb-[10px] pt-[20px]"

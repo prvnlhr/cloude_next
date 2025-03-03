@@ -3,6 +3,8 @@ import StarActionBtn from "./StarActionBtn";
 import { usePathname } from "next/navigation";
 
 const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
+  const pathname = usePathname();
+
   const actions = [
     {
       label: "Rename",
@@ -31,8 +33,6 @@ const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
       setActiveModal({ value: action.value, item, type: itemType });
     }
   };
-
-  const pathname = usePathname();
 
   const getBasePath = () => {
     const match = pathname.match(

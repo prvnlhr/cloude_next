@@ -9,11 +9,11 @@ const createResponse = (status, data = null, error = null, message = null) => {
   });
 };
 
+//  DELETE : remove item from starred -------------------------------------------------------------------------------------
 export async function DELETE(req) {
   try {
-    const { itemType, userId, itemId } = await req.json();
-
-    if (!itemId || !itemType || !userId) {
+    const { itemId, itemType, userId, itemOwnerId } = await req.json();
+    if (!itemId || !itemType || !userId || !itemOwnerId) {
       return createResponse(400, null, "All fields are required.");
     }
 

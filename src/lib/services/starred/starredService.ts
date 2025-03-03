@@ -35,7 +35,7 @@ export async function fetchStarredContent(userId, folderId) {
 }
 
 export async function addToStarred(starData, showToast) {
-  const { itemId, itemType, userId } = starData;
+  const { itemId, itemType, userId, itemOwnerId } = starData;
 
   if (!itemId || !userId) {
     throw new Error("Both itemId and userId are required.");
@@ -47,7 +47,7 @@ export async function addToStarred(starData, showToast) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ itemId, itemType, userId }),
+      body: JSON.stringify({ itemId, itemType, userId, itemOwnerId }),
     });
 
     const result = await response.json();
@@ -84,7 +84,7 @@ export async function addToStarred(starData, showToast) {
 }
 
 export async function removeFromStarred(starData, showToast) {
-  const { itemId, itemType, userId } = starData;
+  const { itemId, itemType, userId, itemOwnerId } = starData;
 
   if (!itemId || !userId) {
     throw new Error("Both itemId and userId are required.");
@@ -96,7 +96,7 @@ export async function removeFromStarred(starData, showToast) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ itemId, itemType, userId }),
+      body: JSON.stringify({ itemId, itemType, userId, itemOwnerId }),
     });
 
     const result = await response.json();
