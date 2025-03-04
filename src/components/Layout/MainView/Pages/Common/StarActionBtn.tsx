@@ -29,7 +29,7 @@ const StarActionBtn: React.FC<StarActionBtnProps> = ({
   const session = useUserSession();
   const { showToast } = useToast();
 
-  const userId = session?.userId;
+  const userId = session?.userId as string;
   const accessLevel =
     userId === item.user_id ? "FULL" : item.access_level || "READ";
 

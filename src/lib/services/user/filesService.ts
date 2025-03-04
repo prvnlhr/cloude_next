@@ -3,8 +3,22 @@ import { revalidateTagHandler } from "@/lib/revalidation";
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
+type FileData = {
+  name: string;
+  type: string;
+  size: string;
+  file: File;
+};
+interface UpdateData {
+  updateName: string;
+  userId: string;
+  itemId: string;
+  itemOwnerId: string;
+  accessLevel: string;
+}
+
 export async function uploadFiles(
-  filesDataArray: any[],
+  filesDataArray: FileData[],
   userId: string,
   folderId: string | null,
   showToast: (
@@ -68,10 +82,11 @@ export async function uploadFiles(
       } catch (error) {
         console.error("Upload Error:", error);
         // show error toast
+        const err = error as Error;
         showToast(
           "error",
           "Upload Failed",
-          `Failed to upload ${fileDataObject.name}: ${error.message}`,
+          `Failed to upload ${fileDataObject.name}: ${err.message}`,
           toastId
         );
         throw error;
@@ -87,11 +102,13 @@ export async function uploadFiles(
 
     return responses;
   } catch (error) {
+    const err = error as Error;
     console.error("Upload Files Error:", error);
-    throw new Error(`Failed to upload files: ${error.message}`);
+    throw new Error(`Failed to upload files: ${err.message}`);
   }
 }
-export async function getFile(userId, fileId) {
+
+export async function getFile(userId: string, fileId: string) {
   try {
     const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
     const uploadResponse = await fetch(
@@ -110,12 +127,22 @@ export async function getFile(userId, fileId) {
     console.log("Get File Success:", result.message);
     return result.data;
   } catch (error) {
+    const err = error as Error;
+
     console.error("Get File Error:", error);
-    throw new Error(`Failed to get user's file: ${error.message}`);
+    throw new Error(`Failed to get user's file: ${err.message}`);
   }
 }
 
-export async function renameFile(updateData, fileId, showToast) {
+export async function renameFile(
+  updateData: UpdateData,
+  fileId: string,
+  showToast: (
+    type: "loading" | "success" | "error",
+    title: string,
+    description?: string
+  ) => void
+) {
   try {
     const renameResponse = await fetch(`${BASE_URL}/api/user/files/${fileId}`, {
       method: "PATCH",
@@ -150,16 +177,21 @@ export async function renameFile(updateData, fileId, showToast) {
     return result.data;
   } catch (error) {
     console.error("Rename File Error:", error);
-    throw new Error(`Failed to rename user's file: ${error.message}`);
+    const err = error as Error;
+    throw new Error(`Failed to rename user's file: ${err.message}`);
   }
 }
 
 export async function deleteFile(
-  userId,
-  itemId,
-  accessLevel,
-  itemOwnerId,
-  showToast
+  userId: string,
+  itemId: string,
+  accessLevel: string,
+  itemOwnerId: string,
+  showToast: (
+    type: "loading" | "success" | "error",
+    title: string,
+    description?: string
+  ) => void
 ) {
   try {
     const deleteResponse = await fetch(`${BASE_URL}/api/user/files/${itemId}`, {
@@ -193,7 +225,9 @@ export async function deleteFile(
     console.log("Delete Success:", result.message);
     return result.data;
   } catch (error) {
+    const err = error as Error;
+
     console.error("Delete File Error:", error);
-    throw new Error(`Failed to delete user's file: ${error.message}`);
+    throw new Error(`Failed to delete user's file: ${err.message}`);
   }
 }

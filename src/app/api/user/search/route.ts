@@ -1,18 +1,20 @@
 import { createClient } from "@/middlewares/supabase/server";
+import { createResponse } from "@/utils/apiResponseUtils";
+import {
+  File,
+  Folder,
+  FormattedFile,
+  FormattedFolder,
+  FormattedSharedItem,
+  SearchResult,
+} from "../../../../types/searchItemTypes";
 
-const createResponse = (status, data = null, error = null, message = null) => {
-  return new Response(JSON.stringify({ status, data, error, message }), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
-
-const isValidUUID = (id) =>
+// Utility function to validate UUID
+const isValidUUID = (id: string) =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 
-export async function GET(req) {
+// Main GET function
+export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const searchKey = searchParams.get("searchKey")?.trim();
   const userId = searchParams.get("userId");
@@ -47,9 +49,8 @@ export async function GET(req) {
       .eq("shared_with", userId);
     if (sharedError) throw sharedError;
 
-    // Extract valid shared file & folder IDs
-    const sharedFileIds = [];
-    const sharedFolderIds = [];
+    const sharedFileIds: string[] = [];
+    const sharedFolderIds: string[] = [];
 
     sharedItems.forEach((item) => {
       if (item.file_id && isValidUUID(item.file_id))
@@ -59,7 +60,7 @@ export async function GET(req) {
     });
 
     // Fetch shared files
-    let sharedFiles = [];
+    let sharedFiles: File[] = [];
     if (sharedFileIds.length > 0) {
       const { data: sharedFilesData, error: sharedFilesError } = await supabase
         .from("files")
@@ -67,11 +68,11 @@ export async function GET(req) {
         .in("id", sharedFileIds)
         .ilike("file_name", `%${searchKey}%`);
       if (sharedFilesError) throw sharedFilesError;
-      sharedFiles = sharedFilesData;
+      sharedFiles = sharedFilesData || [];
     }
 
     // Fetch shared folders
-    let sharedFolders = [];
+    let sharedFolders: Folder[] = [];
     if (sharedFolderIds.length > 0) {
       const { data: sharedFoldersData, error: sharedFoldersError } =
         await supabase
@@ -80,11 +81,11 @@ export async function GET(req) {
           .in("id", sharedFolderIds)
           .ilike("folder_name", `%${searchKey}%`);
       if (sharedFoldersError) throw sharedFoldersError;
-      sharedFolders = sharedFoldersData;
+      sharedFolders = sharedFoldersData || [];
     }
 
     // Format the items
-    const formatFiles = (items) =>
+    const formatFiles = (items: File[]): FormattedFile[] =>
       items.map((item) => ({
         item_id: item.id,
         name: item.file_name,
@@ -93,7 +94,7 @@ export async function GET(req) {
         extension: item.extension,
       }));
 
-    const formatFolders = (items) =>
+    const formatFolders = (items: Folder[]): FormattedFolder[] =>
       items.map((item) => ({
         item_id: item.id,
         name: item.folder_name,
@@ -102,19 +103,25 @@ export async function GET(req) {
         extension: "folder",
       }));
 
-    const formatSharedItems = (items, itemType) =>
+    const formatSharedItems = (
+      items: File[] | Folder[],
+      itemType: "file" | "folder"
+    ): FormattedSharedItem[] =>
       items.map((item) => ({
         item_id: item.id,
         item_type: itemType,
         is_shared: true,
-        name: itemType === "file" ? item.file_name : item.folder_name,
-        extension: itemType === "file" ? item.extension : "folder",
+        name:
+          itemType === "file"
+            ? (item as File).file_name
+            : (item as Folder).folder_name,
+        extension: itemType === "file" ? (item as File).extension : "folder",
         type: itemType,
       }));
 
-    const result = {
-      files: formatFiles(files),
-      folders: formatFolders(folders),
+    const result: SearchResult = {
+      files: formatFiles(files || []),
+      folders: formatFolders(folders || []),
       shared_items: [
         ...formatSharedItems(sharedFiles, "file"),
         ...formatSharedItems(sharedFolders, "folder"),
@@ -129,10 +136,12 @@ export async function GET(req) {
     );
   } catch (error) {
     console.error("Search Error:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     return createResponse(
       500,
       null,
-      error.message,
+      errorMessage,
       "Error in fetching search results"
     );
   }

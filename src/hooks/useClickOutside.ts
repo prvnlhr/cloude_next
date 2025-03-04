@@ -1,9 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, RefObject } from "react";
 
-const useClickOutside = (ref, onClickOutside) => {
+const useClickOutside = (
+  ref: RefObject<HTMLElement | null>,
+  onClickOutside: () => void
+) => {
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (ref.current && !ref.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
         onClickOutside();
       }
     };

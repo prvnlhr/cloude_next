@@ -6,23 +6,13 @@ import { usePathname } from "next/navigation";
 import { getSignedUrl } from "@/actions/filesAction";
 import Image from "next/image";
 import { canPreview } from "@/utils/previewUtil";
-import { getFileIcon } from "@/utils/getFileIcon";
 import useUserSession from "@/hooks/useUserSession";
 import { removeFromShared } from "@/lib/services/shared/sharedServices";
 import { Spinner } from "@heroui/spinner";
+import { File } from "@/types/contentTypes";
+import { getFileIcon } from "@/utils/categoryUtils";
 
-interface File {
-  id: string;
-  file_name: string;
-  storage_path: string;
-  file_type: string;
-}
-interface FileCardProps {
-  file: File;
-  basePath: string;
-}
-
-const SharedByMeFileCard = ({ file }: FileCardProps) => {
+const SharedByMeFileCard = ({ file }: { file: File }) => {
   const pathname = usePathname();
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const session = useUserSession();
@@ -58,7 +48,7 @@ const SharedByMeFileCard = ({ file }: FileCardProps) => {
     setIsLoading(true);
 
     try {
-      const userId = session?.userId;
+      const userId = session?.userId as string;
       const removeData = {
         userId,
         itemId: file.id,

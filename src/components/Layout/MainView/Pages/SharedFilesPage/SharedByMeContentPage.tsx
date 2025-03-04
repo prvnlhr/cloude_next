@@ -1,8 +1,16 @@
 "use client";
 import SharedByMeFolderCard from "./SharedByMeFolderCard";
 import SharedByMeFileCard from "./SharedByMeFileCard";
+import { File, Folder } from "@/types/contentTypes";
 
-const SharedByMeContentPage = ({ files, folders }) => {
+export type SharedByMeContentPageProps = {
+  files: File[];
+  folders: Folder[];
+};
+const SharedByMeContentPage: React.FC<SharedByMeContentPageProps> = ({
+  files,
+  folders,
+}) => {
   return (
     <div
       className="w-full h-full flex flex-col overflow-y-scroll pb-[10px] pt-[20px]"
@@ -43,8 +51,3 @@ const SharedByMeContentPage = ({ files, folders }) => {
 };
 
 export default SharedByMeContentPage;
-
-SharedByMeContentPage.defaultProps = {
-  files: [],
-  folders: [],
-};

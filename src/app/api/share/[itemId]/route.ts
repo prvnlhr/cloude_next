@@ -1,16 +1,8 @@
 import { createClient } from "@/middlewares/supabase/server";
-
-const createResponse = (status, data = null, error = null, message = null) => {
-  return new Response(JSON.stringify({ status, data, error, message }), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
+import { createResponse } from "@/utils/apiResponseUtils";
 
 // -------------------------------------------
-export async function DELETE(req) {
+export async function DELETE(req: Request) {
   try {
     const { userId, itemId, itemType } = await req.json();
 
@@ -68,17 +60,22 @@ export async function DELETE(req) {
     );
   } catch (error) {
     console.error("Error in share item DELETE route:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     return createResponse(
       500,
       null,
-      error.message,
+      errorMessage,
       "An unexpected error occurred."
     );
   }
 }
 
 // GET : get a item which is shared with user ----------------------------------------------------------------------------------------
-export async function GET(req, { params }) {
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ itemId: string }> }
+) {
   try {
     const { itemId } = await params;
     const { searchParams } = new URL(req.url);
@@ -116,10 +113,13 @@ export async function GET(req, { params }) {
     );
   } catch (error) {
     console.error("GET Error:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
     return createResponse(
       500,
       null,
-      error.message,
+      errorMessage,
       "Error in fetching shared file."
     );
   }

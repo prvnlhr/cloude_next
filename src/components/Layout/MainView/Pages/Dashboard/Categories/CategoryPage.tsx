@@ -1,6 +1,11 @@
 import FileCard from "./FileCard";
 
-const CategoryPage = ({ files }) => {
+import { File } from "@/types/contentTypes";
+interface CategoryPageProps {
+  files: File[];
+}
+
+const CategoryPage: React.FC<CategoryPageProps> = ({ files }) => {
   return (
     <div className="w-full h-full flex flex-wrap items-start content-start justify-start gap-4">
       {files?.map((file) => (

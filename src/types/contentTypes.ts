@@ -12,6 +12,7 @@ export type File = {
   updated_at: string;
   is_starred: boolean;
   access_level?: string;
+  is_shared?: boolean;
 };
 
 export type Folder = {
@@ -26,6 +27,7 @@ export type Folder = {
   created_at: string;
   updated_at: string;
   access_level?: string;
+  is_shared?: boolean;
 };
 
 export interface ContentPageContent {

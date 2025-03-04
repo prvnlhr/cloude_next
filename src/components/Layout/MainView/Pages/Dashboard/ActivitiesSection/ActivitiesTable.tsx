@@ -54,12 +54,14 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
             const {
               item_type,
               activity_type,
-              timestamp,
-              item_name,
+              activity_timestamp,
+              // item_name,
               file_id,
               folder_id,
             } = activity;
-            const itemId = item_type === "folder" ? folder_id : file_id;
+            const itemId = (
+              item_type === "folder" ? folder_id : file_id
+            ) as string;
 
             return (
               <tr
@@ -70,7 +72,7 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
                 <td className="px-4 py-2 h-[50px] border border-[#D0D5DD] whitespace-nowrap text-[#1C3553]">
                   <Link
                     href={getLinkUrl(item_type, itemId)}
-                    aria-label={`Open ${item_name}`}
+                    // aria-label={`Open ${item_name}`}
                   >
                     <div className="flex items-center">
                       <div className="h-[30px] rounded aspect-square bg-[#F2F4F5]  border border-[#D0D5DD] flex items-center justify-center">
@@ -84,7 +86,7 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
                         />
                       </div>
                       <p className="ml-4 font-medium">
-                        {capitalize(item_name)}
+                        {/* {capitalize(item_name)} */}
                       </p>
                     </div>
                   </Link>
@@ -103,17 +105,17 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
                       <p className="text-[#758DA7] ">
                         With :
                         <span className="underline ml-[5px] text-[#1C3553]">
-                          {activity.details.shared_with_name}
+                          {/* {activity.shared_with_name} */}
                         </span>
                       </p>
                     </>
                   ) : activity_type === "rename" ? (
                     <>
-                      <p className="text-[#1C3553] font-medium">{`Renamed ${item_type} ${activity.details.old_name}`}</p>
+                      {/* <p className="text-[#1C3553] font-medium">{`Renamed ${item_type} ${activity.details.old_name}`}</p> */}
                       <p className="text-[#758DA7]">
                         To :
                         <span className="ml-[5px] underline text-[#1C3553]">
-                          {activity.details.new_name}
+                          {/* {activity.details.new_name} */}
                         </span>
                       </p>
                     </>
@@ -126,7 +128,7 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
 
                 {/* Date */}
                 <td className="px-4 py-2 border border-[#D0D5DD] whitespace-nowrap text-[#1C3553] font-medium">
-                  {formatDate(timestamp)}
+                  {formatDate(activity_timestamp)}
                 </td>
               </tr>
             );

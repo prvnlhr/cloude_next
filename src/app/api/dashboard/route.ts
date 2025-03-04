@@ -1,22 +1,37 @@
 import { createClient } from "@/middlewares/supabase/server";
-import { DashboardContent } from "../../../types/dashboardTypes";
 
-const createResponse = (
-  status: number,
-  data: any = null,
-  error: string | null = null,
-  message: string | null = null
-) => {
-  return new Response(JSON.stringify({ status, data, error, message }), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
+import { createResponse } from "@/utils/apiResponseUtils";
+
+export interface RecentActivity {
+  id: string;
+  activity_type: "upload" | "rename" | "delete" | "move" | "star" | "share";
+  item_type: "file" | "folder";
+  activity_timestamp: string;
+  details: {
+    shared_with?: string;
+    shared_with_name?: string;
+    new_name?: string;
+    old_name?: string;
+  } | null;
+  file_id: string | null;
+  folder_id: string | null;
+  files?: {
+    id: string;
+    file_name: string;
+    file_type: string;
+    file_size: number;
+    storage_path: string;
+    thumbnail_url: string | null;
+  } | null;
+  folders?: {
+    id: string;
+    folder_name: string;
+    path: string;
+  } | null;
+}
 
 // GET : dashboard content -> recent uploaded files, folder categories, activities -------------------------------------------------------
-export async function GET(req) {
+export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
 
@@ -80,33 +95,33 @@ export async function GET(req) {
       );
     }
 
-    // Transform activities to include item details
-    const transformedActivities = recentActivities.map((activity) => {
-      const isFile = activity.item_type === "file";
-      const isFolder = activity.item_type === "folder";
+    // const transformedActivities = recentActivities.map((activity) => {
+    //   const isFile = activity.item_type === "file";
+    //   const isFolder = activity.item_type === "folder";
 
-      return {
-        id: activity.id,
-        activity_type: activity.activity_type,
-        item_type: activity.item_type,
-        item_name: isFile
-          ? activity.files?.file_name
-          : activity.folders?.folder_name,
-        item_path: isFile
-          ? activity.files?.storage_path
-          : activity.folders?.path,
-        performed_by: activity.users?.email || "Unknown",
-        details: activity.details,
-        timestamp: activity.activity_timestamp,
-        file_id: isFile ? activity.file_id : null,
-        folder_id: isFolder ? activity.folder_id : null,
-      };
-    });
+    //   return {
+    //     id: activity.id,
+    //     activity_type: activity.activity_type,
+    //     item_type: activity.item_type,
+    //     item_name: isFile
+    //       ? activity.files?.file_name
+    //       : activity.folders?.folder_name,
+    //     item_path: isFile
+    //       ? activity.files?.storage_path
+    //       : activity.folders?.path,
+    //     details: activity.details,
+    //     timestamp: activity.activity_timestamp,
+    //     file_id: isFile ? activity.file_id : null,
+    //     folder_id: isFolder ? activity.folder_id : null,
+    //   };
+    // });
+    // console.log(" recentActivities:", recentActivities);
+    // console.log("transformedActivities", transformedActivities);
 
-    const dashboardContent: DashboardContent = {
+    const dashboardContent = {
       recentUploads,
       filesByExtensions,
-      recentActivities: transformedActivities,
+      recentActivities,
     };
     return createResponse(
       200,
@@ -116,10 +131,12 @@ export async function GET(req) {
     );
   } catch (error) {
     console.error("GET Error:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     return createResponse(
       500,
       null,
-      error.message,
+      errorMessage,
       "Error in fetching dashboard content."
     );
   }

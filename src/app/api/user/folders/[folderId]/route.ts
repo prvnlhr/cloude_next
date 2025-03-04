@@ -1,16 +1,8 @@
 import { createClient } from "@/middlewares/supabase/server";
-
-const createResponse = (status, data = null, error = null, message = null) => {
-  return new Response(JSON.stringify({ status, data, error, message }), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
+import { createResponse } from "@/utils/apiResponseUtils";
 
 // PATCH : rename the folder ----------------------------------------------------------------------------------------------------
-export async function PATCH(req) {
+export async function PATCH(req: Request) {
   try {
     const { itemId, userId, updateName, itemOwnerId, accessLevel } =
       await req.json();
@@ -88,17 +80,15 @@ export async function PATCH(req) {
     );
   } catch (error) {
     console.error("PATCH Error:", error);
-    return createResponse(
-      500,
-      null,
-      error.message,
-      "Error in renaming folder."
-    );
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return createResponse(500, null, errorMessage, "Error in renaming folder.");
   }
 }
 
 // DELETE : Delete a folder by id ----------------------------------------------------------------------------------------------------
-export async function DELETE(req) {
+export async function DELETE(req: Request) {
   try {
     const { itemId, userId, accessLevel, itemOwnerId } = await req.json();
 
@@ -143,7 +133,7 @@ export async function DELETE(req) {
     const { data: deleteData, error: deleteError } = await supabase
       .from("folders")
       .delete()
-      .eq("id", itemId)
+      .eq("id", itemId);
 
     if (deleteError) {
       console.error("Supabase Error:", deleteError);
@@ -158,11 +148,9 @@ export async function DELETE(req) {
     );
   } catch (error) {
     console.error("DELETE Error:", error);
-    return createResponse(
-      500,
-      null,
-      error.message,
-      "Error in deleting folder."
-    );
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return createResponse(500, null, errorMessage, "Error in deleting folder.");
   }
 }

@@ -1,7 +1,7 @@
 import { createClient } from "@/middlewares/supabase/server";
 import { getFileExtension } from "@/utils/categoryUtils";
-import { createResponse } from "@/utils/apiUtils";
-import { FileMetadata, Activity } from "@/types/fileType";
+import { Activity } from "@/types/fileType";
+import { createResponse } from "@/utils/apiResponseUtils";
 
 // Function to upload a file to storage
 const uploadToStorage = async (file: File, userId: string) => {
@@ -10,7 +10,7 @@ const uploadToStorage = async (file: File, userId: string) => {
     const uniqueId = crypto.randomUUID();
     const uniqueFileName = `${uniqueId}_${file.name}`;
     const filePath = `uploads/${userId}/${uniqueFileName}`;
-    const { data, error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from("cloude")
       .upload(filePath, file, {
         contentType: file.type,
@@ -53,7 +53,6 @@ export async function POST(req: Request): Promise<Response> {
       storage_path: filePath,
       extension: ext,
     };
-    console.log(" fileMetadata:", fileMetadata);
 
     const { data: insertData, error: insertError } = await supabase
       .from("files")
@@ -86,10 +85,13 @@ export async function POST(req: Request): Promise<Response> {
     return createResponse(201, insertData, null, "File uploaded successfully");
   } catch (error) {
     console.error("POST Error:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
     return createResponse(
       500,
       null,
-      error.message,
+      errorMessage,
       "Error in uploading file/files"
     );
   }
@@ -125,10 +127,13 @@ export async function GET(req: Request): Promise<Response> {
     return createResponse(200, files, null, "Files fetched successfully");
   } catch (error) {
     console.error("GET Error:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
     return createResponse(
       500,
       null,
-      error.message,
+      errorMessage,
       "Error in fetching files of user"
     );
   }

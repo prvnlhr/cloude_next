@@ -1,16 +1,10 @@
 import CategoryPage from "@/components/Layout/MainView/Pages/Dashboard/Categories/CategoryPage";
 import { fetchFilesByCategories } from "@/lib/services/categories/categoriesServices";
 import { createClient } from "@/middlewares/supabase/server";
+import { File } from "@/types/contentTypes";
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
-type SearchParams = {
-  [key: string]: string | string[] | undefined;
-};
-
-type PageProps = {
-  searchParams: SearchParams;
-};
-
-const page = async ({ searchParams }: PageProps) => {
+const page = async ({ searchParams }: { searchParams: SearchParams }) => {
   const params = await searchParams;
   const supabase = await createClient();
 
@@ -19,9 +13,13 @@ const page = async ({ searchParams }: PageProps) => {
   } = await supabase.auth.getUser();
 
   const userId = user!.id;
-  const category = params.category;
+  const category = params.category as string;
 
-  const filesByCategory = await fetchFilesByCategories(userId, category);
+  const filesByCategory: File[] = await fetchFilesByCategories(
+    userId,
+    category
+  );
+  // console.log(" filesByCategory:", filesByCategory);
 
   return <CategoryPage files={filesByCategory} />;
 };

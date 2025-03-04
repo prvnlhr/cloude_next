@@ -1,17 +1,8 @@
 import { createClient } from "@/middlewares/supabase/server";
+import { createResponse } from "@/utils/apiResponseUtils";
 
-const createResponse = (status, data = null, error = null, message = null) => {
-  return new Response(JSON.stringify({ status, data, error, message }), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
-
-// -> NOT IN USE
 // GET : all items for a particular category -----------------------------------------------------------------------------------------
-export async function GET(req) {
+export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
   const category = searchParams.get("category_name");
@@ -38,10 +29,13 @@ export async function GET(req) {
     return createResponse(200, { files }, null, "Files fetched successfully.");
   } catch (error) {
     console.error("GET Error:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
     return createResponse(
       500,
       null,
-      error.message,
+      errorMessage,
       "Error fetching files for the user."
     );
   }

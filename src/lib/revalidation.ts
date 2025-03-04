@@ -3,7 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 
 // Function to revalidate a specific path
-const revalidatePathHandler = async (path, type) => {
+const revalidatePathHandler = async (path: string, type: "layout" | "page") => {
   try {
     revalidatePath(path, type);
     // console.log(`Path revalidated: ${path}`);
@@ -14,7 +14,7 @@ const revalidatePathHandler = async (path, type) => {
 };
 
 // Function to revalidate a specific tag
-const revalidateTagHandler = async (tag) => {
+const revalidateTagHandler = async (tag: string) => {
   try {
     revalidateTag(tag);
     // console.log(`Tag revalidated: ${tag}`);

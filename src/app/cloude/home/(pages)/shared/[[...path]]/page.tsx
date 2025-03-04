@@ -6,13 +6,9 @@ import {
 } from "@/lib/services/shared/sharedServices";
 import { createClient } from "@/middlewares/supabase/server";
 
-type SearchParams = {
-  [key: string]: string | string[] | undefined;
-};
-type Params = {
-  path: string[];
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
-};
+type Params = Promise<{ path: string[] }>;
 
 export default async function SharedPage({
   params,

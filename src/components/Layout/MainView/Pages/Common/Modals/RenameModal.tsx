@@ -5,6 +5,7 @@ import useUserSession from "@/hooks/useUserSession";
 import { renameFolder } from "@/lib/services/user/foldersService";
 import { Spinner } from "@heroui/spinner";
 import { useToast } from "@/context/ToastContext";
+import { File, Folder } from "@/types/contentTypes";
 
 interface RenameModalProps {
   item: File | Folder | undefined;
@@ -19,63 +20,60 @@ const RenameModal: React.FC<RenameModalProps> = ({
 }) => {
   const [baseName, setBaseName] = useState("");
   const [extension, setExtension] = useState("");
-  const key = itemType === "folder" ? "folder_name" : "file_name";
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
   const { showToast } = useToast();
 
   useEffect(() => {
-    if (item && item[key]) {
-      const lastDotIndex = item[key].lastIndexOf(".");
-      if (lastDotIndex !== -1) {
-        setBaseName(item[key].slice(0, lastDotIndex));
-        setExtension(item[key].slice(lastDotIndex));
+    if (item) {
+      let name: string;
+
+      if (itemType === "folder") {
+        name = (item as Folder).folder_name;
       } else {
-        setBaseName(item[key]);
+        name = (item as File).file_name;
+      }
+
+      const lastDotIndex = name.lastIndexOf(".");
+      if (lastDotIndex !== -1) {
+        setBaseName(name.slice(0, lastDotIndex));
+        setExtension(name.slice(lastDotIndex));
+      } else {
+        setBaseName(name);
         setExtension("");
       }
     }
-  }, [item, key]);
+  }, [item, itemType]);
 
   const session = useUserSession();
 
   const handleRename = async () => {
     setIsLoading(true);
-    setError(null);
-    setSuccess(false);
 
     try {
-      const userId = session?.userId;
+      const userId = session?.userId as string;
       const newFileName = baseName.trim() + extension;
 
       const accessLevel =
-        userId === item.user_id ? "FULL" : item.access_level || "READ";
+        userId === item?.user_id ? "FULL" : item?.access_level || "READ";
 
+      const itemId = item?.id as string;
       const updateData = {
         updateName: newFileName,
         userId,
-        itemId: item.id,
-        itemOwnerId: item.user_id,
+        itemId,
+        itemOwnerId: item?.user_id as string,
         accessLevel,
       };
 
-      const is_shared = item?.is_shared
-        ? item.is_shared
-        : userId !== item.user_id;
-      console.log(" is_shared:", is_shared);
-      console.log(item);
-      // return;
-      const renameResponse =
-        itemType === "folder"
-          ? await renameFolder(updateData, item.id, showToast)
-          : await renameFile(updateData, item.id, showToast);
+      if (itemType === "folder") {
+        await renameFolder(updateData, itemId, showToast);
+      } else {
+        await renameFile(updateData, itemId, showToast);
+      }
 
-      setSuccess(true);
       onClose();
     } catch (error) {
       console.error(error);
-      setError(error.message || `Failed to rename ${itemType}`);
     } finally {
       setIsLoading(false);
     }

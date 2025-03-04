@@ -1,16 +1,8 @@
 import { createClient } from "@/middlewares/supabase/server";
-
-const createResponse = (status, data = null, error = null, message = null) => {
-  return new Response(JSON.stringify({ status, data, error, message }), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
+import { createResponse } from "@/utils/apiResponseUtils";
 
 //  DELETE : remove item from starred -------------------------------------------------------------------------------------
-export async function DELETE(req) {
+export async function DELETE(req: Request) {
   try {
     const { itemId, itemType, userId, itemOwnerId } = await req.json();
     if (!itemId || !itemType || !userId || !itemOwnerId) {
@@ -73,10 +65,12 @@ export async function DELETE(req) {
     );
   } catch (error) {
     console.error("Error in DELETE route:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     return createResponse(
       500,
       null,
-      error.message,
+      errorMessage,
       "An unexpected error occurred."
     );
   }

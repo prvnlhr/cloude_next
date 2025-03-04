@@ -1,6 +1,15 @@
 import React from "react";
 import SearchItem from "./SearchItem";
-const SearchModal = ({ searchResults, setSearchResults }) => {
+import { SearchResult } from "@/types/searchItemTypes";
+
+interface SearchModalProps {
+  searchResults: SearchResult;
+  setSearchResults: React.Dispatch<React.SetStateAction<SearchResult>>;
+}
+const SearchModal: React.FC<SearchModalProps> = ({
+  searchResults,
+  setSearchResults,
+}) => {
   const hasResults =
     searchResults.files.length > 0 ||
     searchResults.folders.length > 0 ||
@@ -38,7 +47,7 @@ const SearchModal = ({ searchResults, setSearchResults }) => {
               </div>
             </div>
             <div className="w-full flex-grow">
-              {searchResults.files.map((item, index) => (
+              {searchResults.files.map((item) => (
                 <SearchItem
                   key={item.item_id}
                   item={item}
@@ -61,7 +70,7 @@ const SearchModal = ({ searchResults, setSearchResults }) => {
               </div>
             </div>
             <div className="w-full flex-grow">
-              {searchResults.folders.map((item, index) => (
+              {searchResults.folders.map((item) => (
                 <SearchItem
                   key={item.item_id}
                   item={item}
@@ -84,7 +93,7 @@ const SearchModal = ({ searchResults, setSearchResults }) => {
               </div>
             </div>
             <div className="w-full flex-grow ">
-              {searchResults.shared_items.map((item, index) => (
+              {searchResults.shared_items.map((item) => (
                 <SearchItem
                   key={item.item_id}
                   item={item}

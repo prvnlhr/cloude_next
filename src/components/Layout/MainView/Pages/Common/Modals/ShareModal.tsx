@@ -4,54 +4,56 @@ import { shareItem } from "@/lib/services/shared/sharedServices";
 import useUserSession from "@/hooks/useUserSession";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Spinner } from "@heroui/spinner";
-import { getFileExtension } from "@/utils/fileExtensionUtils";
 import { useToast } from "@/context/ToastContext";
+import { File, Folder } from "@/types/contentTypes";
+import { getFileExtension } from "@/utils/categoryUtils";
 
 interface ShareModalProps {
   item: File | Folder | undefined;
   itemType: string;
   onClose: () => void;
 }
-const accessLevelMap = {
+
+type AccessLevel = "READ" | "WRITE" | "FULL";
+
+const accessLevelMap: Record<AccessLevel, string> = {
   READ: "Read-Only",
   WRITE: "Write Access",
   FULL: "Full Access",
 };
+
 const accessLevelsData = [
   {
-    key: "FULL",
+    key: "FULL" as AccessLevel,
     title: accessLevelMap.FULL,
     description: "Can read, edit, share, and delete",
   },
   {
-    key: "WRITE",
+    key: "WRITE" as AccessLevel,
     title: accessLevelMap.WRITE,
     description: "Can read and edit",
   },
   {
-    key: "READ",
+    key: "READ" as AccessLevel,
     title: accessLevelMap.READ,
     description: "Can view only",
   },
 ];
+
 const ShareModal: React.FC<ShareModalProps> = ({ item, itemType, onClose }) => {
-  const [shareWithEmail, setShareWithEmail] = useState<string>(
-    "mrtnmickae.jrl@gmail.com"
-  );
+  const [shareWithEmail, setShareWithEmail] = useState<string>("");
   const modalRef = useRef(null);
-  const key = itemType === "folder" ? "folder_name" : "file_name";
 
   const [showAccessLevels, setShowAccessLevels] = useState(false);
-  const [accessLevel, setAccessLevel] = useState("READ");
+  const [accessLevel, setAccessLevel] = useState<AccessLevel>("READ");
 
   const [isSharing, setIsSharing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const { showToast } = useToast();
   const session = useUserSession();
 
   const handleShare = async () => {
-    const itemId = item.id;
+    const itemId = item?.id;
     const userId = session?.userId;
     if (!itemId || !itemType || !userId) {
       setError("Missing required data for sharing.");
@@ -68,25 +70,34 @@ const ShareModal: React.FC<ShareModalProps> = ({ item, itemType, onClose }) => {
 
     setIsSharing(true);
     setError(null);
-    setSuccessMessage(null);
     try {
       console.log(item);
       const shareItemResponse = await shareItem(shareItemData, showToast);
-      setSuccessMessage("Item shared successfully!");
       if (shareItemResponse && shareItemResponse.error) {
         console.log(shareItemResponse.error);
         throw new Error(shareItemResponse.error);
       }
       setError(null);
-      setSuccessMessage(true);
       onClose();
     } catch (error) {
-      console.error("Error sharing item:", error.message);
-      setError(error.message || "Failed to share item.");
+      console.error("Error sharing item:", error);
+
+      // Type guard to check if `error` is an instance of `Error`
+      if (error instanceof Error) {
+        setError(error.message || "Failed to share item.");
+      } else {
+        setError("Failed to share item.");
+      }
     } finally {
       setIsSharing(false);
     }
   };
+
+  const itemName = item
+    ? itemType === "folder"
+      ? (item as Folder).folder_name
+      : (item as File).file_name
+    : "Unnamed Item";
 
   return (
     <div
@@ -125,11 +136,11 @@ const ShareModal: React.FC<ShareModalProps> = ({ item, itemType, onClose }) => {
         </div>
         <div className="h-full flex-grow flex flex-col justify-center overflow-hidden">
           <p className="text-[0.8rem] ml-[15px] italic text-[#1C3553] font-medium truncate whitespace-nowrap">
-            {item && item[key]}
+            {itemName}
           </p>
           {itemType === "file" && (
             <p className="text-[0.8rem] ml-[15px] italic text-[#A2A8B2] font-medium underline">
-              {item && itemType === "file" && getFileExtension(item)}
+              {item && itemType === "file" && getFileExtension(itemName)}
             </p>
           )}
         </div>

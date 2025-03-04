@@ -6,17 +6,9 @@ import { removeFromShared } from "@/lib/services/shared/sharedServices";
 import useUserSession from "@/hooks/useUserSession";
 import { useState } from "react";
 import { Spinner } from "@heroui/spinner";
-interface Folder {
-  id: string;
-  folder_name: string;
-}
+import { Folder } from "@/types/contentTypes";
 
-interface FolderCardProps {
-  folder: Folder;
-  basePath: string;
-}
-
-const SharedByMeFolderCard = ({ folder }: FolderCardProps) => {
+const SharedByMeFolderCard = ({ folder }: { folder: Folder }) => {
   const pathname = usePathname();
   const session = useUserSession();
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +18,7 @@ const SharedByMeFolderCard = ({ folder }: FolderCardProps) => {
     console.log(folder);
 
     try {
-      const userId = session?.userId;
+      const userId = session?.userId as string;
       const removeData = {
         userId,
         itemId: folder.id,

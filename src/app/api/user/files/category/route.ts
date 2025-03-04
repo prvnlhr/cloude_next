@@ -1,16 +1,8 @@
 import { createClient } from "@/middlewares/supabase/server";
+import { createResponse } from "@/utils/apiResponseUtils";
 import { getFileExtensionsByCategory } from "@/utils/categoryUtils";
-
-const createResponse = (status, data = null, error = null, message = null) => {
-  return new Response(JSON.stringify({ status, data, error, message }), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
-
-export async function GET(req) {
+import { Category } from "@/utils/categoryUtils";
+export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
@@ -26,9 +18,9 @@ export async function GET(req) {
     if (!category) {
       return createResponse(400, null, "Category is required");
     }
-    const fileExtensions = getFileExtensionsByCategory(category);
+    const fileExtensions = getFileExtensionsByCategory(category as Category);
 
-    const fileExtensionsWithDots = fileExtensions.map((ext) =>
+    const fileExtensionsWithDots = (fileExtensions as string[]).map((ext) =>
       ext.startsWith(".") ? ext.trim() : `.${ext.trim()}`
     );
 
@@ -50,8 +42,11 @@ export async function GET(req) {
     );
   } catch (error) {
     console.error("API Error:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
     return new Response(
-      JSON.stringify({ error: error.message || "Internal Server Error" }),
+      JSON.stringify({ error: errorMessage || "Internal Server Error" }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }

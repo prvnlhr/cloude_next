@@ -3,7 +3,18 @@ import { capitalize } from "../shared/sharedServices";
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-export async function fetchStarredContent(userId, folderId) {
+type StarData = {
+  itemId: string;
+  itemType: string;
+  userId: string;
+  itemOwnerId: string;
+  accessLevel: string;
+};
+
+export async function fetchStarredContent(
+  userId: string,
+  folderId: string | null
+) {
   try {
     const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
 
@@ -31,11 +42,20 @@ export async function fetchStarredContent(userId, folderId) {
     return result.data;
   } catch (error) {
     console.error("Fetch Starred Content Error:", error);
-    throw new Error(`Failed to fetch starred content: ${error.message}`);
+    const err = error as Error;
+    throw new Error(`Failed to fetch starred content: ${err.message}`);
   }
 }
 
-export async function addToStarred(starData, showToast) {
+export async function addToStarred(
+  starData: StarData,
+  showToast: (
+    type: "loading" | "success" | "error",
+    title: string,
+    description?: string,
+    toastId?: string | number
+  ) => string | number
+) {
   const { itemId, itemType, userId, itemOwnerId, accessLevel } = starData;
 
   if (!itemId || !userId) {
@@ -95,11 +115,20 @@ export async function addToStarred(starData, showToast) {
     return result.data;
   } catch (error) {
     console.error("Add to Starred Error:", error);
-    throw new Error(`Failed to add to starred: ${error.message}`);
+    const err = error as Error;
+    throw new Error(`Failed to add to starred: ${err.message}`);
   }
 }
 
-export async function removeFromStarred(starData, showToast) {
+export async function removeFromStarred(
+  starData: StarData,
+  showToast: (
+    type: "loading" | "success" | "error",
+    title: string,
+    description?: string,
+    toastId?: string | number
+  ) => string | number
+) {
   const { itemId, itemType, userId, itemOwnerId } = starData;
 
   if (!itemId || !userId) {
@@ -154,6 +183,7 @@ export async function removeFromStarred(starData, showToast) {
     return result.data;
   } catch (error) {
     console.error("Remove from Starred Error:", error);
-    throw new Error(`Failed to remove from starred: ${error.message}`);
+    const err = error as Error;
+    throw new Error(`Failed to remove from starred: ${err.message}`);
   }
 }

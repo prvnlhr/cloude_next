@@ -5,8 +5,8 @@ import AddMenu from "./AddMenu";
 import { usePathname } from "next/navigation";
 
 const PageHeader: FC = () => {
-  
   const menuRef = useRef<HTMLDivElement>(null);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const pathname = usePathname();
@@ -54,7 +54,10 @@ const PageHeader: FC = () => {
           onClick={toggleMenu}
         >
           <div className="h-[100%] aspect-[1/1] flex items-center justify-center black">
-            <Icon icon="material-symbols:upload-rounded" className="text-white" />
+            <Icon
+              icon="material-symbols:upload-rounded"
+              className="text-white"
+            />
           </div>
           <p className="text-white text-[0.8rem] font-medium hidden md:block mr-[15px]">
             Upload

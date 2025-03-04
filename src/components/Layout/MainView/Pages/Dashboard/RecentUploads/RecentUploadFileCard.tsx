@@ -1,12 +1,11 @@
 "use client";
 import { getSignedUrl } from "@/actions/filesAction";
-import { getFileIcon } from "@/utils/getFileIcon";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect, useCallback } from "react";
 import { RecentUploadFile } from "@/types/dashboardTypes";
-
+import { getFileIcon } from "@/utils/categoryUtils";
 interface RecentUploadFileCardProps {
   item: RecentUploadFile;
 }

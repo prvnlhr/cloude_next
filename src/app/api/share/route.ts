@@ -1,16 +1,8 @@
 import { createClient } from "@/middlewares/supabase/server";
-
-const createResponse = (status, data = null, error = null, message = null) => {
-  return new Response(JSON.stringify({ status, data, error, message }), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
+import { createResponse } from "@/utils/apiResponseUtils";
 
 // POST : share a item(file or folder with other user) -----------------------------------------------------------------------------------------------
-export async function POST(req) {
+export async function POST(req: Request) {
   try {
     const supabase = await createClient();
 
@@ -113,17 +105,15 @@ export async function POST(req) {
     return createResponse(200, sharedItem, null, "Item shared successfully.");
   } catch (error) {
     console.error("Error at Share file POST:", error);
-    return createResponse(
-      500,
-      null,
-      error.message,
-      "Error at Share file POST."
-    );
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    return createResponse(500, null, errorMessage, "Error at Share file POST.");
   }
 }
 
 // Helper functions
-async function getSharedByMeData(userId, folderId) {
+
+async function getSharedByMeData(userId: string, folderId: string | null) {
   const supabase = await createClient();
 
   let query = supabase
@@ -153,7 +143,7 @@ async function getSharedByMeData(userId, folderId) {
   return { folders, files };
 }
 
-async function getSharedWithMeData(userId, folderId) {
+async function getSharedWithMeData(userId: string, folderId: string | null) {
   const supabase = await createClient();
 
   if (folderId) {
@@ -168,8 +158,6 @@ async function getSharedWithMeData(userId, folderId) {
       }
     );
 
-    console.log(" accessData:", accessData);
-    console.log(" accessError:", accessError);
     if (
       accessError ||
       !accessData ||
@@ -239,10 +227,10 @@ async function getSharedWithMeData(userId, folderId) {
 }
 
 // GET : get all the share content of a user ------------------------------------------------------------------------------
-export async function GET(req) {
+export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userId");
-  const folderId = searchParams.get("folderId");
+  const userId = searchParams.get("userId") as string;
+  const folderId = searchParams.get("folderId") || null;
   const shareByMe = searchParams.get("shareByMe");
 
   try {
@@ -264,10 +252,12 @@ export async function GET(req) {
     );
   } catch (error) {
     console.error("Failed to get shared content:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     return createResponse(
       500,
       null,
-      error.message,
+      errorMessage,
       "Failed to get shared content."
     );
   }

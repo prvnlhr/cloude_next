@@ -1,7 +1,7 @@
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-export async function fetchFilesByCategories(userId, category) {
+export async function fetchFilesByCategories(userId: string, category: string) {
   try {
     if (!userId || !category) {
       throw new Error("User ID and category are required.");
@@ -28,11 +28,11 @@ export async function fetchFilesByCategories(userId, category) {
       );
     }
 
-    console.log(" result:", result.data);
     console.log("Fetch Files by Category Success:", result.message);
     return result.data;
   } catch (error) {
+    const err = error as Error;
     console.error("Fetch Files by Category Error:", error);
-    throw new Error(`Failed to fetch files by category: ${error.message}`);
+    throw new Error(`Failed to fetch files by category: ${err.message}`);
   }
 }

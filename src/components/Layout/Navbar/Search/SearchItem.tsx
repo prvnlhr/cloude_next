@@ -1,8 +1,18 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useRouter } from "next/navigation";
 import { FC } from "react";
+import {
+  SearchResult,
+  FormattedFile,
+  FormattedFolder,
+  FormattedSharedItem,
+} from "@/types/searchItemTypes";
 
-const SearchItem: FC = ({ item, setSearchResults }) => {
+interface SearchItemProps {
+  item: FormattedFile | FormattedFolder | FormattedSharedItem;
+  setSearchResults: React.Dispatch<React.SetStateAction<SearchResult>>;
+}
+const SearchItem: FC<SearchItemProps> = ({ item, setSearchResults }) => {
   const router = useRouter();
 
   const page = item.is_shared ? "shared" : "my-storage";
@@ -10,11 +20,11 @@ const SearchItem: FC = ({ item, setSearchResults }) => {
   const linkUrl = `/cloude/home/${page}/${type}/${item.item_id}`;
 
   const handleItemClicked = () => {
-    setSearchResults((prev) => ({
+    setSearchResults({
       files: [],
       folders: [],
       shared_items: [],
-    }));
+    });
     router.push(linkUrl);
   };
 

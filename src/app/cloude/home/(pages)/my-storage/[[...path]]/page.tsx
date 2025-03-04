@@ -4,11 +4,10 @@ import { fetchUserStorageContent } from "@/lib/services/my_storage/myStorageServ
 import { getFile } from "@/lib/services/user/filesService";
 import { createClient } from "@/middlewares/supabase/server";
 import { ContentPageContent, File, Folder } from "@/types/contentTypes";
-export default async function MyStorage({
-  params,
-}: {
-  params: Promise<{ path: string }>;
-}) {
+
+type Params = Promise<{ path: string[] }>;
+
+export default async function MyStorage({ params }: { params: Params }) {
   /*
     params path can have:
     - ['files', 'fileId']

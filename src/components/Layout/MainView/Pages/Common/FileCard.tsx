@@ -8,7 +8,6 @@ import ActionMenu from "./ActionMenu";
 import { getSignedUrl } from "@/actions/filesAction";
 import Image from "next/image";
 import { canPreview } from "@/utils/previewUtil";
-// import { getFileIcon } from "@/utils/getFileIcon";
 import { File, Folder } from "@/types/contentTypes";
 import { getFileIcon } from "@/utils/categoryUtils";
 interface FileCardProps {

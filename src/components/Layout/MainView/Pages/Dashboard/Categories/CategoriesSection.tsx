@@ -1,6 +1,6 @@
 import { getCategoryByFileExtension } from "@/utils/categoryUtils";
 import CategoryCard from "./CategoryCard";
-
+import { FileExtension } from "@/utils/categoryUtils";
 interface CategoriesSectionProps {
   filesByExtensions: string[];
 }
@@ -11,7 +11,7 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
   const fileExtensionsWithDots = filesByExtensions.map((ext) => `.${ext}`);
 
   const categories = fileExtensionsWithDots.map((ext) =>
-    getCategoryByFileExtension(ext)
+    getCategoryByFileExtension(ext as FileExtension)
   );
 
   const uniqueCategories = [...new Set(categories)];

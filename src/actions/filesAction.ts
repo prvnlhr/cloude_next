@@ -2,10 +2,10 @@
 
 import { createClient } from "@/middlewares/supabase/server";
 
-export const getSignedUrl = async (filePath) => {
+export const getSignedUrl = async (filePath: string) => {
   const supabase = await createClient();
   const { data, error } = await supabase.storage
-    .from("cloude") 
+    .from("cloude")
     .createSignedUrl(filePath, 3600);
 
   if (error) {

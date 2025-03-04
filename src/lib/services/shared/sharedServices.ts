@@ -1,12 +1,19 @@
 import { revalidateTagHandler } from "@/lib/revalidation";
 
+const BASE_URL: string =
+  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
 export function capitalize(word: string): string {
   if (!word) return "";
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
-
-const BASE_URL: string =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+interface ShareItemData {
+  itemId: string;
+  itemType: string;
+  sharedById: string;
+  shareWithEmail: string;
+  accessLevel: string;
+}
 
 /**
  * Shares an item (file or folder) with another user via email.
@@ -18,7 +25,11 @@ const BASE_URL: string =
  * @throws An error if the API request fails.
  */
 
-export async function fetchSharedContent(userId, folderId, queryParams) {
+export async function fetchSharedContent(
+  userId: string,
+  folderId: string | null,
+  queryParams: { [key: string]: string | string[] | undefined } | null
+) {
   try {
     const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
 
@@ -32,6 +43,7 @@ export async function fetchSharedContent(userId, folderId, queryParams) {
     const response = await fetch(`${BASE_URL}/api/share?${params.toString()}`, {
       next: { revalidate: false, tags: ["shared"] },
     });
+
     const result = await response.json();
 
     if (!response.ok) {
@@ -48,11 +60,19 @@ export async function fetchSharedContent(userId, folderId, queryParams) {
     return result.data;
   } catch (error) {
     console.error("Fetch Shared Content Error:", error);
-    throw new Error(`Failed to fetch shared content: ${error.message}`);
+    const err = error as Error;
+    throw new Error(`Failed to fetch shared content: ${err.message}`);
   }
 }
 
-export async function shareItem(shareItemData, showToast) {
+export async function shareItem(
+  shareItemData: ShareItemData,
+  showToast: (
+    type: "loading" | "success" | "error",
+    title: string,
+    description?: string
+  ) => void
+) {
   const { itemId, itemType, sharedById, shareWithEmail, accessLevel } =
     shareItemData;
 
@@ -97,11 +117,20 @@ export async function shareItem(shareItemData, showToast) {
     return result.data;
   } catch (error) {
     console.error("Share Item Error:", error);
-    throw new Error(`Failed to share item: ${error.message}`);
+    const err = error as Error;
+    throw new Error(`Failed to share item: ${err.message}`);
   }
 }
 
-export async function removeFromShared({ userId, itemId, itemType }) {
+export async function removeFromShared({
+  userId,
+  itemId,
+  itemType,
+}: {
+  userId: string;
+  itemId: string;
+  itemType: string;
+}) {
   try {
     const response = await fetch(`${BASE_URL}/api/share/${itemId}`, {
       method: "DELETE",
@@ -131,11 +160,12 @@ export async function removeFromShared({ userId, itemId, itemType }) {
     return result.data;
   } catch (error) {
     console.error("Remove from Shared Error:", error);
-    throw new Error(`Failed to remove from shared: ${error.message}`);
+    const err = error as Error;
+    throw new Error(`Failed to remove from shared: ${err.message}`);
   }
 }
 
-export async function getSharedFile(userId, itemId) {
+export async function getSharedFile(userId: string, itemId: string) {
   try {
     const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
     const response = await fetch(
@@ -155,6 +185,7 @@ export async function getSharedFile(userId, itemId) {
     return result.data;
   } catch (error) {
     console.error("Get Shared File Error:", error);
-    throw new Error(`Failed to get shared file: ${error.message}`);
+    const err = error as Error;
+    throw new Error(`Failed to get shared file: ${err.message}`);
   }
 }

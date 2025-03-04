@@ -6,13 +6,15 @@ import useUserSession from "@/hooks/useUserSession";
 import { useDebounce } from "@/hooks/useDebounce";
 import SearchModal from "./SearchModal";
 import { Spinner } from "@heroui/spinner";
+import { SearchResult } from "@/types/searchItemTypes";
 
 const Searchbar: FC = () => {
   const session = useUserSession();
-  const userId = session?.userId;
+  const userId = session?.userId as string;
   const [searchKey, setSearchKey] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [searchResults, setSearchResults] = useState({
+
+  const [searchResults, setSearchResults] = useState<SearchResult>({
     files: [],
     folders: [],
     shared_items: [],

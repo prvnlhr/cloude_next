@@ -9,7 +9,7 @@ import { MiddlewareFactory } from "../middlewareTypes";
 
 export const updateSession: MiddlewareFactory = (next) => {
   return async (request: NextRequest, event: NextFetchEvent) => {
-    let supabaseResponse = NextResponse.next({ request });
+    const supabaseResponse = NextResponse.next({ request });
 
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,

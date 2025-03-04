@@ -12,18 +12,32 @@ export interface RecentUploadFile {
   folder_id: string | null;
   thumbnail_url: string | null;
 }
-
 export interface RecentActivity {
   id: string;
-  activity_type: "upload" | "rename" | "delete" | "move" | "star" | string;
-  details?: Record<string, string> | null;
+  activity_type: "upload" | "rename" | "delete" | "move" | "star" | "share";
+  item_type: "file" | "folder";
+  activity_timestamp: string;
+  details: {
+    shared_with?: string;
+    shared_with_name?: string;
+    new_name?: string;
+    old_name?: string;
+  } | null;
   file_id: string | null;
   folder_id: string | null;
-  item_name: string;
-  item_path: string;
-  item_type: "file" | "folder";
-  performed_by: string;
-  timestamp: string;
+  files?: {
+    id: string;
+    file_name: string;
+    file_type: string;
+    file_size: number;
+    storage_path: string;
+    thumbnail_url: string | null;
+  };
+  folders?: {
+    id: string;
+    folder_name: string;
+    path: string | null;
+  };
 }
 
 export interface DashboardContent {

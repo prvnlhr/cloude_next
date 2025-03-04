@@ -5,6 +5,7 @@ import useUserSession from "@/hooks/useUserSession";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { uploadFolder } from "@/lib/services/user/foldersService";
 import { useToast } from "@/context/ToastContext";
+import { processFolderInput } from "@/utils/folderProcessUtils";
 
 interface AddMenuProps {
   menuRef: RefObject<HTMLDivElement | null>;
@@ -20,16 +21,12 @@ const AddMenu: FC<AddMenuProps> = ({ menuRef }) => {
   const session = useUserSession();
 
   let folderId: string | null = null;
-  let fileId: string | null = null;
 
   if (params.path) {
     const itemType = params.path[0];
     const itemId = params.path[1];
-
     if (itemType === "folders") {
       folderId = itemId;
-    } else if (itemType === "files") {
-      fileId = itemId;
     }
   }
 
@@ -40,17 +37,12 @@ const AddMenu: FC<AddMenuProps> = ({ menuRef }) => {
       const fileDataArray = fileArray.map((file) => ({
         name: file.name,
         type: file.type,
-        size: file.size,
+        size: file.size.toString(),
         file: file,
       }));
       const userId = session?.userId as string;
       try {
-        const uploadFilesResponse = await uploadFiles(
-          fileDataArray,
-          userId,
-          folderId,
-          showToast
-        );
+        await uploadFiles(fileDataArray, userId, folderId, showToast);
       } catch (error) {
         console.log(error);
       }
@@ -60,74 +52,17 @@ const AddMenu: FC<AddMenuProps> = ({ menuRef }) => {
   const handleFolderUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
-
-    const folderMap: Record<string, string> = {};
-
-    const folders: Array<{
-      id: string;
-      name: string;
-      parentFolderId: string | null;
-      userId: string;
-    }> = [];
-
-    const filesArray: Array<{
-      name: string;
-      type: string;
-      size: number;
-      file: File;
-      folderId: string | null;
-      userId: string;
-    }> = [];
-
-    const userId = session?.userId;
-    if (!userId) {
-      console.error("User ID is missing. Please log in.");
-      return;
-    }
-
-    const generateFolderId = () => {
-      return crypto.randomUUID();
-    };
-
-    // Process each file
-    Array.from(files).forEach((file) => {
-      const pathParts = file.webkitRelativePath.split("/");
-      let parentFolderId: string | null = folderId;
-
-      pathParts.forEach((folderName, index) => {
-        const folderPath = pathParts.slice(0, index + 1).join("/");
-
-        if (!folderMap[folderPath]) {
-          const folderId = generateFolderId();
-          folderMap[folderPath] = folderId;
-
-          folders.push({
-            id: folderId,
-            name: folderName,
-            parentFolderId: parentFolderId,
-            userId: userId,
-          });
-
-          parentFolderId = folderId;
-        } else {
-          parentFolderId = folderMap[folderPath];
-        }
-      });
-
-      filesArray.push({
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        file: file,
-        folderId: parentFolderId,
-        userId: userId,
-      });
-    });
+    const userId = session?.userId as string;
+    const { foldersArray, filesArray } = processFolderInput(
+      files,
+      userId,
+      folderId
+    );
 
     try {
       const uploadFolderResponse = await uploadFolder(
         filesArray,
-        folders,
+        foldersArray,
         userId,
         showToast
       );

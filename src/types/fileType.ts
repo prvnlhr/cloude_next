@@ -23,5 +23,5 @@ export type Activity = {
   file_id?: string | null;
   folder_id?: string | null;
   user_id: string;
-  details?: any;
+  details?: Record<string, string> | null;
 };

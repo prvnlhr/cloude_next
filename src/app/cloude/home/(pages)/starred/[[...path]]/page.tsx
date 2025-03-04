@@ -4,11 +4,10 @@ import { fetchStarredContent } from "@/lib/services/starred/starredService";
 import { getFile } from "@/lib/services/user/filesService";
 import { createClient } from "@/middlewares/supabase/server";
 import { File } from "@/types/contentTypes";
-export default async function MyStorage({
-  params,
-}: {
-  params: Promise<{ path: string }>;
-}) {
+
+type Params = Promise<{ path: string[] }>;
+
+export default async function MyStorage({ params }: { params: Params }) {
   const { path = [] } = await params;
   const supabase = await createClient();
 

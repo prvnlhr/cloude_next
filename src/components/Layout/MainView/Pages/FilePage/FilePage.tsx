@@ -1,11 +1,11 @@
 "use client";
 import { getSignedUrl } from "@/actions/filesAction";
-import { getFileIcon } from "@/utils/getFileIcon";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { File } from "@/types/contentTypes";
+import { getFileIcon } from "@/utils/categoryUtils";
 
 interface FilePageProps {
   file: File;

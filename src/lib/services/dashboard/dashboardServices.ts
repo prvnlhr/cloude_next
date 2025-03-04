@@ -13,7 +13,6 @@ export async function fetchDashboardContent(
       `${BASE_URL}/api/dashboard?${params.toString()}`,
       { next: { revalidate: false, tags: ["dashboard"] } }
     );
-
     const result = await response.json();
 
     if (!response.ok) {

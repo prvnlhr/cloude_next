@@ -1,7 +1,4 @@
-type FileExtension = keyof typeof extensionToCategory;
-type Category = (typeof extensionToCategory)[FileExtension];
-
-const extensionToCategory: Record<FileExtension, Category> = {
+const extensionToCategory = {
   // Image Extensions
   ".jpeg": "Image",
   ".jpg": "Image",
@@ -157,9 +154,11 @@ const extensionToCategory: Record<FileExtension, Category> = {
   ".dat": "Other",
   ".log": "Other",
   ".tmp": "Other",
-};
+} as const;
 
-// Map categories to Iconify icons
+export type FileExtension = keyof typeof extensionToCategory;
+export type Category = (typeof extensionToCategory)[FileExtension];
+
 const categoryIcons: Record<Category, string> = {
   Image: "ion:image",
   Video: "majesticons:video",
@@ -349,7 +348,7 @@ function normalizeString(input: string): string {
 
 // .js -> 'Code'
 export function getCategoryByFileExtension(
-  fileExtension: FileExtension | null
+  fileExtension: FileExtension
 ): Category {
   if (extensionToCategory[fileExtension]) {
   }
@@ -362,22 +361,14 @@ export function getCategoryIcon(category: Category): string {
 }
 
 // project.pdf -> 'pdf icon'
-export function getFileIcon(
-  fileName: string,
-  useCategoryIcon: boolean = false
-): string {
+export function getFileIcon(fileName: string): string {
   const fileExtension = getFileExtension(fileName);
 
-  if (useCategoryIcon) {
-    const category = getCategoryByFileExtension(fileExtension);
-    return getCategoryIcon(category);
-  } else {
-    const normalizedFileExtension = normalizeString(fileExtension);
-    return (
-      fileTypeIcons[normalizedFileExtension as FileExtension] ||
-      getCategoryIcon(getCategoryByFileExtension(fileExtension))
-    );
-  }
+  const normalizedFileExtension = normalizeString(fileExtension);
+  return (
+    fileTypeIcons[normalizedFileExtension as FileExtension] ||
+    getCategoryIcon(getCategoryByFileExtension(fileExtension))
+  );
 }
 
 // algorithm.js -> 'Code'

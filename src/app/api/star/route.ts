@@ -1,16 +1,8 @@
 import { createClient } from "@/middlewares/supabase/server";
-
-const createResponse = (status, data = null, error = null, message = null) => {
-  return new Response(JSON.stringify({ status, data, error, message }), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
+import { createResponse } from "@/utils/apiResponseUtils";
 
 //  POST : Add an item to starred -------------------------------------------------------------------------------------------------
-export async function POST(req) {
+export async function POST(req: Request) {
   try {
     const supabase = await createClient();
 
@@ -85,19 +77,22 @@ export async function POST(req) {
     );
   } catch (error) {
     console.error("Error at Star file POST:", error);
+    console.error("GET Error:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
     return createResponse(
       500,
       null,
-      error.message,
+      errorMessage,
       "An unexpected error occurred while marking the item as starred."
     );
   }
 }
 
 // GET : all starred items -----------------------------------------------------------------------------------------------------------------------
-// TODO : When we add item to starred and if its shared also add the access level with it.
 
-export async function GET(req) {
+export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
   const folderId = searchParams.get("folderId");
@@ -201,6 +196,9 @@ export async function GET(req) {
     }
   } catch (error) {
     console.error("Failed to get starred content:", error);
-    return createResponse(500, null, error.message, "Something went wrong.");
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return createResponse(500, null, errorMessage, "Something went wrong.");
   }
 }

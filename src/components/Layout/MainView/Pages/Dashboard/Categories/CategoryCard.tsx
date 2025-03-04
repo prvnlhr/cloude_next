@@ -1,7 +1,7 @@
 import { getCategoryIcon } from "@/utils/categoryUtils";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
-
+import { Category } from "@/utils/categoryUtils";
 interface CategoryCardProps {
   category: string;
 }
@@ -26,7 +26,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
     >
       <div className="h-full aspect-square flex items-center justify-center">
         <Icon
-          icon={getCategoryIcon(category)}
+          icon={getCategoryIcon(category as Category)}
           className="w-[50%] h-[50%] text-[#1C3553]"
         />
       </div>

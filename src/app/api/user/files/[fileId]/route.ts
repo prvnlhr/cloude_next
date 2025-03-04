@@ -1,13 +1,5 @@
 import { createClient } from "@/middlewares/supabase/server";
-
-const createResponse = (status, data = null, error = null, message = null) => {
-  return new Response(JSON.stringify({ status, data, error, message }), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
+import { createResponse } from "@/utils/apiResponseUtils";
 
 // PATCH : rename a file with id ------------------------------------------------------------------------------------------------------------------
 export async function PATCH(req: Request) {
@@ -15,7 +7,6 @@ export async function PATCH(req: Request) {
     const { itemId, userId, updateName, itemOwnerId, accessLevel } =
       await req.json();
 
-    // Validate required fields
     if (!itemId || !updateName || !userId) {
       return createResponse(400, null, "All fields are required.");
     }
@@ -79,16 +70,18 @@ export async function PATCH(req: Request) {
     return createResponse(200, renameData, null, "File renamed successfully.");
   } catch (error) {
     console.error("PATCH Error:", error);
-    return createResponse(500, null, error.message, "Error in renaming file.");
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return createResponse(500, null, errorMessage, "Error in renaming file.");
   }
 }
 
 // DELETE : delete a file with id ------------------------------------------------------------------------------------------------------------------
-export async function DELETE(req) {
+export async function DELETE(req: Request) {
   try {
     const { itemId, userId, accessLevel, itemOwnerId } = await req.json();
 
-    // Check for required fields
     if (!itemId || !userId) {
       return createResponse(400, null, "Item ID and User ID are required.");
     }
@@ -125,7 +118,7 @@ export async function DELETE(req) {
       );
     }
 
-    const { data: storageData, error: storageError } = await supabase.storage
+    const { error: storageError } = await supabase.storage
       .from("cloude")
       .remove([fileExists.storage_path]);
 
@@ -148,18 +141,23 @@ export async function DELETE(req) {
     return createResponse(200, deleteData, null, "File deleted successfully.");
   } catch (error) {
     console.error("DELETE Error:", error);
-    return createResponse(500, null, error.message, "Error in deleting file.");
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return createResponse(500, null, errorMessage, "Error in deleting file.");
   }
 }
 
 // GET : get a file with id ------------------------------------------------------------------------------------------------------------------
-export async function GET(req, { params }) {
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ fileId: string }> }
+) {
   try {
     const { fileId } = await params;
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
 
-    // Validate required fields
     if (!fileId || !userId) {
       return createResponse(400, null, "fileId and userId are required.");
     }
@@ -186,6 +184,9 @@ export async function GET(req, { params }) {
     return createResponse(200, file, null, "File fetched successfully.");
   } catch (error) {
     console.error("GET Error:", error);
-    return createResponse(500, null, error.message, "Error in fetching file.");
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return createResponse(500, null, errorMessage, "Error in fetching file.");
   }
 }

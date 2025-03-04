@@ -3,16 +3,21 @@ import { getSignedUrl } from "@/actions/filesAction";
 import { getFileIcon, getPreviewInfo } from "@/utils/categoryUtils";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { File } from "@/types/contentTypes";
 
-const NonPreviewPlaceholder = (file) => {
+interface FileCardProps {
+  file: File;
+}
+
+const NonPreviewPlaceholder: React.FC<{ file: File }> = ({ file }) => {
   return (
     <div className="w-full h-full flex flex-col items-center justify-evenly bg-[#F6F6F6] px-[10px]">
       <div className="w-[100%] h-[60px] flex items-end">
         <div className="h-[80%] aspect-square rounded-full bg-white flex items-center justify-center p-[8px]">
           <Icon
-            icon={getFileIcon(file.file.file_name, false)}
+            icon={getFileIcon(file.file_name)}
             className="w-full h-full text-[#1C3553]"
           />
         </div>
@@ -26,11 +31,9 @@ const NonPreviewPlaceholder = (file) => {
   );
 };
 
-const FileCard = ({ file }) => {
+const FileCard: React.FC<FileCardProps> = ({ file }) => {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const { canPreview, type } = getPreviewInfo(file.file_name);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchSignedUrl = async () => {

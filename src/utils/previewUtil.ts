@@ -9,7 +9,7 @@ const previewableMimeTypes = {
   video: ["video/mp4", "video/webm", "video/ogg"],
 };
 
-export const canPreview = (mimeType) => {
+export const canPreview = (mimeType: string) => {
   return (
     previewableMimeTypes.image.includes(mimeType) ||
     previewableMimeTypes.video.includes(mimeType)

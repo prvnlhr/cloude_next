@@ -1,25 +1,22 @@
 import { createClient } from "@/middlewares/supabase/server";
+import { createResponse } from "@/utils/apiResponseUtils";
 import { getFileExtension } from "@/utils/categoryUtils";
 import slugify from "slugify";
 
-// Helper function to standardize API responses
-const createResponse = (status, data = null, error = null, message = null) => {
-  return new Response(JSON.stringify({ status, data, error, message }), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
-
 // POST : UPLOAD A FOLDER AND ITS CONTENT --------------------------------------------------------------------------------------------------
 
-export async function POST(req) {
+type Folder = {
+  id: string;
+  name: string;
+  parentFolderId: string | null;
+  userId: string;
+};
+
+export async function POST(req: Request) {
   try {
     const formData = await req.formData();
-    const folders = JSON.parse(formData.get("folders"));
+    const folders: Folder[] = JSON.parse(formData.get("folders") as string);
     const userId = formData.get("userId");
-
     const files = [];
     const fileData = [];
 
@@ -27,15 +24,17 @@ export async function POST(req) {
       if (key.startsWith("file-")) {
         const index = key.split("-")[1];
         files.push(value);
-        fileData.push(JSON.parse(formData.get(`fileData-${index}`)));
+        fileData.push(JSON.parse(formData.get(`fileData-${index}`) as string));
       }
     }
 
-    // Keeping track of parent folder id -> will be used later for inserting into activities
+    console.log(" files:", files);
+    console.log(" folders:", folders);
+
     let parentFolderId = null;
 
     const supabase = await createClient();
-    const folderIdMap = {};
+    const folderIdMap: Record<string, string> = {};
 
     if (folders[0].parentFolderId !== null) {
       folderIdMap[folders[0].parentFolderId] = folders[0].parentFolderId;
@@ -78,38 +77,40 @@ export async function POST(req) {
       const metadata = fileData[i];
       const folderId = folderIdMap[metadata.folderId];
 
-      const uniqueId = crypto.randomUUID();
-      const uniqueFileName = `${uniqueId}_${file.name}`;
-      const storagePath = `uploads/${userId}/${uniqueFileName}`;
+      if (file instanceof File) {
+        const uniqueId = crypto.randomUUID();
+        const uniqueFileName = `${uniqueId}_${file.name}`;
+        const storagePath = `uploads/${userId}/${uniqueFileName}`;
 
-      const fileBuffer = await file.arrayBuffer();
-      const { error: uploadError } = await supabase.storage
-        .from("cloude")
-        .upload(storagePath, fileBuffer, {
-          contentType: metadata.type,
-        });
+        const fileBuffer = await file.arrayBuffer();
+        const { error: uploadError } = await supabase.storage
+          .from("cloude")
+          .upload(storagePath, fileBuffer, {
+            contentType: metadata.type,
+          });
 
-      if (uploadError) {
-        console.error("Error uploading file:", uploadError);
-        continue;
-      }
+        if (uploadError) {
+          console.error("Error uploading file:", uploadError);
+          continue;
+        }
 
-      const ext = getFileExtension(file.name);
+        const ext = getFileExtension(file.name);
 
-      const { error: fileError } = await supabase.from("files").insert([
-        {
-          file_name: metadata.name,
-          file_type: metadata.type,
-          file_size: metadata.size,
-          storage_path: storagePath,
-          folder_id: folderId,
-          user_id: metadata.userId,
-          extension: ext,
-        },
-      ]);
+        const { error: fileError } = await supabase.from("files").insert([
+          {
+            file_name: metadata.name,
+            file_type: metadata.type,
+            file_size: metadata.size,
+            storage_path: storagePath,
+            folder_id: folderId,
+            user_id: metadata.userId,
+            extension: ext,
+          },
+        ]);
 
-      if (fileError) {
-        console.error("Error inserting file metadata:", fileError);
+        if (fileError) {
+          console.error("Error inserting file metadata:", fileError);
+        }
       }
     }
 
@@ -141,17 +142,15 @@ export async function POST(req) {
     );
   } catch (error) {
     console.error("POST Error:", error);
-    return createResponse(
-      500,
-      null,
-      error.message,
-      "Error in uploading folder"
-    );
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return createResponse(500, null, errorMessage, "Error in uploading folder");
   }
 }
 
 //  GET ALL FOLDERS AND ITS CONTENT ---------------------------------------------------------------------------------------------------------
-export async function GET(req) {
+export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
@@ -181,10 +180,13 @@ export async function GET(req) {
     return createResponse(200, folders, null, "Folders fetched successfully");
   } catch (error) {
     console.error("GET Error:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
     return createResponse(
       500,
       null,
-      error.message,
+      errorMessage,
       "Error in fetching folders of user"
     );
   }

@@ -19,39 +19,40 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   onClose,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
 
-  const key = itemType === "folder" ? "folder_name" : "file_name";
-  const itemName = (item as any)[key] || "Unnamed Item";
-
+  let itemName: string;
+  if (itemType === "folder") {
+    itemName = (item as Folder).folder_name || "Unnamed Folder";
+  } else {
+    itemName = (item as File).file_name || "Unnamed File";
+  }
   const session = useUserSession();
   const { showToast } = useToast();
 
   const handleDelete = async () => {
     setIsLoading(true);
-    setError(null);
     try {
-      const userId = session?.userId;
+      const userId = session?.userId as string;
 
       const accessLevel =
         userId === item?.user_id ? "FULL" : item?.access_level || "READ";
 
-      const itemOwnerId = item?.user_id;
+      const itemOwnerId = item?.user_id as string;
+      const itemId = item?.id as string;
 
       // return;
       const deleteResponse =
         itemType === "folder"
           ? await deleteFolder(
               userId,
-              item?.id,
+              itemId,
               accessLevel,
               itemOwnerId,
               showToast
             )
           : await deleteFile(
               userId,
-              item?.id,
+              itemId,
               accessLevel,
               itemOwnerId,
               showToast
@@ -60,12 +61,10 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
       if (deleteResponse && deleteResponse.error) {
         throw new Error(deleteResponse.error);
       }
-      setSuccess(true);
       setIsLoading(false);
       onClose();
     } catch (error) {
       console.error(error);
-      setError(error.message || `Failed to delete ${itemType}`);
     } finally {
       setIsLoading(false);
     }

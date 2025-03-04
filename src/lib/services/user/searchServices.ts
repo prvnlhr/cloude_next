@@ -1,7 +1,7 @@
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-export async function searchItem(userId, searchKey) {
+export async function searchItem(userId: string, searchKey: string) {
   console.log("userId, searchKey:", userId, searchKey);
   try {
     const params = new URLSearchParams({
@@ -26,6 +26,7 @@ export async function searchItem(userId, searchKey) {
     return result.data;
   } catch (error) {
     console.error("Search Error:", error);
-    throw new Error(`Failed to fetch search results: ${error.message}`);
+    const err = error as Error;
+    throw new Error(`Failed to fetch search results: ${err.message}`);
   }
 }

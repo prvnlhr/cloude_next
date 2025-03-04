@@ -1,10 +1,16 @@
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-export async function fetchUserStorageContent(userId, folderId) {
+export async function fetchUserStorageContent(
+  userId: string,
+  folderId: string | null
+) {
   try {
-    const params = new URLSearchParams({ userId, folderId });
-
+    const params = new URLSearchParams();
+    params.append("userId", userId);
+    if (folderId !== null) {
+      params.append("folderId", folderId);
+    }
     const [filesResponse, foldersResponse] = await Promise.all([
       fetch(`${BASE_URL}/api/user/files?${params.toString()}`, {
         next: { revalidate: false, tags: ["storage"] },
@@ -49,6 +55,7 @@ export async function fetchUserStorageContent(userId, folderId) {
     };
   } catch (error) {
     console.error("Fetch Storage Content Error:", error);
-    throw new Error(`Failed to fetch storage content: ${error.message}`);
+    const err = error as Error;
+    throw new Error(`Failed to fetch storage content: ${err.message}`);
   }
 }
