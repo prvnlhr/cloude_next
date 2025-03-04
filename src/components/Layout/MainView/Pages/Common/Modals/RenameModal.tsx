@@ -5,7 +5,18 @@ import useUserSession from "@/hooks/useUserSession";
 import { renameFolder } from "@/lib/services/user/foldersService";
 import { Spinner } from "@heroui/spinner";
 import { useToast } from "@/context/ToastContext";
-const RenameModal = ({ item, itemType, onClose }) => {
+
+interface RenameModalProps {
+  item: File | Folder | undefined;
+  itemType: string;
+  onClose: () => void;
+}
+
+const RenameModal: React.FC<RenameModalProps> = ({
+  item,
+  itemType,
+  onClose,
+}) => {
   const [baseName, setBaseName] = useState("");
   const [extension, setExtension] = useState("");
   const key = itemType === "folder" ? "folder_name" : "file_name";

@@ -1,6 +1,10 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import PageHeader from "./PageHeader";
-const MainView: FC = ({ children }) => {
+
+interface MainViewProps {
+  children: ReactNode;
+}
+const MainView: FC<MainViewProps> = ({ children }) => {
   return (
     <div className="w-full h-[calc(100%-80px)] flex flex-col relative">
       <PageHeader />

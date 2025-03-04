@@ -3,18 +3,18 @@ import FilePage from "@/components/Layout/MainView/Pages/FilePage/FilePage";
 import { fetchUserStorageContent } from "@/lib/services/my_storage/myStorageServices";
 import { getFile } from "@/lib/services/user/filesService";
 import { createClient } from "@/middlewares/supabase/server";
-
+import { ContentPageContent, File, Folder } from "@/types/contentTypes";
 export default async function MyStorage({
   params,
 }: {
   params: Promise<{ path: string }>;
 }) {
   /*
-  params path can have:
-  - ['files', 'fileId']
-  - ['folders', 'folderId']
-  - undefined
-  */
+    params path can have:
+    - ['files', 'fileId']
+    - ['folders', 'folderId']
+    - undefined
+    */
 
   const { path = [] } = await params;
   const supabase = await createClient();
@@ -33,10 +33,12 @@ export default async function MyStorage({
 
   const folderId = path[0] === "folders" ? path[1] : null;
 
-  const pageContent = await fetchUserStorageContent(userId, folderId);
-  // console.log(" pageContent:", pageContent);
-  const files = pageContent.files || [];
-  const folders = pageContent.folders || [];
+  const pageContent: ContentPageContent = await fetchUserStorageContent(
+    userId,
+    folderId
+  );
+  const files: File[] = pageContent.files || [];
+  const folders: Folder[] = pageContent.folders || [];
 
   return <ContentPage files={files} folders={folders} />;
 }

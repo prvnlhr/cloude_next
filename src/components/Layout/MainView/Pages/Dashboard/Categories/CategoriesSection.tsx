@@ -1,12 +1,14 @@
 import { getCategoryByFileExtension } from "@/utils/categoryUtils";
 import CategoryCard from "./CategoryCard";
 
-const CategoriesSection: React.FC<{ filesByExtensions: string[] }> = ({
+interface CategoriesSectionProps {
+  filesByExtensions: string[];
+}
+
+const CategoriesSection: React.FC<CategoriesSectionProps> = ({
   filesByExtensions,
 }) => {
-  const fileExtensionsWithDots = filesByExtensions.map(
-    (ext) => `.${ext}`
-  ) as FileExtension[];
+  const fileExtensionsWithDots = filesByExtensions.map((ext) => `.${ext}`);
 
   const categories = fileExtensionsWithDots.map((ext) =>
     getCategoryByFileExtension(ext)

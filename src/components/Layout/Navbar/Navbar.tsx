@@ -1,7 +1,10 @@
 import Searchbar from "./Search/Searchbar";
 import HamburgerIcon from "@/components/Icons/HamburgerIcon";
 
-const Navbar: FC = ({ toggleSidebarShow }) => {
+interface NavbarProps {
+  toggleSidebarShow: () => void;
+}
+const Navbar: React.FC<NavbarProps> = ({ toggleSidebarShow }) => {
   return (
     <div className="relative w-full h-[80px] border-b-[1px] border-b-[#EFEFEF] flex items-center justify-start">
       <div

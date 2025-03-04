@@ -1,6 +1,13 @@
 import ActivitiesTable from "./ActivitiesTable";
 
-const ActivitiesSection = ({ activities }) => {
+import { RecentActivity } from "@/types/dashboardTypes";
+interface ActivitiesSectionProps {
+  activities: RecentActivity[];
+}
+
+const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
+  activities,
+}) => {
   return (
     <section className="w-full h-auto">
       <div className="w-full h-[40px] flex items-start justify-start">

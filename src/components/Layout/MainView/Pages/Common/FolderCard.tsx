@@ -1,23 +1,22 @@
 "use client";
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { usePathname } from "next/navigation";
-
+import { File, Folder } from "@/types/contentTypes";
 import useClickOutside from "@/hooks/useClickOutside";
 import ActionMenu from "./ActionMenu";
 import Link from "next/link";
 
-interface Folder {
-  id: string;
-  folder_name: string;
-}
-
 interface FolderCardProps {
   folder: Folder;
-  basePath: string;
+  setActiveModal: (modal: {
+    value: string;
+    item: File | Folder | undefined;
+    type: string;
+  }) => void;
 }
 
-const FolderCard = ({ folder, setActiveModal }: FolderCardProps) => {
+const FolderCard: React.FC<FolderCardProps> = ({ folder, setActiveModal }) => {
   const pathname = usePathname();
   const dropdownRef = useRef(null);
 

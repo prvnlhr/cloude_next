@@ -1,7 +1,13 @@
 import CategoriesSection from "./Categories/CategoriesSection";
 import ActivitiesSection from "./ActivitiesSection/ActivitiesSection";
 import { RecentUploadsSection } from "./RecentUploads/RecentUploadsSection";
-const DashboardPage = ({ dashboardContent }) => {
+import { DashboardContent } from "@/types/dashboardTypes";
+
+interface DashboardPageProps {
+  dashboardContent: DashboardContent;
+}
+
+const DashboardPage: React.FC<DashboardPageProps> = ({ dashboardContent }) => {
   const { recentUploads, filesByExtensions, recentActivities } =
     dashboardContent;
   return (

@@ -8,14 +8,28 @@ import RenameModal from "./Modals/RenameModal";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import SharedByMeContentPage from "../SharedFilesPage/SharedByMeContentPage";
+import { File, Folder } from "@/types/contentTypes";
 
-const ContentPage = ({ files, folders }) => {
+export type ContentPageProps = {
+  files: File[];
+  folders: Folder[];
+};
+
+type ActiveModal = {
+  value: string;
+  item: File | Folder | undefined;
+  type: string;
+};
+
+const ContentPage: React.FC<ContentPageProps> = ({
+  files = [],
+  folders = [],
+}) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isShareByMe = searchParams.get("myshared");
 
   const getBasePath = () => {
-    // Match base paths for all sections
     const match = pathname.match(
       /\/cloude\/home\/(my-storage|shared|starred|dashboard)/
     );
@@ -25,19 +39,19 @@ const ContentPage = ({ files, folders }) => {
   const basePath = getBasePath();
   const isSharedPage = basePath.split("/").includes("shared");
 
-  const [activeModal, setActiveModal] = useState({
+  const [activeModal, setActiveModal] = useState<ActiveModal>({
     value: "",
     item: undefined,
+    type: "",
   });
 
   const onModalClose = () => {
     setActiveModal({
       value: "",
       item: undefined,
+      type: "",
     });
   };
-
-  // useEffect(() => {}, [activeModal]);
 
   return (
     <div
@@ -115,7 +129,6 @@ const ContentPage = ({ files, folders }) => {
                 item={activeModal.item}
                 itemType={activeModal.type}
                 onClose={onModalClose}
-                handlerFunction={() => console.log("Delete")}
               />
             )}
             {activeModal?.value === "share" && (
@@ -123,7 +136,6 @@ const ContentPage = ({ files, folders }) => {
                 item={activeModal.item}
                 itemType={activeModal.type}
                 onClose={onModalClose}
-                handlerFunction={() => console.log("Share")}
               />
             )}
             {activeModal?.value === "rename" && (
@@ -131,7 +143,6 @@ const ContentPage = ({ files, folders }) => {
                 item={activeModal.item}
                 itemType={activeModal.type}
                 onClose={onModalClose}
-                handlerFunction={() => console.log("Rename")}
               />
             )}
           </>
@@ -142,8 +153,3 @@ const ContentPage = ({ files, folders }) => {
 };
 
 export default ContentPage;
-
-ContentPage.defaultProps = {
-  files: [],
-  folders: [],
-};

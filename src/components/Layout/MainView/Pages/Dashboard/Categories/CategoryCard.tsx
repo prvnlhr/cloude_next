@@ -2,7 +2,11 @@ import { getCategoryIcon } from "@/utils/categoryUtils";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
 
-const CategoryCard: React.FC = ({ category }) => {
+interface CategoryCardProps {
+  category: string;
+}
+
+const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   const normalizedCategory = category && category?.toLowerCase();
   return (
     <div

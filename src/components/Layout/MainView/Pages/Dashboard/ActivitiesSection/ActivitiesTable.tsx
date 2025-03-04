@@ -1,15 +1,20 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
+import { RecentActivity } from "@/types/dashboardTypes";
 
-const ActivitiesTable = ({ activities }) => {
-  console.log(" activities:", activities);
+interface ActivitiesTableProps {
+  activities: RecentActivity[];
+}
+
+const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
   const columns = ["Name", "Type", "Activity", "Date"];
 
   // Capitalizes first letter of a string
-  const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
+  const capitalize = (value: string) =>
+    value.charAt(0).toUpperCase() + value.slice(1);
 
   // Formats ISO date string to "22 June 2024" format
-  const formatDate = (isoString) => {
+  const formatDate = (isoString: string) => {
     return new Date(isoString).toLocaleDateString("en-GB", {
       day: "numeric",
       month: "long",
@@ -17,7 +22,7 @@ const ActivitiesTable = ({ activities }) => {
     });
   };
 
-  const getLinkUrl = (itemType, itemId) => {
+  const getLinkUrl = (itemType: string, itemId: string): string => {
     return `/cloude/home/my-storage/${
       itemType === "folder" ? "folders" : "files"
     }/${itemId}`;

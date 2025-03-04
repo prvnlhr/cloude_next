@@ -1,4 +1,4 @@
-import { FC, useRef, ChangeEvent } from "react";
+import { FC, useRef, ChangeEvent, RefObject } from "react";
 import { useParams } from "next/navigation";
 import { uploadFiles } from "@/lib/services/user/filesService";
 import useUserSession from "@/hooks/useUserSession";
@@ -6,7 +6,11 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { uploadFolder } from "@/lib/services/user/foldersService";
 import { useToast } from "@/context/ToastContext";
 
-const AddMenu: FC = ({ menuRef }) => {
+interface AddMenuProps {
+  menuRef: RefObject<HTMLDivElement | null>;
+}
+
+const AddMenu: FC<AddMenuProps> = ({ menuRef }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const folderInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -39,7 +43,7 @@ const AddMenu: FC = ({ menuRef }) => {
         size: file.size,
         file: file,
       }));
-      const userId = session?.userId;
+      const userId = session?.userId as string;
       try {
         const uploadFilesResponse = await uploadFiles(
           fileDataArray,
@@ -88,7 +92,6 @@ const AddMenu: FC = ({ menuRef }) => {
     // Process each file
     Array.from(files).forEach((file) => {
       const pathParts = file.webkitRelativePath.split("/");
-      const fileName = pathParts.pop();
       let parentFolderId: string | null = folderId;
 
       pathParts.forEach((folderName, index) => {
@@ -120,9 +123,6 @@ const AddMenu: FC = ({ menuRef }) => {
         userId: userId,
       });
     });
-
-    console.log(" filesArray:", filesArray);
-    console.log(" folders:", folders);
 
     try {
       const uploadFolderResponse = await uploadFolder(

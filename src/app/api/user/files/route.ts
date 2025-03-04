@@ -1,18 +1,10 @@
 import { createClient } from "@/middlewares/supabase/server";
 import { getFileExtension } from "@/utils/categoryUtils";
-
-// Helper function for API responses
-const createResponse = (status, data = null, error = null, message = null) => {
-  return new Response(JSON.stringify({ status, data, error, message }), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
+import { createResponse } from "@/utils/apiUtils";
+import { FileMetadata, Activity } from "@/types/fileType";
 
 // Function to upload a file to storage
-const uploadToStorage = async (file: any, userId: string) => {
+const uploadToStorage = async (file: File, userId: string) => {
   try {
     const supabase = await createClient();
     const uniqueId = crypto.randomUUID();
@@ -36,11 +28,12 @@ const uploadToStorage = async (file: any, userId: string) => {
 };
 
 // POST : UPLOAD FILE -----------------------------------------------------------------------------------------------------------------
-export async function POST(req) {
+export async function POST(req: Request): Promise<Response> {
   try {
     const formData = await req.formData();
-    const file = formData.get("file");
-    const userId = formData.get("userId");
+    const file = formData.get("file") as File;
+    const userId = formData.get("userId") as string;
+
     const folderId = formData.get("folderId") || null;
 
     if (!file || !userId) {
@@ -51,19 +44,20 @@ export async function POST(req) {
     const filePath = await uploadToStorage(file, userId);
     const ext = getFileExtension(file.name);
 
+    const fileMetadata = {
+      user_id: userId,
+      folder_id: folderId,
+      file_name: file.name,
+      file_type: file.type,
+      file_size: file.size,
+      storage_path: filePath,
+      extension: ext,
+    };
+    console.log(" fileMetadata:", fileMetadata);
+
     const { data: insertData, error: insertError } = await supabase
       .from("files")
-      .insert([
-        {
-          user_id: userId,
-          folder_id: folderId,
-          file_name: file.name,
-          file_type: file.type,
-          file_size: file.size,
-          storage_path: filePath,
-          extension: ext,
-        },
-      ])
+      .insert([fileMetadata])
       .select()
       .single();
 
@@ -71,17 +65,19 @@ export async function POST(req) {
       throw new Error("Failed to insert file metadata: " + insertError.message);
     }
 
+    const activity: Activity = {
+      activity_type: "upload",
+      item_type: "file",
+      file_id: insertData.id,
+      folder_id: null,
+      user_id: userId,
+      details: null,
+    };
+
     // Add upload activity
-    const { error: activityError } = await supabase.from("activities").insert([
-      {
-        activity_type: "upload",
-        item_type: "file",
-        file_id: insertData.id,
-        folder_id: null,
-        user_id: userId,
-        details: null,
-      },
-    ]);
+    const { error: activityError } = await supabase
+      .from("activities")
+      .insert([activity]);
 
     if (activityError) {
       console.error("Error logging upload activity:", activityError);
@@ -100,7 +96,7 @@ export async function POST(req) {
 }
 
 // GET : ALL USER'S FILES  -------------------------------------------------------------------------------------------------------------------------------------
-export async function GET(req) {
+export async function GET(req: Request): Promise<Response> {
   try {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");

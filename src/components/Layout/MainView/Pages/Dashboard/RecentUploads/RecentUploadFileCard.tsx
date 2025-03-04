@@ -1,13 +1,19 @@
 "use client";
 import { getSignedUrl } from "@/actions/filesAction";
 import { getFileIcon } from "@/utils/getFileIcon";
-import { canPreview } from "@/utils/previewUtil";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { RecentUploadFile } from "@/types/dashboardTypes";
 
-const RecentUploadFileCard = ({ item }) => {
+interface RecentUploadFileCardProps {
+  item: RecentUploadFile;
+}
+
+const RecentUploadFileCard: React.FC<RecentUploadFileCardProps> = ({
+  item,
+}) => {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
 
   const fetchSignedUrl = useCallback(async () => {

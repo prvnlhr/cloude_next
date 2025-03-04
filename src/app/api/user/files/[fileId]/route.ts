@@ -10,7 +10,7 @@ const createResponse = (status, data = null, error = null, message = null) => {
 };
 
 // PATCH : rename a file with id ------------------------------------------------------------------------------------------------------------------
-export async function PATCH(req) {
+export async function PATCH(req: Request) {
   try {
     const { itemId, userId, updateName, itemOwnerId, accessLevel } =
       await req.json();
@@ -19,10 +19,6 @@ export async function PATCH(req) {
     if (!itemId || !updateName || !userId) {
       return createResponse(400, null, "All fields are required.");
     }
-    console.log(
-      "itemIdxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      itemId
-    );
 
     const isShared = itemOwnerId !== userId;
     const isAllowed = accessLevel === "FULL" || accessLevel === "WRITE";

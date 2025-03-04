@@ -5,12 +5,25 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
 import { Spinner } from "@heroui/spinner";
 import { useToast } from "@/context/ToastContext";
+import { File, Folder } from "@/types/contentTypes";
 
-const DeleteModal = ({ item, itemType, onClose }) => {
-  const key = itemType === "folder" ? "folder_name" : "file_name";
+interface DeleteModalProps {
+  item: File | Folder | undefined;
+  itemType: string;
+  onClose: () => void;
+}
+
+const DeleteModal: React.FC<DeleteModalProps> = ({
+  item,
+  itemType,
+  onClose,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+
+  const key = itemType === "folder" ? "folder_name" : "file_name";
+  const itemName = (item as any)[key] || "Unnamed Item";
 
   const session = useUserSession();
   const { showToast } = useToast();
@@ -22,31 +35,28 @@ const DeleteModal = ({ item, itemType, onClose }) => {
       const userId = session?.userId;
 
       const accessLevel =
-        userId === item.user_id ? "FULL" : item.access_level || "READ";
+        userId === item?.user_id ? "FULL" : item?.access_level || "READ";
 
-      const itemOwnerId = item.user_id;
-      console.log(" accessLevel:", accessLevel);
+      const itemOwnerId = item?.user_id;
 
-      console.log(" item:", item);
       // return;
       const deleteResponse =
         itemType === "folder"
           ? await deleteFolder(
               userId,
-              item.id,
+              item?.id,
               accessLevel,
               itemOwnerId,
               showToast
             )
           : await deleteFile(
               userId,
-              item.id,
+              item?.id,
               accessLevel,
               itemOwnerId,
               showToast
             );
 
-      // console.log(" deleteResponse:", deleteResponse);
       if (deleteResponse && deleteResponse.error) {
         throw new Error(deleteResponse.error);
       }
@@ -94,7 +104,7 @@ const DeleteModal = ({ item, itemType, onClose }) => {
         </p>
         <div className="w-full h-auto flex items-center justify-center p-2 mt-[5px] border-y-[1px] border-y-[#EFEFEF]">
           <p className="text-[0.9rem] text-[#758DA7] font-medium italic underline text-center break-words w-full">
-            {item && item[key]}
+            {itemName}
           </p>
         </div>
       </div>

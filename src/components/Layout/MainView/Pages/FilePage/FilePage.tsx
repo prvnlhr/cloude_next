@@ -5,24 +5,24 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { File } from "@/types/contentTypes";
 
-const FilePage = ({ file }) => {
-  console.log(" file:", file);
-  const [signedUrl, setSignedUrl] = useState(null);
+interface FilePageProps {
+  file: File;
+}
 
+const FilePage: React.FC<FilePageProps> = ({ file }) => {
   const router = useRouter();
+  const [signedUrl, setSignedUrl] = useState<string | undefined>(undefined);
 
   const handleGoBack = () => {
-    router.back(); // Navigate to the previous page
+    router.back();
   };
-
-  console.log(file.storage_path);
-  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     const fetchSignedUrl = async () => {
       const url = await getSignedUrl(file.storage_path);
-      setSignedUrl(url);
+      setSignedUrl(url ?? undefined);
     };
     fetchSignedUrl();
   }, [file.storage_path]);
@@ -31,7 +31,7 @@ const FilePage = ({ file }) => {
     if (signedUrl) {
       const link = document.createElement("a");
       link.href = signedUrl;
-      link.download = file.name;
+      link.download = file.file_name;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       link.click();
@@ -40,7 +40,6 @@ const FilePage = ({ file }) => {
 
   const getFilePreview = () => {
     const { file_type, file_name } = file;
-    const fileIcon = getFileIcon(file_name);
 
     // Video
     if (file_type.startsWith("video/")) {
@@ -64,7 +63,7 @@ const FilePage = ({ file }) => {
     else if (file_type.startsWith("image/")) {
       return (
         <Image
-          src={signedUrl}
+          src={signedUrl ?? "../../../../../../public/placeholder_image.jpg"}
           alt={file_name}
           fill={true}
           className="w-full h-auto rounded-md shadow-lg"

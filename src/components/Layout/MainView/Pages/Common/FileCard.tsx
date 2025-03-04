@@ -9,19 +9,21 @@ import { getSignedUrl } from "@/actions/filesAction";
 import Image from "next/image";
 import { canPreview } from "@/utils/previewUtil";
 import { getFileIcon } from "@/utils/getFileIcon";
+import { File, Folder } from "@/types/contentTypes";
 
-interface File {
-  id: string;
-  file_name: string;
-  storage_path: string;
-  file_type: string;
-}
 interface FileCardProps {
   file: File;
-  basePath: string;
+  setActiveModal: (modal: {
+    value: string;
+    item: File | Folder | undefined;
+    type: string;
+  }) => void;
 }
 
-const FileCard = ({ file, setActiveModal }: FileCardProps) => {
+const FileCard: React.FC<FileCardProps> = ({
+  file,
+  setActiveModal,
+}: FileCardProps) => {
   const pathname = usePathname();
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,7 +50,6 @@ const FileCard = ({ file, setActiveModal }: FileCardProps) => {
   useEffect(() => {
     const fetchSignedUrl = async () => {
       const url = await getSignedUrl(file.storage_path);
-      console.log("Fetched URL:", url);
       setSignedUrl(url);
     };
 

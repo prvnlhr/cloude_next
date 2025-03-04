@@ -1,7 +1,11 @@
+import { DashboardContent } from "@/types/dashboardTypes";
+
 const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-export async function fetchDashboardContent(userId) {
+export async function fetchDashboardContent(
+  userId: string
+): Promise<DashboardContent> {
   try {
     const params = new URLSearchParams({ userId: encodeURIComponent(userId) });
 
@@ -26,6 +30,10 @@ export async function fetchDashboardContent(userId) {
     return result.data;
   } catch (error) {
     console.error("Fetch Dashboard Content Error:", error);
-    throw new Error(`Failed to fetch dashboard content: ${error.message}`);
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch dashboard content: ${error.message}`);
+    } else {
+      throw new Error("Failed to fetch dashboard content: Unknown error");
+    }
   }
 }

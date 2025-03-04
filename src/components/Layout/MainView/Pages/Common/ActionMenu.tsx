@@ -1,12 +1,36 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import useUserSession from "@/hooks/useUserSession";
 import StarActionBtn from "./StarActionBtn"; // Import the StarActionBtn component
+import { File, Folder } from "@/types/contentTypes";
+import { RefObject } from "react";
 
-const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
+interface ActionMenuProps {
+  dropdownRef: RefObject<HTMLDivElement | null>;
+  item: File | Folder;
+  itemType: string;
+  setActiveModal: (modal: {
+    value: string;
+    item: File | Folder;
+    type: string;
+  }) => void;
+}
+
+type Action = {
+  label: string;
+  icon: string;
+  value: string;
+};
+
+const ActionMenu: React.FC<ActionMenuProps> = ({
+  dropdownRef,
+  item,
+  itemType,
+  setActiveModal,
+}) => {
   const session = useUserSession();
   const userId = session?.userId;
 
-  const allActions = [
+  const allActions: Action[] = [
     {
       label: "Rename",
       icon: "mingcute:edit-line",
@@ -23,8 +47,8 @@ const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
       value: "delete",
     },
     {
-      label: item.is_starred ? "Remove from Starred" : "Add to Starred",
-      icon: item.is_starred ? "solar:star-bold" : "solar:star-line-duotone",
+      label: item?.is_starred ? "Remove from Starred" : "Add to Starred",
+      icon: item?.is_starred ? "solar:star-bold" : "solar:star-line-duotone",
       value: "star",
     },
   ];
@@ -34,13 +58,13 @@ const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
   // Check if the   user is the owner of the item
   const isOwner = userId === item.user_id;
 
-  const accessLevelMap = {
+  const accessLevelMap: Record<string, Set<string>> = {
     FULL: new Set(["rename", "share", "delete", "star"]),
     WRITE: new Set(["rename", "star"]),
     READ: new Set(["star"]),
   };
 
-  const isActionAllowed = (actionValue) => {
+  const isActionAllowed = (actionValue: string) => {
     // Owners have full access to all actions
     if (isOwner) return true;
 
@@ -48,7 +72,7 @@ const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
   };
 
   // Handle action click
-  const handleActionClick = (action) => {
+  const handleActionClick = (action: Action) => {
     if (isActionAllowed(action.value)) {
       setActiveModal({ value: action.value, item, type: itemType });
     }

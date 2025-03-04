@@ -9,11 +9,14 @@ import { signout } from "@/actions/auth";
 import useUserSession from "@/hooks/useUserSession";
 import { Spinner } from "@heroui/spinner";
 
-const Sidebar: FC = ({ toggleSidebarShow }) => {
+interface SidebarProps {
+  toggleSidebarShow: () => void;
+}
+const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
   const pathname = usePathname();
 
   const session = useUserSession();
-  const [isSigningOut, setIsSigningOut] = useState();
+  const [isSigningOut, setIsSigningOut] = useState<boolean>();
 
   const [showLogoutOption, setShowLogoutOption] = useState(false);
 

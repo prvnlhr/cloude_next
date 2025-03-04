@@ -1,6 +1,12 @@
 import { createClient } from "@/middlewares/supabase/server";
+import { DashboardContent } from "../../../types/dashboardTypes";
 
-const createResponse = (status, data = null, error = null, message = null) => {
+const createResponse = (
+  status: number,
+  data: any = null,
+  error: string | null = null,
+  message: string | null = null
+) => {
   return new Response(JSON.stringify({ status, data, error, message }), {
     status,
     headers: {
@@ -10,7 +16,6 @@ const createResponse = (status, data = null, error = null, message = null) => {
 };
 
 // GET : dashboard content -> recent uploaded files, folder categories, activities -------------------------------------------------------
-
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
@@ -93,18 +98,19 @@ export async function GET(req) {
         performed_by: activity.users?.email || "Unknown",
         details: activity.details,
         timestamp: activity.activity_timestamp,
-        file_id: isFile ? activity.file_id : null, // Include file_id only for files
-        folder_id: isFolder ? activity.folder_id : null, // Include folder_id only for folders
+        file_id: isFile ? activity.file_id : null,
+        folder_id: isFolder ? activity.folder_id : null,
       };
     });
 
+    const dashboardContent: DashboardContent = {
+      recentUploads,
+      filesByExtensions,
+      recentActivities: transformedActivities,
+    };
     return createResponse(
       200,
-      {
-        recentUploads,
-        filesByExtensions,
-        recentActivities: transformedActivities,
-      },
+      dashboardContent,
       null,
       "Dashboard content fetched successfully."
     );

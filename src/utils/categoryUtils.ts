@@ -1,8 +1,6 @@
-// Define the type for file extensions and categories
 type FileExtension = keyof typeof extensionToCategory;
 type Category = (typeof extensionToCategory)[FileExtension];
 
-// Map file extensions to logical categories
 const extensionToCategory: Record<FileExtension, Category> = {
   // Image Extensions
   ".jpeg": "Image",
@@ -163,28 +161,175 @@ const extensionToCategory: Record<FileExtension, Category> = {
 
 // Map categories to Iconify icons
 const categoryIcons: Record<Category, string> = {
-  Image: "mdi:image",
-  Video: "mdi:video",
+  Image: "ion:image",
+  Video: "majesticons:video",
   Audio: "mingcute:music-fill",
-  Document: "mdi:file-document",
-  Code: "mdi:code-braces",
-  Archive: "mdi:archive",
-  Executable: "mdi:application",
-  Font: "mdi:format-font",
-  Database: "mdi:database",
-  Other: "mdi:file-question",
+  Document: "mingcute:document-2-fill",
+  Code: "mingcute:code-line",
+  Archive: "material-symbols-light:archive",
+  Executable: "eos-icons:application",
+  Font: "fluent:text-font-24-filled",
+  Database: "solar:database-bold",
+  Other: "ant-design:file-unknown-filled",
 };
 
 // Map file extensions to specific icons (for case 2)
-const fileTypeIcons: Record<FileExtension, string> = {
-  ".pdf": "mdi:file-pdf",
-  ".doc": "mdi:file-word",
-  ".docx": "mdi:file-word",
+export const fileTypeIcons: Record<FileExtension, string> = {
+  // Image Extensions
+  ".jpeg": "mdi:image",
+  ".jpg": "mdi:image",
+  ".png": "mdi:image",
+  ".gif": "mdi:image",
+  ".webp": "mdi:image",
+  ".svg": "mdi:image",
+  ".bmp": "mdi:image",
+  ".tiff": "mdi:image",
+  ".ico": "mdi:image",
+  ".heif": "mdi:image",
+  ".heic": "mdi:image",
+  ".avif": "mdi:image",
+
+  // Video Extensions
+  ".mp4": "mdi:video",
+  ".mkv": "mdi:video",
+  ".mov": "mdi:video",
+  ".avi": "mdi:video",
+  ".wmv": "mdi:video",
+  ".flv": "mdi:video",
+  ".webm": "mdi:video",
+  ".3gp": "mdi:video",
+  ".3g2": "mdi:video",
+  ".mpeg": "mdi:video",
+  ".ogg": "mdi:video",
+  ".m4v": "mdi:video",
+
+  // Audio Extensions
+  ".mp3": "mdi:music",
+  ".wav": "mdi:music",
+  ".aac": "mdi:music",
+  ".weba": "mdi:music",
+  ".aiff": "mdi:music",
+  ".m4a": "mdi:music",
+  ".wma": "mdi:music",
+  ".flac": "mdi:music",
+  ".midi": "mdi:music",
+  ".mid": "mdi:music",
+
+  // Document Extensions
+  ".pdf": "mingcute:pdf-fill",
+  ".doc": "mingcute:doc-fill",
+  ".docx": "mingcute:doc-fill",
   ".xls": "mdi:file-excel",
   ".xlsx": "mdi:file-excel",
-  ".ppt": "mdi:file-powerpoint",
-  ".pptx": "mdi:file-powerpoint",
-  // Add more file type icons as needed
+  ".ppt": "ri:file-ppt-2-fill",
+  ".pptx": "ri:file-ppt-2-fill",
+  ".txt": "mdi:file-document",
+  ".csv": "mdi:file-document",
+  ".rtf": "mdi:file-document",
+  ".odt": "mdi:file-document",
+  ".ods": "mdi:file-document",
+  ".odp": "mdi:file-document",
+  ".epub": "mdi:book-open",
+  ".mobi": "mdi:book-open",
+
+  // Code Extensions
+  ".js": "fa6-brands:square-js",
+  ".html": "fa6-brands:html5",
+  ".css": "fa6-brands:css",
+  ".json": "si:json-fill",
+  ".xml": "mdi:code-braces",
+  ".py": "mdi:language-python",
+  ".java": "mdi:language-java",
+  ".c": "mdi:language-c",
+  ".cpp": "ph:file-cpp-fill",
+  ".php": "mdi:language-php",
+  ".rb": "mdi:language-ruby",
+  ".pl": "mdi:language-perl",
+  ".go": "mdi:language-go",
+  ".swift": "mdi:language-swift",
+  ".ts": "mdi:language-typescript",
+  ".rs": "mdi:language-rust",
+  ".kt": "mdi:language-kotlin",
+  ".scala": "mdi:language-scala",
+  ".lua": "mdi:language-lua",
+  ".md": "mdi:language-markdown",
+  ".yaml": "mdi:code-braces",
+  ".toml": "mdi:code-braces",
+  ".ini": "mdi:code-braces",
+  ".dart": "mdi:language-dart",
+  ".clj": "mdi:language-clojure",
+  ".hs": "mdi:language-haskell",
+  ".ex": "mdi:language-elixir",
+  ".erl": "mdi:language-erlang",
+  ".ml": "mdi:language-ocaml",
+  ".fs": "mdi:language-fsharp",
+  ".r": "mdi:language-r",
+  ".m": "mdi:language-matlab",
+  ".sql": "mdi:database",
+  ".pls": "mdi:code-braces",
+  ".ps1": "mdi:code-braces",
+  ".bat": "mdi:code-braces",
+  ".vbs": "mdi:code-braces",
+  ".coffee": "mdi:language-coffeescript",
+  ".less": "mdi:language-css3",
+  ".sass": "mdi:language-css3",
+  ".styl": "mdi:language-css3",
+  ".jade": "mdi:language-html5",
+  ".hbs": "mdi:language-html5",
+  ".ejs": "mdi:language-html5",
+  ".twig": "mdi:language-html5",
+  ".liquid": "mdi:language-html5",
+  ".conf": "mdi:code-braces",
+  ".dockerfile": "mdi:docker",
+  ".gitignore": "mdi:git",
+  ".eslintrc": "mdi:code-braces",
+  ".prettierrc": "mdi:code-braces",
+  ".babelrc": "mdi:code-braces",
+
+  // Archive/Compressed Extensions
+  ".zip": "mdi:zip-box",
+  ".tar": "mdi:archive",
+  ".gz": "mdi:archive",
+  ".bz2": "mdi:archive",
+  ".7z": "mdi:archive",
+  ".rar": "mdi:archive",
+  ".xz": "mdi:archive",
+  ".lz": "mdi:archive",
+  ".lzma": "mdi:archive",
+  ".lzo": "mdi:archive",
+  ".sz": "mdi:archive",
+
+  // Executable Extensions
+  ".exe": "mdi:application",
+  ".sh": "mdi:bash",
+  ".bin": "mdi:application",
+  ".dmg": "mdi:apple",
+  ".pkg": "mdi:package",
+  ".deb": "mdi:ubuntu",
+  ".rpm": "mdi:linux",
+  ".msi": "mdi:microsoft-windows",
+  ".dll": "mdi:application",
+
+  // Font Extensions
+  ".ttf": "mdi:format-font",
+  ".otf": "mdi:format-font",
+  ".woff": "mdi:format-font",
+  ".woff2": "mdi:format-font",
+  ".eot": "mdi:format-font",
+  ".sfnt": "mdi:format-font",
+
+  // Database Extensions
+  ".sqlite": "mdi:database",
+  ".db": "mdi:database",
+  ".mdb": "mdi:database",
+  ".accdb": "mdi:database",
+  ".dbf": "mdi:database",
+  ".nc": "mdi:database",
+
+  // Other Extensions
+  ".dat": "mdi:file-question",
+  ".log": "mdi:file-document",
+  ".tmp": "mdi:file-question",
 };
 
 // project.pdf -> .pdf

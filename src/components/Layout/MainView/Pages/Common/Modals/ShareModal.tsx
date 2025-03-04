@@ -7,6 +7,11 @@ import { Spinner } from "@heroui/spinner";
 import { getFileExtension } from "@/utils/fileExtensionUtils";
 import { useToast } from "@/context/ToastContext";
 
+interface ShareModalProps {
+  item: File | Folder | undefined;
+  itemType: string;
+  onClose: () => void;
+}
 const accessLevelMap = {
   READ: "Read-Only",
   WRITE: "Write Access",
@@ -29,7 +34,7 @@ const accessLevelsData = [
     description: "Can view only",
   },
 ];
-const ShareModal = ({ item, itemType, onClose }) => {
+const ShareModal: React.FC<ShareModalProps> = ({ item, itemType, onClose }) => {
   const [shareWithEmail, setShareWithEmail] = useState<string>(
     "mrtnmickae.jrl@gmail.com"
   );
@@ -48,11 +53,6 @@ const ShareModal = ({ item, itemType, onClose }) => {
   const handleShare = async () => {
     const itemId = item.id;
     const userId = session?.userId;
-
-    console.log(" itemId:", itemId);
-    console.log(" itemType:", itemType);
-    console.log(" userId:", userId);
-
     if (!itemId || !itemType || !userId) {
       setError("Missing required data for sharing.");
       return;

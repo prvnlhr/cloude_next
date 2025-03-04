@@ -1,8 +1,12 @@
-import Link from "next/link";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import RecentUploadFileCard from "./RecentUploadFileCard";
+import { RecentUploadFile } from "@/types/dashboardTypes";
 
-export const RecentUploadsSection = ({ recentUploads }) => {
+interface RecentUploadsSectionProps {
+  recentUploads: RecentUploadFile[];
+}
+export const RecentUploadsSection: React.FC<RecentUploadsSectionProps> = ({
+  recentUploads,
+}) => {
   return (
     <section className="w-full h-full">
       <div className="w-full h-[40px]  flex items-start justify-start">

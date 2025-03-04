@@ -6,43 +6,20 @@ import {
 } from "@/lib/services/shared/sharedServices";
 import { createClient } from "@/middlewares/supabase/server";
 
-interface File {
-  id: string;
-  file_name: string;
-  file_size: number;
-  file_type: string;
-  created_at: string;
-  folder_id: string;
-  is_shared: boolean;
-  is_starred: boolean;
-  storage_path: string;
-  thumbnail_url: string | null;
-  updated_at: string;
-  user_id: string;
-}
+type SearchParams = {
+  [key: string]: string | string[] | undefined;
+};
+type Params = {
+  path: string[];
 
-interface Folder {
-  id: string;
-  folder_name: string;
-  created_at: string;
-  is_shared: boolean;
-  is_starred: boolean;
-  parent_folder_id: string | null;
-  slug: string;
-  updated_at: string;
-  user_id: string;
-}
-
-interface SharedContentData {
-  folders?: Folder[];
-  files?: File[];
-}
+};
 
 export default async function SharedPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ path: string }>;
+  params: Params;
+  searchParams: SearchParams;
 }) {
   const { path = [] } = await params;
   const supabase = await createClient();
@@ -60,10 +37,10 @@ export default async function SharedPage({
   if (path[0] === "files") {
     const itemId = path[1];
     const file = await getSharedFile(userId, itemId);
+
     return <FilePage file={file} />;
   }
   const contentData = await fetchSharedContent(userId, folderId, queryParams);
-  // console.log(" contentData:", contentData);
 
   return (
     <ContentPage

@@ -3,7 +3,7 @@ import FilePage from "@/components/Layout/MainView/Pages/FilePage/FilePage";
 import { fetchStarredContent } from "@/lib/services/starred/starredService";
 import { getFile } from "@/lib/services/user/filesService";
 import { createClient } from "@/middlewares/supabase/server";
-
+import { File } from "@/types/contentTypes";
 export default async function MyStorage({
   params,
 }: {
@@ -16,17 +16,17 @@ export default async function MyStorage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const userId = user.id;
+  const userId = user!.id;
   const folderId = path[0] === "folders" ? path[1] : null;
 
   if (path[0] === "files") {
     const itemId = path[1];
-    const file = await getFile(userId, itemId);
+    const file: File = await getFile(userId, itemId);
+
     return <FilePage file={file} />;
   }
 
   const starredContent = await fetchStarredContent(userId, folderId);
-  // console.log(" starredContent:", starredContent);
 
   return (
     <ContentPage
