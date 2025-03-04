@@ -1,7 +1,7 @@
 import { revalidateTagHandler } from "@/lib/revalidation";
 
 const BASE_URL: string =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_BASE_URL || "https://cloude-next.vercel.app";
 
 interface UpdateData {
   updateName: string;

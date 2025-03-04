@@ -1,7 +1,7 @@
 import { revalidateTagHandler } from "@/lib/revalidation";
 import { capitalize } from "../shared/sharedServices";
 const BASE_URL: string =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_BASE_URL || "https://cloude-next.vercel.app";
 
 type StarData = {
   itemId: string;

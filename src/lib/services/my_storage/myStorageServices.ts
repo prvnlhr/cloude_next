@@ -1,5 +1,5 @@
 const BASE_URL: string =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_BASE_URL || "https://cloude-next.vercel.app";
 
 export async function fetchUserStorageContent(
   userId: string,

@@ -1,7 +1,7 @@
 import { DashboardContent } from "@/types/dashboardTypes";
 
 const BASE_URL: string =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_BASE_URL || "https://cloude-next.vercel.app";
 
 export async function fetchDashboardContent(
   userId: string
@@ -16,6 +16,7 @@ export async function fetchDashboardContent(
     const result = await response.json();
 
     if (!response.ok) {
+      console.log("result", result);
       console.error(
         "Fetch Dashboard Content Error:",
         result.error || result.message
