@@ -72,17 +72,19 @@ const RenameModal = ({ item, itemType, onClose }) => {
 
   return (
     <div
-      className="w-[250px] h-auto p-[10px] absolute top-1/2 left-1/2 transform -translate-x-[100%] -translate-y-1/2 
-      bg-white border rounded-[8px] shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px] z-[50]"
+      className="w-[280px] h-auto p-[10px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+      bg-white border rounded-[8px] shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px] z-[50]
+      lg:-translate-x-full
+      "
     >
       {/* Heading */}
-      <div className="w-full h-[40px] flex items-center justify-between border-b-[1px] border-b-[#D0D5DD] mb-[10px]">
+      <div className="w-full h-[40px] flex items-center justify-between border-b-[1px] border-b-[#EFEFEF] mb-[10px]">
         <p className="text-[1.1rem] text-[#1C3553] font-semibold">
           Rename {itemType}
         </p>
         <button
           onClick={onClose}
-          className="w-[20px] border border-[#D0D5DD] h-[20px] rounded-full bg-[#E7EFFC] flex items-center justify-center"
+          className="w-[20px] border border-[#EFEFEF] h-[20px] rounded-full bg-[#E7EFFC] flex items-center justify-center"
         >
           <Icon
             icon="iconamoon:close-fill"
@@ -102,7 +104,7 @@ const RenameModal = ({ item, itemType, onClose }) => {
           <input
             value={baseName}
             onChange={(e) => setBaseName(e.target.value)}
-            className="w-full h-full border border-[#D0D5DD] rounded-[5px] outline-none text-[0.8rem] text-[#1C3553] font-medium px-[5px]"
+            className="w-full h-full border border-[#EFEFEF] rounded-[5px] outline-none text-[0.8rem] text-[#1C3553] font-medium px-[5px]"
           />
         </div>
       </div>

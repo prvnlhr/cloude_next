@@ -34,40 +34,40 @@ const FolderCard = ({ folder, setActiveModal }: FolderCardProps) => {
     <div
       className="w-[48%] sm:w-[48%] md:w-[30%] lg:w-[18%] h-auto 
       mx-[1%] my-[15px] 
-      bg-[#EAECEB] border-[1px] border-[#E4E7EC] 
-      flex flex-col 
+      bg-[#F6F6F6] border-[1px] border-[#E4E7EC] 
+      flex
+      justify-between  
       rounded-[10px]
       min-h-[40px]
       relative
       z-[4]
       cursor-pointer
-      shadow-[0px_0px_0px_1px_rgba(0,0,0,0.05)]
-      
+      shadow-[0px_3px_5px_rgba(0,0,0,0.04)]
       "
     >
-      <div className="w-full h-[40px] flex">
+      <div className="w-full h-[40px] flex justify-between">
         <Link
           href={
             pathname.includes("/folders/")
               ? `${pathname.replace(/folders\/[^/]+$/, `folders/${folder.id}`)}`
               : `${pathname}/folders/${folder.id}`
           }
-          className="w-full h-full flex"
+          className="w-auto h-full flex overflow-hidden"
         >
-          <div className="h-full aspect-square flex items-center justify-center">
+          <div className="h-full  w-[40px] min-w-[40px] flex items-center justify-center">
             <Icon
               icon="solar:folder-linear"
               className="w-[50%] h-[50%] text-[#1C3553]"
             />
           </div>
           <div className="h-full flex-grow flex items-center justify-start overflow-hidden">
-            <p className="text-[#1C3553] text-[0.75rem] font-medium  whitespace-nowrap truncate">
-              {folder?.folder_name}
+            <p className="text-[#1C3553] text-[0.75rem] font-medium whitespace-nowrap truncate">
+              {folder.folder_name}
             </p>
           </div>
         </Link>
         <div
-          className="h-full aspect-square flex items-center justify-center cursor-pointer"
+          className="h-full w-[40px] min-w-[40px] flex items-center justify-center cursor-pointer"
           onClick={toggleActionMenu}
         >
           <Icon

@@ -14,7 +14,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="w-[100%] h-[100%]  overflow-hidden relative border border-white bg-white">
       <div
         className={`
-        flex h-full transition-transform duration-300
+        flex h-full transition-transform duration-[100]
         ${showSidebar ? "translate-x-0" : "-translate-x-1/2"}
         lg:translate-x-0 w-[200%] lg:w-full
         `}

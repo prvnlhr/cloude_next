@@ -8,7 +8,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 const NonPreviewPlaceholder = (file) => {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-evenly bg-[#EAECEB] px-[10px]">
+    <div className="w-full h-full flex flex-col items-center justify-evenly bg-[#F6F6F6] px-[10px]">
       <div className="w-[100%] h-[60px] flex items-end">
         <div className="h-[80%] aspect-square rounded-full bg-white flex items-center justify-center p-[8px]">
           <Icon

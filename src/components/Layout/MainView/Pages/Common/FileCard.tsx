@@ -65,12 +65,12 @@ const FileCard = ({ file, setActiveModal }: FileCardProps) => {
     <div
       className="w-[48%] sm:w-[48%] md:w-[30%] lg:w-[18%] h-auto 
       mx-[1%] my-[15px] 
-      bg-[#F4F6F6] border-[1px] border-[#E4E7EC] 
+      bg-[#F6F6F6] border-[1px] border-[#E4E7EC] 
       flex flex-col 
       rounded-[10px]
       min-h-[45px]
       relative
-      shadow-[0px_0px_0px_1px_rgba(0,0,0,0.05)]
+      shadow-[0px_3px_5px_rgba(0,0,0,0.04)]
       "
     >
       <div className="w-full h-[auto] flex flex-col">
@@ -97,9 +97,9 @@ const FileCard = ({ file, setActiveModal }: FileCardProps) => {
                   className="object-cover object-center"
                 />
               ) : (
-                <div className="w-full h-full flex flex-col items-center justify-evenly bg-[#EAECEB] px-[10px]">
+                <div className="w-full h-full flex flex-col items-center justify-evenly bg-white px-[10px]">
                   <div className="w-[100%] h-[60px] flex items-end">
-                    <div className="h-[80%] aspect-square rounded-full bg-white flex items-center justify-center p-[8px]">
+                    <div className="h-[80%] aspect-square rounded-full bg-[#F1F1F1] flex items-center justify-center p-[8px]">
                       <Icon
                         icon={getFileIcon(file.file_name)}
                         className="w-full h-full text-[#1C3553]"
@@ -110,7 +110,7 @@ const FileCard = ({ file, setActiveModal }: FileCardProps) => {
                     {Array.from({ length: 3 }).map((_, index) => (
                       <div
                         key={index}
-                        className="w-full h-[10px] bg-white rounded"
+                        className="w-full h-[10px] bg-[#F1F1F1] rounded"
                       ></div>
                     ))}
                   </div>

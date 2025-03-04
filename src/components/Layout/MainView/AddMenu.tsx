@@ -145,7 +145,7 @@ const AddMenu: FC = ({ menuRef }) => {
       <div className="w-full h-full flex flex-col items-center justify-center">
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="w-full h-[35px] flex items-center justify-start cursor-pointer text-[#1C3553] text-[0.9rem] font-medium  hover:bg-[#EAECEB] px-[10px] rounded"
+          className="w-full h-[35px] flex items-center justify-start cursor-pointer text-[#1C3553] text-[0.9rem] font-medium  hover:bg-[#F6F6F6] px-[10px] rounded"
         >
           <div className="h-full aspect-[1/2] flex items-center justify-center">
             <Icon
@@ -158,7 +158,7 @@ const AddMenu: FC = ({ menuRef }) => {
 
         <button
           onClick={() => folderInputRef.current?.click()}
-          className="w-full h-[35px] flex items-center justify-start cursor-pointer text-[#1C3553] text-[0.9rem] font-medium  hover:bg-[#EAECEB] px-[10px] rounded"
+          className="w-full h-[35px] flex items-center justify-start cursor-pointer text-[#1C3553] text-[0.9rem] font-medium  hover:bg-[#F6F6F6] px-[10px] rounded"
         >
           <div className="h-full aspect-[1/2] flex items-center justify-center">
             <Icon
@@ -170,7 +170,7 @@ const AddMenu: FC = ({ menuRef }) => {
         </button>
         {/* <button
           type="button"
-          className="w-full h-[35px] flex items-center justify-start cursor-pointer text-[#1C3553] text-[0.9rem] font-medium  hover:bg-[#EAECEB] px-[10px] rounded"
+          className="w-full h-[35px] flex items-center justify-start cursor-pointer text-[#1C3553] text-[0.9rem] font-medium  hover:bg-[#F6F6F6] px-[10px] rounded"
         >
           <div className="h-full aspect-[1/2] flex items-center justify-center">
             <Icon

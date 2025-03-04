@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 const FilePage = ({ file }) => {
+  console.log(" file:", file);
   const [signedUrl, setSignedUrl] = useState(null);
 
   const router = useRouter();
@@ -30,7 +31,7 @@ const FilePage = ({ file }) => {
     if (signedUrl) {
       const link = document.createElement("a");
       link.href = signedUrl;
-      link.download = file.file.name;
+      link.download = file.name;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       link.click();
@@ -108,8 +109,8 @@ const FilePage = ({ file }) => {
   };
 
   return (
-    <div className="fixed  w-screen h-screen inset-0 bg-white flex-col backdrop-blur-sm">
-      <div className="w-full h-[70px] flex items-center justify-between border-b-[1px] border-b-[#D0D5DD]">
+    <div className="fixed w-screen h-screen right-0 top-0 bg-white flex-col backdrop-blur-sm">
+      <div className="w-full h-[70px] flex items-center justify-between border-b-[1px] border-b-[#EFEFEF]">
         <div className="w-auto h-full flex items-center">
           <button
             type="button"

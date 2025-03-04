@@ -59,7 +59,7 @@ const Searchbar: FC = () => {
     <div className="w-[200px] rounded-[5px] h-[30px] ml-[20px] flex items-center border-[1px] border-[#D0D5DD]">
       <div className="h-full flex-grow px-[10px] flex items-center">
         <input
-          className="w-full h-full outline-none text-[#1C3553] placeholder:text-[#A2A8B2] placeholder:text-[0.7rem] placeholder:font-medium"
+          className="w-full h-full outline-none text-[#1C3553] text-[0.85rem] font-medium placeholder:text-[#A2A8B2] placeholder:text-[0.7rem] placeholder:font-medium"
           placeholder="SEARCH"
           value={searchKey}
           onChange={handleSearch}

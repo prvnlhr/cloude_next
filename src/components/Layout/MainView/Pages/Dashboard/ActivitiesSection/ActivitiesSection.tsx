@@ -1,4 +1,4 @@
-import FilesTable from "./ActivitiesTable";
+import ActivitiesTable from "./ActivitiesTable";
 
 const ActivitiesSection = ({ activities }) => {
   return (
@@ -7,7 +7,7 @@ const ActivitiesSection = ({ activities }) => {
         <p className="text-[#1C3553] text-[1.2rem] font-medium">Activities</p>
       </div>
       <div className="w-full h-[calc(100%-40px)]">
-        <FilesTable activities={activities} />
+        <ActivitiesTable activities={activities} />
       </div>
     </section>
   );

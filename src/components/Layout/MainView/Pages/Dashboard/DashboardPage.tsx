@@ -1,5 +1,5 @@
 import CategoriesSection from "./Categories/CategoriesSection";
-import FilesSection from "./ActivitiesSection/ActivitiesSection";
+import ActivitiesSection from "./ActivitiesSection/ActivitiesSection";
 import { RecentUploadsSection } from "./RecentUploads/RecentUploadsSection";
 const DashboardPage = ({ dashboardContent }) => {
   const { recentUploads, filesByExtensions, recentActivities } =
@@ -19,7 +19,7 @@ const DashboardPage = ({ dashboardContent }) => {
       </div>
       {/* Files section ----------------------------------------------- */}
       <div className="w-full h-auto mb-[20px]">
-        <FilesSection activities={recentActivities} />
+        <ActivitiesSection activities={recentActivities} />
       </div>
     </div>
   );

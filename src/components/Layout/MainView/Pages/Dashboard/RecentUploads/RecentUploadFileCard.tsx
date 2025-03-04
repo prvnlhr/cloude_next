@@ -27,7 +27,7 @@ const RecentUploadFileCard = ({ item }) => {
   const isImage = item.file_type.startsWith("image/");
 
   return (
-    <div className="h-[80%] max-w-[150px] sm:w-[45%] aspect-square bg-[#F4F6F6] border border-[#E4E7EC] rounded-[10px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.05)] flex flex-col items-center mx-[10px]">
+    <div className="h-[80%] max-w-[150px] sm:w-[45%] aspect-square bg-[#F6F6F6] border-[1px] border-[#E4E7EC]  rounded-[10px] shadow-[0px_3px_5px_rgba(0,0,0,0.04)] flex flex-col items-center mx-[10px]">
       {/* File Preview Container */}
       <div className="w-full h-[calc(100%-30px)] p-[8px]">
         <div className="w-full h-full bg-white rounded flex items-center justify-center relative">
@@ -46,9 +46,9 @@ const RecentUploadFileCard = ({ item }) => {
                 className="w-full h-full object-cover rounded"
               />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-evenly bg-[#EAECEB] px-[10px]">
-                <div className="w-[100%] h-[60px] flex items-end">
-                  <div className="h-[80%] aspect-square rounded-full bg-white flex items-center justify-center p-[8px]">
+              <div className="w-full h-full flex flex-col items-center justify-evenly bg-white px-[10px]">
+                <div className="w-[100%] h-[60px] flex items-center">
+                  <div className="h-[70%] aspect-square rounded-full bg-[#F1F1F1] flex items-center justify-center p-[8px]">
                     <Icon
                       icon={getFileIcon(item.file_name)}
                       className="w-full h-full text-[#1C3553]"
@@ -59,7 +59,7 @@ const RecentUploadFileCard = ({ item }) => {
                   {Array.from({ length: 3 }).map((_, index) => (
                     <div
                       key={index}
-                      className="w-full h-[10px] bg-white rounded"
+                      className="w-full h-[8px] bg-[#F1F1F1] rounded"
                     ></div>
                   ))}
                 </div>
@@ -74,17 +74,17 @@ const RecentUploadFileCard = ({ item }) => {
       {/* File Name & Link */}
       <div className="w-[90%] h-[30px] flex items-center">
         <div className="flex-1 min-w-0 overflow-hidden">
-          <p className="text-[0.7rem] text-[#1C3553] font-medium truncate">
+          <p className="text-[0.7rem] w-[95%] text-[#1C3553] font-medium truncate">
             {item.file_name}
           </p>
         </div>
         <Link
           href={`/cloude/home/my-storage/files/${item.id}`}
-          className="h-[75%] aspect-square flex items-center justify-center bg-[#E4E7EC] rounded-full"
+          className="h-[80%] aspect-square flex items-center justify-center bg-white border border-[#E4E7EC] rounded-full"
         >
           <Icon
             icon="meteor-icons:arrow-up"
-            className="w-[50%] h-[50%] text-[#1C3553] rotate-45"
+            className="w-[60%] h-[60%] text-[#1C3553] rotate-45"
           />
         </Link>
       </div>

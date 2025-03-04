@@ -19,9 +19,9 @@ const SearchItem: FC = ({ item, setSearchResults }) => {
   };
 
   return (
-    <div className="w-full h-[60px] my-[10px] rounded flex items-center border border-transparent hover:border-[#D0D5DD] hover:bg-[#FAFAFA]">
+    <div className="w-full h-[60px] my-[10px] rounded flex items-center border border-transparent hover:border-[#EFEFEF] hover:bg-[#F6F6F6]">
       <div className="h-[100%] aspect-square flex items-center justify-center">
-        <div className="h-[70%] aspect-square flex items-center justify-center bg-[#E7EFFC] rounded">
+        <div className="h-[70%] aspect-square flex items-center justify-center bg-[#F2F4F5] border border-[#D0D5DD] rounded">
           <Icon
             icon={
               item.type === "folder" ? "mdi-light:folder" : "mdi-light:file"
@@ -41,7 +41,7 @@ const SearchItem: FC = ({ item, setSearchResults }) => {
       <div className="h-full aspect-square flex items-center justify-center">
         <button
           onClick={handleItemClicked}
-          className="h-[60%] aspect-square border flex items-center justify-center rounded-full bg-[#F4F6F6]"
+          className="h-[60%] aspect-square border flex items-center justify-center rounded-full bg-[#F4F6F6] hover:border hover:border-[#D0D5DD]"
         >
           <Icon
             icon="iconoir:arrow-up"

@@ -55,7 +55,7 @@ src
     │           │   └── DashboardPage.  
     │           │   └── RecentUploads.  
     │           │   └── Folders.  
-    │           │   └── FilesTable.  
+    │           │   └── ActivitiesTable.  
     │           │   └── FileCard.  
     │           │  
     │           ├── SharedFilesPage  

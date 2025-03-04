@@ -45,14 +45,16 @@ const SharedByMeFolderCard = ({ folder }: FolderCardProps) => {
     <div
       className="w-[48%] sm:w-[48%] md:w-[30%] lg:w-[18%] h-auto 
       mx-[1%] my-[15px] 
-      bg-[#EAECEB] border-[1px] border-[#E4E7EC] 
-      flex flex-col 
+      bg-[#F6F6F6] border-[1px] border-[#E4E7EC] 
+      flex
+      justify-between  
       rounded-[10px]
       min-h-[40px]
       relative
       z-[4]
       cursor-pointer
-      shadow-[0px_0px_0px_1px_rgba(0,0,0,0.05)]"
+      shadow-[0px_3px_5px_rgba(0,0,0,0.04)]
+      "
     >
       <div className="w-full h-[40px] flex">
         <Link
@@ -63,7 +65,7 @@ const SharedByMeFolderCard = ({ folder }: FolderCardProps) => {
           }
           className="w-full h-full flex"
         >
-          <div className="h-full aspect-square flex items-center justify-center">
+          <div className="h-full w-[40px] min-w-[40px] flex items-center justify-center">
             <Icon
               icon="solar:folder-linear"
               className="w-[50%] h-[50%] text-[#1C3553]"
@@ -75,17 +77,17 @@ const SharedByMeFolderCard = ({ folder }: FolderCardProps) => {
             </p>
           </div>
         </Link>
-        <div className="h-full aspect-square flex items-center justify-center cursor-pointer">
+        <div className="h-full w-[40px] min-w-[40px] flex items-center justify-center cursor-pointer">
           <button
             onClick={handleRemoveSharedFolder}
-            className="w-[60%] aspect-square flex items-center justify-center bg-[#EAECEB] border border-[#D0D5DD] rounded-full"
+            className="w-[70%] aspect-square flex items-center justify-center bg-white border border-[#E4E7EC] rounded-full"
           >
             {isLoading ? (
               <Spinner variant="gradient" color="primary" size="sm" />
             ) : (
               <Icon
                 icon="iconamoon:close-fill"
-                className="w-[50%] h-[50%] text-[#1C3553]"
+                className="w-[60%] h-[60%] text-[#1C3553]"
               />
             )}
           </button>

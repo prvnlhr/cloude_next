@@ -91,18 +91,20 @@ const ShareModal = ({ item, itemType, onClose }) => {
   return (
     <div
       ref={modalRef}
-      className="w-[250px] h-auto  p-[10px]
-    absolute top-1/2 left-1/2 transform -translate-x-[100%] -translate-y-1/2 
-    bg-white border rounded-[8px] shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px] z-[50]"
+      className="
+      w-[280px] h-auto  p-[10px]
+      absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+    bg-white border rounded-[8px] shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px] z-[50]
+        lg:-translate-x-full"
     >
       {/* Heading --------------- */}
-      <div className="w-full h-[40px] flex items-center justify-between border-b-[1px] border-b-[#D0D5DD] mb-[10px]">
+      <div className="w-full h-[40px] flex items-center justify-between border-b-[1px] border-b-[#EFEFEF] mb-[10px]">
         <p className="text-[1.1rem]  text-[#1C3553]  font-semibold">
           Share {itemType}
         </p>
         <button
           onClick={onClose}
-          className="w-[20px] border border-[#D0D5DD] h-[20px] rounded-full bg-[#E7EFFC] flex items-center justify-center"
+          className="w-[25px] h-[25px] border border-[#EFEFEF]  rounded-full bg-[#E7EFFC] flex items-center justify-center"
         >
           <Icon
             icon="iconamoon:close-fill"
@@ -113,7 +115,7 @@ const ShareModal = ({ item, itemType, onClose }) => {
 
       {/* Logo and item name ------------------------ */}
       <div className="w-full h-[40px] flex items-center">
-        <div className="h-[80%] aspect-square border rounded bg-[#EAECEB] flex items-center justify-center">
+        <div className="h-[80%] aspect-square border rounded bg-[#F6F6F6] flex items-center justify-center">
           <Icon
             icon={
               itemType === "folder" ? "solar:folder-linear" : "proicons:file"
@@ -121,8 +123,8 @@ const ShareModal = ({ item, itemType, onClose }) => {
             className="w-[50%] h-[50%] text-[#1C3553]"
           />
         </div>
-        <div className="h-full flex-grow flex flex-col justify-center">
-          <p className="text-[0.8rem] ml-[15px] italic text-[#1C3553] font-medium">
+        <div className="h-full flex-grow flex flex-col justify-center overflow-hidden">
+          <p className="text-[0.8rem] ml-[15px] italic text-[#1C3553] font-medium truncate whitespace-nowrap">
             {item && item[key]}
           </p>
           {itemType === "file" && (
@@ -144,7 +146,7 @@ const ShareModal = ({ item, itemType, onClose }) => {
           <input
             value={shareWithEmail}
             onChange={(e) => setShareWithEmail(e.target.value)}
-            className="w-full h-full border border-[#D0D5DD] rounded-[5px] outline-none text-[0.8rem]  text-[#1C3553]  font-medium px-[5px]"
+            className="w-full h-full border border-[#EFEFEF] rounded-[5px] outline-none text-[0.8rem]  text-[#1C3553]  font-medium px-[5px]"
           />
         </div>
         <div className="w-full h-[30px] flex items-center justify-start">
@@ -180,7 +182,7 @@ const ShareModal = ({ item, itemType, onClose }) => {
               {accessLevelsData.map((level) => (
                 <div
                   key={level.key}
-                  className="w-full h-[60px] text-[0.8rem] text-[#1C3553] font-medium flex flex-col justify-center hover:bg-[#EAECEB] px-[8px] rounded"
+                  className="w-full h-[60px] text-[0.8rem] text-[#1C3553] font-medium flex flex-col justify-center hover:bg-[#F6F6F6] px-[8px] rounded"
                   onClick={() => {
                     setAccessLevel(level.key);
                     setShowAccessLevels(false);

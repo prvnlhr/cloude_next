@@ -49,7 +49,7 @@ const ContentPage = ({ files, folders }) => {
     >
       {/* If Shared Page, below tab bar will be shown*/}
       {isSharedPage && (
-        <div className="w-full h-[40px] flex items-start border-b-[1px] border-b-[#D0D5DD]">
+        <div className="w-full h-[40px] flex items-start border-b-[1px] border-b-[#EFEFEF]">
           <Link
             href={"/cloude/home/shared"}
             className={`w-auto h-[30px]  flex items-center justify-center border-b-[${

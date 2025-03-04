@@ -13,7 +13,7 @@ const DeleteModal = ({ item, itemType, onClose }) => {
   const [success, setSuccess] = useState(false);
 
   const session = useUserSession();
-  const {showToast} = useToast();
+  const { showToast } = useToast();
 
   const handleDelete = async () => {
     setIsLoading(true);
@@ -31,8 +31,20 @@ const DeleteModal = ({ item, itemType, onClose }) => {
       // return;
       const deleteResponse =
         itemType === "folder"
-          ? await deleteFolder(userId, item.id, accessLevel, itemOwnerId,showToast)
-          : await deleteFile(userId, item.id, accessLevel, itemOwnerId,showToast);
+          ? await deleteFolder(
+              userId,
+              item.id,
+              accessLevel,
+              itemOwnerId,
+              showToast
+            )
+          : await deleteFile(
+              userId,
+              item.id,
+              accessLevel,
+              itemOwnerId,
+              showToast
+            );
 
       // console.log(" deleteResponse:", deleteResponse);
       if (deleteResponse && deleteResponse.error) {
@@ -52,9 +64,11 @@ const DeleteModal = ({ item, itemType, onClose }) => {
   return (
     <div
       className="
-      w-[250px] h-auto 
-      absolute top-1/2 left-1/2 transform -translate-x-[100%] -translate-y-1/2 
-      bg-white border rounded-[8px] shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px] z-[50] p-[10px]"
+      w-[280px] h-auto 
+      absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+      bg-white border rounded-[8px] shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px] z-[50] p-[10px]
+      lg:-translate-x-full
+      "
     >
       {/* Header */}
       <div className="w-full h-[30px] flex items-center justify-between">
@@ -64,7 +78,7 @@ const DeleteModal = ({ item, itemType, onClose }) => {
         <button
           onClick={onClose}
           type="button"
-          className="w-[20px] border border-[#D0D5DD] h-[20px] rounded-full bg-[#E7EFFC] flex items-center justify-center"
+          className="w-[25px] h-[25px] border border-[#EFEFEF]  rounded-full bg-[#E7EFFC] flex items-center justify-center"
         >
           <Icon
             icon="iconamoon:close-fill"
@@ -78,19 +92,19 @@ const DeleteModal = ({ item, itemType, onClose }) => {
         <p className="text-[0.75rem] text-[#101828] font-medium mt-[10px]">
           Are you sure you want to delete this {itemType}?
         </p>
-        <div className="w-full h-auto flex items-center justify-center p-2 mt-[5px] border-y-[1px] border-y-[#D0D5DD]">
-          <p className="text-[0.75rem] text-[#737481] font-medium italic underline text-center break-words w-full">
+        <div className="w-full h-auto flex items-center justify-center p-2 mt-[5px] border-y-[1px] border-y-[#EFEFEF]">
+          <p className="text-[0.9rem] text-[#758DA7] font-medium italic underline text-center break-words w-full">
             {item && item[key]}
           </p>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="w-full h-[30px] flex items-center justify-evenly mt-[10px]">
+      <div className="w-full h-[30px] flex items-center justify-between mt-[10px]">
         <button
           onClick={onClose}
           type="button"
-          className="w-[45%] h-[30px] text-[0.8rem] text-[#1C3553] font-medium rounded bg-[#FAFAFA] border border-[#D0D5DD] px-[15px]"
+          className="w-[45%] h-[30px] text-[0.8rem] text-[#1C3553] font-medium rounded bg-[#FAFAFA] border border-[#EFEFEF] px-[15px]"
         >
           Cancel
         </button>

@@ -29,7 +29,7 @@ const PageHeader: FC = () => {
   useClickOutside(menuRef, () => setIsMenuOpen(false));
 
   return (
-    <div className="w-[100%] h-[70px] border-b-[1px] border-b-[#D0D5DD] flex">
+    <div className="w-[100%] h-[70px] border-b-[1px] border-b-[#EFEFEF] flex">
       <section className="w-[50%] h-[100%] flex items-center justify-start">
         <div className="flex flex-col items-start justify-center pl-[15px] lg:pl-[20px]">
           <p className="text-[#1C3553] text-[1.5rem] font-medium">{heading}</p>
@@ -45,7 +45,7 @@ const PageHeader: FC = () => {
         <button
           type="button"
           className="w-[auto] h-[30px] 
-          border-[1px] border-[#D0D5DD] bg-[#E4E7EC] 
+          border-[1px] border-[#EFEFEF] bg-[#635DB0] 
           flex items-center justify-center 
           cursor-pointer
           mr-[15px]
@@ -53,10 +53,10 @@ const PageHeader: FC = () => {
           onClick={toggleMenu}
         >
           <div className="h-[100%] aspect-[1/1] flex items-center justify-center black">
-            <Icon icon="majesticons:plus-line" className="text-[#1C3553]" />
+            <Icon icon="material-symbols:upload-rounded" className="text-white" />
           </div>
-          <p className="text-[#1C3553] text-[0.8rem] font-medium hidden md:block mr-[10px]">
-            Add
+          <p className="text-white text-[0.8rem] font-medium hidden md:block mr-[15px]">
+            Upload
           </p>
         </button>
         {isMenuOpen && <AddMenu menuRef={menuRef} />}

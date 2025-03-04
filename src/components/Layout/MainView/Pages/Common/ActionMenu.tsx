@@ -84,7 +84,7 @@ const ActionMenu = ({ dropdownRef, item, itemType, setActiveModal }) => {
               key={index}
               className={`w-full h-[35px] flex items-center justify-start px-[10px] rounded ${
                 isAllowed
-                  ? "cursor-pointer hover:bg-[#EAECEB]"
+                  ? "cursor-pointer hover:bg-[#F6F6F6]"
                   : "cursor-not-allowed opacity-50"
               }`}
               disabled={!isAllowed}

@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
 
 const ActivitiesTable = ({ activities }) => {
+  console.log(" activities:", activities);
   const columns = ["Name", "Type", "Activity", "Date"];
 
   // Capitalizes first letter of a string
@@ -16,7 +17,7 @@ const ActivitiesTable = ({ activities }) => {
     });
   };
 
-  const getLinkUrl = (itemType, itemId, activityType) => {
+  const getLinkUrl = (itemType, itemId) => {
     return `/cloude/home/my-storage/${
       itemType === "folder" ? "folders" : "files"
     }/${itemId}`;
@@ -29,12 +30,12 @@ const ActivitiesTable = ({ activities }) => {
     >
       <table className="min-w-full border-collapse">
         {/* Table Head */}
-        <thead className="bg-[#EEEEEE] sticky top-0 z-10">
+        <thead className="bg-[#F6F6F6] sticky top-0 z-10">
           <tr className="text-left text-[#1C3553] text-[0.8rem]">
             {columns.map((col) => (
               <th
                 key={col}
-                className="px-4 py-2 capitalize whitespace-nowrap border-x border-[#E4E4E4]"
+                className="px-4 py-2 capitalize whitespace-nowrap border-x border-[#D0D5DD]"
               >
                 {col}
               </th>
@@ -58,23 +59,26 @@ const ActivitiesTable = ({ activities }) => {
             return (
               <tr
                 key={index}
-                className="border border-[#E4E4E4] hover:bg-gray-100"
+                className="border border-[#D0D5DD] hover:bg-[#F6F6F6] text-[0.8rem]"
               >
                 {/* Name with Icon */}
-                <td className="px-4 py-2 border border-[#E4E4E4] whitespace-nowrap text-[#1C3553] text-[0.8rem]">
+                <td className="px-4 py-2 h-[50px] border border-[#D0D5DD] whitespace-nowrap text-[#1C3553]">
                   <Link
-                    href={getLinkUrl(item_type, itemId, activity_type)}
+                    href={getLinkUrl(item_type, itemId)}
                     aria-label={`Open ${item_name}`}
                   >
                     <div className="flex items-center">
-                      <Icon
-                        icon={
-                          item_type === "folder"
-                            ? "solar:folder-bold"
-                            : "tabler:file-filled"
-                        }
-                      />
-                      <p className="ml-2 font-medium">
+                      <div className="h-[30px] rounded aspect-square bg-[#F2F4F5]  border border-[#D0D5DD] flex items-center justify-center">
+                        <Icon
+                          className="w-[60%] h-[60%]"
+                          icon={
+                            item_type === "folder"
+                              ? "solar:folder-bold"
+                              : "tabler:file-filled"
+                          }
+                        />
+                      </div>
+                      <p className="ml-4 font-medium">
                         {capitalize(item_name)}
                       </p>
                     </div>
@@ -82,24 +86,41 @@ const ActivitiesTable = ({ activities }) => {
                 </td>
 
                 {/* Type */}
-                <td className="px-4 py-2 border border-[#E4E4E4] whitespace-nowrap text-[#1C3553] font-medium text-[0.8rem]">
+                <td className="px-4 py-2 border border-[#D0D5DD] whitespace-nowrap text-[#1C3553] font-medium ">
                   {capitalize(item_type)}
                 </td>
 
                 {/* Activity */}
-                <td className="px-4 py-2 border border-[#E4E4E4] whitespace-nowrap text-[#1C3553] text-[0.8rem]">
-                  {activity_type === "share"
-                    ? "You Shared with"
-                    : capitalize(activity_type)}
-                  {activity_type === "share" && (
-                    <p className="font-medium">
-                      {activity.details.shared_with_name}
+                <td className="px-4 py-2 border border-[#D0D5DD] whitespace-nowrap text-[#1C3553] ">
+                  {activity_type === "share" ? (
+                    <>
+                      <p className="text-[#1C3553] font-medium">{`You Shared ${item_type}`}</p>
+                      <p className="text-[#758DA7] ">
+                        With :
+                        <span className="underline ml-[5px] text-[#1C3553]">
+                          {activity.details.shared_with_name}
+                        </span>
+                      </p>
+                    </>
+                  ) : activity_type === "rename" ? (
+                    <>
+                      <p className="text-[#1C3553] font-medium">{`Renamed ${item_type} ${activity.details.old_name}`}</p>
+                      <p className="text-[#758DA7]">
+                        To :
+                        <span className="ml-[5px] underline text-[#1C3553]">
+                          {activity.details.new_name}
+                        </span>
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-[#1C3553] font-medium">
+                      {capitalize(activity_type)}
                     </p>
                   )}
                 </td>
 
                 {/* Date */}
-                <td className="px-4 py-2 border border-[#E4E4E4] whitespace-nowrap text-[#1C3553] text-[0.8rem]">
+                <td className="px-4 py-2 border border-[#D0D5DD] whitespace-nowrap text-[#1C3553] font-medium">
                   {formatDate(timestamp)}
                 </td>
               </tr>
