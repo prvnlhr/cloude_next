@@ -8,9 +8,9 @@ import ActionMenu from "./ActionMenu";
 import { getSignedUrl } from "@/actions/filesAction";
 import Image from "next/image";
 import { canPreview } from "@/utils/previewUtil";
-import { getFileIcon } from "@/utils/getFileIcon";
+// import { getFileIcon } from "@/utils/getFileIcon";
 import { File, Folder } from "@/types/contentTypes";
-
+import { getFileIcon } from "@/utils/categoryUtils";
 interface FileCardProps {
   file: File;
   setActiveModal: (modal: {
@@ -118,7 +118,7 @@ const FileCard: React.FC<FileCardProps> = ({
                 </div>
               )
             ) : (
-              <Icon icon="mdi-light:image" className="w-[80%] h-[80%]" />
+              <Icon icon="mdi:file" className="w-[80%] h-[80%]" />
             )}
           </div>
         </Link>

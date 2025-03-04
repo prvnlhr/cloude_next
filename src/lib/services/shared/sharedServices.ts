@@ -91,6 +91,8 @@ export async function shareItem(shareItemData, showToast) {
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
     await revalidateTagHandler("starred");
+    await revalidateTagHandler("shared");
+
     console.log("Share Item Success:", result.message);
     return result.data;
   } catch (error) {
@@ -124,6 +126,7 @@ export async function removeFromShared({ userId, itemId, itemType }) {
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
     await revalidateTagHandler("starred");
+    await revalidateTagHandler("shared");
     console.log("Remove from Shared Success:", result.message);
     return result.data;
   } catch (error) {

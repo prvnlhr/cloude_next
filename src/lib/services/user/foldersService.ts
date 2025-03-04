@@ -109,6 +109,7 @@ export async function renameFolder(updateData, folderId, showToast) {
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
     await revalidateTagHandler("starred");
+    await revalidateTagHandler("shared");
 
     showToast("success", `Folder renamed successfully`, ``);
 
@@ -158,6 +159,8 @@ export async function deleteFolder(
 
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
+    await revalidateTagHandler("starred");
+    await revalidateTagHandler("shared");
 
     console.log("Delete Folder Success:", result.message);
     return result.data;

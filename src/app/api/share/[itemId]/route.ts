@@ -80,10 +80,9 @@ export async function DELETE(req) {
 // GET : get a item which is shared with user ----------------------------------------------------------------------------------------
 export async function GET(req, { params }) {
   try {
-    const { itemId } = params;
+    const { itemId } = await params;
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
-    console.log(" userIdccccccccccccccccccccccccc:", userId);
 
     if (!itemId || !userId) {
       return createResponse(400, null, "itemId and userId are required.");

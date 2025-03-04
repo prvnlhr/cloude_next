@@ -155,7 +155,7 @@ export async function DELETE(req) {
 // GET : get a file with id ------------------------------------------------------------------------------------------------------------------
 export async function GET(req, { params }) {
   try {
-    const { fileId } = params;
+    const { fileId } = await params;
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
 

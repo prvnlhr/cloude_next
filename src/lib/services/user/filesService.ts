@@ -140,8 +140,11 @@ export async function renameFile(updateData, fileId, showToast) {
     }
 
     showToast("success", `File renamed successfully`, ``);
+
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
+    await revalidateTagHandler("starred");
+    await revalidateTagHandler("shared");
 
     console.log("Rename Success:", result.message);
     return result.data;
@@ -184,6 +187,8 @@ export async function deleteFile(
 
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
+    await revalidateTagHandler("starred");
+    await revalidateTagHandler("shared");
 
     console.log("Delete Success:", result.message);
     return result.data;

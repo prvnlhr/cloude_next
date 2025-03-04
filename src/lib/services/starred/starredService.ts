@@ -89,6 +89,7 @@ export async function addToStarred(starData, showToast) {
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
     await revalidateTagHandler("starred");
+    await revalidateTagHandler("shared");
 
     console.log("Add to Starred Success:", result.message);
     return result.data;
@@ -143,11 +144,10 @@ export async function removeFromStarred(starData, showToast) {
       toastId
     );
 
-    
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
     await revalidateTagHandler("starred");
-
+    await revalidateTagHandler("shared");
     // show success toast
 
     console.log("Remove from Starred Success:", result.message);

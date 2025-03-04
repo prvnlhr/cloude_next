@@ -244,7 +244,6 @@ export async function GET(req) {
   const userId = searchParams.get("userId");
   const folderId = searchParams.get("folderId");
   const shareByMe = searchParams.get("shareByMe");
-  console.log(" shareByMe:xxxxxxxxxxxxxxxxxxxxxxxxxxx", shareByMe);
 
   try {
     let folders, files;
