@@ -91,24 +91,24 @@ const FilePage: React.FC<FilePageProps> = ({ file }) => {
     // Other Files - Show Download Button
     else {
       return (
-        <div className="h-[70%] aspect-video bg-white border border-[#E4E7EC] flex flex-col items-center justify-center">
-          <div className="w-full h-[100px] flex justify-evenly items-center flex-col">
-            <p className="text-[1.2rem] text-[#1C3553] font-medium">
+        <div className="w-full h-full bg-white border border-[#E4E7EC] flex flex-col items-center justify-center">
+          <div className="w-full h-[100px] flex justify-evenly items-center flex-col overflow-hidden">
+            <p className="text-[1.5rem] text-[#1C3553] font-medium truncate">
               {file.file_name}
             </p>
-            <p className="text-[0.8rem] text-[#1C3553] font-medium">
+            <p className="text-[0.9rem] text-[#1C3553] font-medium">
               Preview not available
             </p>
           </div>
           <button
             onClick={handleDownload}
-            className="w-auto h-[30px] bg-[#F4F6F6] px-[10px] mr-[15px] flex items-center border border-[#F0F0F0]"
+            className="w-auto h-[30px] bg-[#635DB0] px-[10px] mr-[15px] flex items-center border border-[#F0F0F0]"
           >
             <Icon
               icon="material-symbols-light:download"
-              className=" text-[#1C3553] h-[80%] w-[80%] mr-[5px]"
+              className=" text-[white] h-[80%] w-[80%] mr-[5px]"
             />
-            <p className="text-[0.8rem] text-[#1C3553] font-medium">Download</p>
+            <p className="text-[0.8rem] text-[white] font-medium">Download</p>
           </button>
         </div>
       );
@@ -141,17 +141,17 @@ const FilePage: React.FC<FilePageProps> = ({ file }) => {
         </div>
         <button
           onClick={handleDownload}
-          className="w-auto h-[30px] bg-[#F4F6F6] px-[10px] mr-[15px] flex items-center border border-[#F0F0F0]"
+          className="w-auto h-[30px] bg-[#635DB0] px-[10px] mr-[15px] flex items-center border border-[#F0F0F0]"
         >
           <Icon
             icon="material-symbols-light:download"
-            className=" text-[#1C3553] h-[80%] w-[80%] mr-[5px]"
+            className=" text-[white] h-[80%] w-[80%] mr-[5px]"
           />
-          <p className="text-[0.8rem] text-[#1C3553] font-medium">Download</p>
+          <p className="text-[0.8rem] text-[white] font-medium">Download</p>
         </button>
       </div>
       <div className="w-full h-[calc(100%-70px)] flex items-center justify-center relative">
-        <div className="w-[60%] aspect-video flex items-center justify-center bg-[#F0F0F0] relative">
+        <div className="w-[95%] sm:w-[60%] aspect-video flex items-center justify-center bg-[#F0F0F0] relative p-[5px]">
           {signedUrl && getFilePreview()}
         </div>
       </div>
