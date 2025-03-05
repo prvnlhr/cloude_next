@@ -52,7 +52,8 @@ const PageHeader: FC = () => {
           flex items-center justify-center 
           cursor-pointer
           mr-[15px]
-          rounded"
+          rounded
+          "
           onClick={toggleMenu}
         >
           <div className="h-[100%] aspect-[1/1] flex items-center justify-center black">
@@ -61,7 +62,10 @@ const PageHeader: FC = () => {
               className="text-white"
             />
           </div>
-          <p className="text-white text-[0.8rem] font-medium hidden md:block mr-[15px]">
+          <p
+            className="text-white text-[0.8rem] font-medium
+           mr-[15px]"
+          >
             Upload
           </p>
         </button>
