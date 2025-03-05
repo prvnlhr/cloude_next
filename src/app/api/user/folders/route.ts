@@ -5,6 +5,13 @@ import slugify from "slugify";
 
 // POST : UPLOAD A FOLDER AND ITS CONTENT --------------------------------------------------------------------------------------------------
 
+type FileMetadata = {
+  name: string;
+  type: string;
+  size: number;
+  folderId: string;
+  userId: string;
+};
 type Folder = {
   id: string;
   name: string;
@@ -18,7 +25,7 @@ export async function POST(req: Request) {
     const folders: Folder[] = JSON.parse(formData.get("folders") as string);
     const userId = formData.get("userId");
     const files = [];
-    const fileData = [];
+    const fileData: FileMetadata[] = [];
 
     for (const [key, value] of formData.entries()) {
       if (key.startsWith("file-")) {
@@ -69,16 +76,17 @@ export async function POST(req: Request) {
       }
     }
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const metadata = fileData[i];
-      const folderId = folderIdMap[metadata.folderId];
-
-      if (file instanceof File) {
+    const uploadFile = async (
+      file: File,
+      metadata: FileMetadata,
+      folderId: string
+    ) => {
+      try {
         const uniqueId = crypto.randomUUID();
         const uniqueFileName = `${uniqueId}_${file.name}`;
         const storagePath = `uploads/${userId}/${uniqueFileName}`;
 
+        // Upload file to Supabase Storage
         const fileBuffer = await file.arrayBuffer();
         const { error: uploadError } = await supabase.storage
           .from("cloude")
@@ -88,28 +96,52 @@ export async function POST(req: Request) {
 
         if (uploadError) {
           console.error("Error uploading file:", uploadError);
-          continue;
+          return null;
         }
 
         const ext = getFileExtension(file.name);
+        return {
+          file_name: metadata.name,
+          file_type: metadata.type,
+          file_size: metadata.size,
+          storage_path: storagePath,
+          folder_id: folderId,
+          user_id: userId,
+          extension: ext,
+        };
+      } catch (error) {
+        console.error("Error processing file:", error);
+        return null;
+      }
+    };
 
-        const { error: fileError } = await supabase.from("files").insert([
-          {
-            file_name: metadata.name,
-            file_type: metadata.type,
-            file_size: metadata.size,
-            storage_path: storagePath,
-            folder_id: folderId,
-            user_id: metadata.userId,
-            extension: ext,
-          },
-        ]);
+    const uploadPromises = files.map(async (file, index) => {
+      const metadata = fileData[index];
+      const folderId = folderIdMap[metadata.folderId];
 
-        if (fileError) {
-          console.error("Error inserting file metadata:", fileError);
-        }
+      if (file instanceof File) {
+        return uploadFile(file, metadata, folderId);
+      }
+      return null;
+    });
+
+    const uploadedFiles = await Promise.all(uploadPromises);
+
+    const successfulUploads = uploadedFiles.filter(Boolean);
+
+    if (successfulUploads.length > 0) {
+      const { error: fileError } = await supabase
+        .from("files")
+        .insert(successfulUploads);
+
+      if (fileError) {
+        console.error("Error inserting file metadata:", fileError);
+      } else {
+        console.log(`Inserted ${successfulUploads.length} files successfully`);
       }
     }
+
+    // --------------------------------------------------
 
     // Log the parent folder creation activity at the end
     if (parentFolderId) {
