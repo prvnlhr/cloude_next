@@ -12,6 +12,7 @@ export interface RecentUploadFile {
   folder_id: string | null;
   thumbnail_url: string | null;
 }
+
 export interface RecentActivity {
   id: string;
   activity_type: "upload" | "rename" | "delete" | "move" | "star" | "share";

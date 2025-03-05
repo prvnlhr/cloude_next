@@ -28,6 +28,16 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
     }/${itemId}`;
   };
 
+  const getItemName = (activity: RecentActivity): string => {
+    if (activity.item_type === "file" && activity.files) {
+      return activity.files.file_name;
+    }
+    if (activity.item_type === "folder" && activity.folders) {
+      return activity.folders.folder_name;
+    }
+    return "Unknown"; // Fallback if no name found
+  };
+
   return (
     <div
       className="w-full h-full overflow-auto"
@@ -55,13 +65,14 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
               item_type,
               activity_type,
               activity_timestamp,
-              // item_name,
+
               file_id,
               folder_id,
             } = activity;
             const itemId = (
               item_type === "folder" ? folder_id : file_id
             ) as string;
+            const itemName = getItemName(activity);
 
             return (
               <tr
@@ -69,12 +80,12 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
                 className="border border-[#D0D5DD] hover:bg-[#F6F6F6] text-[0.8rem]"
               >
                 {/* Name with Icon */}
-                <td className="px-4 py-2 h-[50px] border border-[#D0D5DD] whitespace-nowrap text-[#1C3553]">
+                <td className="px-4 py-2 h-[50px] border border-[#D0D5DD]  text-[#1C3553] overflow-hidden">
                   <Link
                     href={getLinkUrl(item_type, itemId)}
-                    // aria-label={`Open ${item_name}`}
+                    aria-label={`Open ${itemName}`}
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center max-w-[300px]">
                       <div className="h-[30px] rounded aspect-square bg-[#F2F4F5]  border border-[#D0D5DD] flex items-center justify-center">
                         <Icon
                           className="w-[60%] h-[60%]"
@@ -85,8 +96,8 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
                           }
                         />
                       </div>
-                      <p className="ml-4 font-medium">
-                        {/* {capitalize(item_name)} */}
+                      <p className="ml-4 font-medium truncate">
+                        {capitalize(itemName)}
                       </p>
                     </div>
                   </Link>
@@ -105,17 +116,17 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
                       <p className="text-[#758DA7] ">
                         With :
                         <span className="underline ml-[5px] text-[#1C3553]">
-                          {/* {activity.shared_with_name} */}
+                          {activity.details?.shared_with_name}
                         </span>
                       </p>
                     </>
                   ) : activity_type === "rename" ? (
                     <>
-                      {/* <p className="text-[#1C3553] font-medium">{`Renamed ${item_type} ${activity.details.old_name}`}</p> */}
+                      <p className="text-[#1C3553] font-medium">{`Renamed ${item_type} ${activity.details?.old_name}`}</p>
                       <p className="text-[#758DA7]">
                         To :
                         <span className="ml-[5px] underline text-[#1C3553]">
-                          {/* {activity.details.new_name} */}
+                          {activity.details?.new_name}
                         </span>
                       </p>
                     </>
