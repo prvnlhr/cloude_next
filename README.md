@@ -27,7 +27,7 @@ Cloude is a cloud storage web app similar to Google Drive, built using Next.js 1
 - **Deployment:** Vercel
 
 ## Live Demo
-[Check out the live app here](#)
+[Check out the live app here](https://cloude-next.vercel.app/cloude/home/dashboard)
 
 ## Getting Started
 ### Installation
