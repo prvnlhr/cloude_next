@@ -10,7 +10,6 @@ export const getSignedUrl = async (
   const now = Date.now();
 
   if (signedUrlCache.has(filePath)) {
-    console.log("has");
     const cachedData = signedUrlCache.get(filePath);
     if (cachedData && cachedData.expiresAt > now) {
       return cachedData.url;
