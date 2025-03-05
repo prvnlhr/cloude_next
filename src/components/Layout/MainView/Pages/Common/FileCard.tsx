@@ -7,9 +7,10 @@ import useClickOutside from "@/hooks/useClickOutside";
 import ActionMenu from "./ActionMenu";
 import { getSignedUrl } from "@/actions/filesAction";
 import Image from "next/image";
-import { canPreview } from "@/utils/previewUtil";
 import { File, Folder } from "@/types/contentTypes";
-import { getFileIcon } from "@/utils/categoryUtils";
+import PlaceholderImageCard from "./PlaceholderImageCard";
+import { getPreviewInfo } from "@/utils/categoryUtils";
+
 interface FileCardProps {
   file: File;
   setActiveModal: (modal: {
@@ -57,9 +58,36 @@ const FileCard: React.FC<FileCardProps> = ({
     }
   }, [file?.storage_path]);
 
-  const isVideo = ["video/mp4", "video/webm", "video/ogg"].includes(
-    file.file_type
-  );
+  const { canPreview, type } = getPreviewInfo(file.file_name);
+
+  const renderPreview = (type: "image" | "video" | null) => {
+    if (!signedUrl) {
+      return <Icon icon="mdi:file" className="w-[80%] h-[80%]" />;
+    }
+
+    if (canPreview) {
+      if (type == "image") {
+        return (
+          <Image
+            src={signedUrl}
+            fill={true}
+            quality={20}
+            alt={file.file_name}
+            className="object-cover object-center"
+          />
+        );
+      } else if (type === "video") {
+        return (
+          <video
+            src={signedUrl}
+            className="w-full h-full object-cover rounded"
+          />
+        );
+      }
+    } else {
+      return <PlaceholderImageCard fileName={file.file_name} />;
+    }
+  };
 
   return (
     <div
@@ -82,43 +110,7 @@ const FileCard: React.FC<FileCardProps> = ({
             className="w-[100%] h-[100%] bg-[#FFFFFF] 
             flex items-center justify-center overflow-hidden relative rounded"
           >
-            {signedUrl ? (
-              isVideo ? (
-                <video
-                  src={signedUrl}
-                  className="w-full h-full object-cover rounded"
-                />
-              ) : canPreview(file.file_type) ? (
-                <Image
-                  src={signedUrl}
-                  fill={true}
-                  quality={20}
-                  alt={file.file_name}
-                  className="object-cover object-center"
-                />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-evenly bg-white px-[10px]">
-                  <div className="w-[100%] h-[60px] flex items-end">
-                    <div className="h-[80%] aspect-square rounded-full bg-[#F1F1F1] flex items-center justify-center p-[8px]">
-                      <Icon
-                        icon={getFileIcon(file.file_name)}
-                        className="w-full h-full text-[#1C3553]"
-                      />
-                    </div>
-                  </div>
-                  <div className="w-full h-[calc(100%-40px)] flex flex-col items-center justify-evenly">
-                    {Array.from({ length: 3 }).map((_, index) => (
-                      <div
-                        key={index}
-                        className="w-full h-[10px] bg-[#F1F1F1] rounded"
-                      ></div>
-                    ))}
-                  </div>
-                </div>
-              )
-            ) : (
-              <Icon icon="mdi:file" className="w-[80%] h-[80%]" />
-            )}
+            {renderPreview(type)}
           </div>
         </Link>
         <div className="w-full h-[45px] flex">
