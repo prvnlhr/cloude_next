@@ -28,9 +28,6 @@ export async function POST(req: Request) {
       }
     }
 
-    console.log(" files:", files);
-    console.log(" folders:", folders);
-
     let parentFolderId = null;
 
     const supabase = await createClient();
