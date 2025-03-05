@@ -9,7 +9,7 @@ const BackBtn = () => {
   };
   return (
     <div
-      className="w-[30px] h-full flex items-center justify-center cursor-pointer ml-[8px]"
+      className="w-[30px] min-w-[30px] h-full flex items-center justify-center cursor-pointer ml-[8px]"
       onClick={handleGoBack}
     >
       <Icon
