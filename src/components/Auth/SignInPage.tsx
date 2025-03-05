@@ -17,12 +17,13 @@ const SignInPage: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      email: "mrtnmickael@gmail.com",
-      password: "mrtn@123",
+      email: "",
+      password: "",
     },
   });
 
@@ -47,12 +48,25 @@ const SignInPage: React.FC = () => {
     }
   };
 
+  const handleClickDemoCredentials = () => {
+    setValue("email", "johndoe@gmail.com");
+    setValue("password", "jjdoe@123");
+  };
+
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full h-full flex flex-col items-center justify-center">
+      <div className="w-full h-[100px] flex items-center justify-center">
+        <p className="text-[1.5rem] text-[#1C3553] font-medium">
+          Sign In to Cloud.
+          <span className="text-[#635DB0]">e</span>
+        </p>
+      </div>
       {/* ---------------------------- form --------------------------- */}
       <form
         className="h-[auto] w-[85%] sm:w-[300px] p-[15px]
         shadow-[0px_8px_24px_rgba(149,157,165,0.2)]
+        flex flex-col
+        items-center
         "
         onSubmit={handleSubmit(onSubmit)}
       >
@@ -78,6 +92,7 @@ const SignInPage: React.FC = () => {
           <div className="w-full h-[40px] border-[2px] border-[#E4E7EC] overflow-hidden rounded-[5px] bg-[#FAFAFA]">
             <input
               className="w-full h-full bg-transparent outline-none border-none px-[0.625rem] text-[0.85rem] sm:text-[0.9rem] md:text-[1rem] lg:text-[1rem]"
+              placeholder="example@gmail.com"
               type="email"
               {...register("email")}
             />
@@ -101,6 +116,7 @@ const SignInPage: React.FC = () => {
           <div className="w-full h-[40px] border-[2px] border-[#E4E7EC] overflow-hidden rounded-[5px] bg-[#FAFAFA]">
             <input
               className="w-full h-full bg-transparent outline-none border-none px-[0.625rem] text-[0.85rem] sm:text-[0.9rem] md:text-[1rem] lg:text-[1rem]"
+              placeholder="Enter your password"
               type="password"
               {...register("password")}
             />
@@ -136,6 +152,13 @@ const SignInPage: React.FC = () => {
             </Link>
           </p>
         </div>
+        <button
+          type="button"
+          onClick={handleClickDemoCredentials}
+          className="w-auto h-[30px] ml-auto mr-auto border-[2px] border-[#635DB0] justify-center items-center text-[0.8rem] font-medium px-[8px] text-[#1C3553] rounded"
+        >
+          Demo Account Login
+        </button>
       </form>
     </div>
   );

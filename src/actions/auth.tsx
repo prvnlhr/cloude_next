@@ -21,7 +21,6 @@ export async function login(formData: FormData) {
   }
   revalidatePath("/", "layout");
   redirect("/cloude/home/dashboard");
-  return { success: true, message: "Login successful" };
 }
 
 export async function signup(formData: FormData) {
@@ -71,7 +70,6 @@ export async function signup(formData: FormData) {
   }
   revalidatePath("/", "layout");
   redirect("/cloude/home/dashboard");
-  return { success: true, message: "Signup successful!" };
 }
 
 export async function signout() {

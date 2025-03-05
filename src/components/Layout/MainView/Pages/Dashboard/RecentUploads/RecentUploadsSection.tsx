@@ -18,10 +18,17 @@ export const RecentUploadsSection: React.FC<RecentUploadsSectionProps> = ({
         className="w-full h-[calc(100%-40px)] flex items-center justify-start overflow-x-scroll"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        {/* card -------------- */}
-        {recentUploads.map((item, index) => (
-          <RecentUploadFileCard key={index} item={item} />
-        ))}
+        {recentUploads.length > 0 ? (
+          recentUploads.map((item, index) => (
+            <RecentUploadFileCard key={index} item={item} />
+          ))
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <p className="text-[#A2A8B2] text-[1rem] font-medium">
+              Start exploring! Your uploads will be displayed here.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -22,16 +22,23 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
         <p className="text-[#1C3553] text-[1.2rem] font-medium">Categories</p>
       </div>
       <div
-        className={`w-full h-[calc(100%-40px)] 
-        flex flex-wrap overflow-x-scroll `}
+        className="w-full h-[calc(100%-40px)] flex flex-wrap overflow-x-scroll"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
         }}
       >
-        {uniqueCategories.map((category, index) => (
-          <CategoryCard key={index} category={category} />
-        ))}
+        {uniqueCategories.length > 0 ? (
+          uniqueCategories.map((category, index) => (
+            <CategoryCard key={index} category={category} />
+          ))
+        ) : (
+          <div className="w-full h-[200px] flex items-center justify-center">
+            <p className="text-[#A2A8B2] text-[1rem] font-medium text-center">
+              All your uploads will be categorized here.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );

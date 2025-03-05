@@ -29,10 +29,10 @@ const SignUpPage = () => {
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      fullName: "Martin Mickael",
-      email: "mrtnmickael@gmail.com",
-      password: "mrtn@123",
-      confirmPassword: "mrtn@123",
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
@@ -62,7 +62,13 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full h-full flex flex-col items-center justify-center">
+      <div className="w-full h-[100px] flex items-center justify-center">
+        <p className="text-[1.5rem] text-[#1C3553] font-medium">
+          Sign Up to Cloud.
+          <span className="text-[#635DB0]">e</span>
+        </p>
+      </div>
       {/* ---------------------------- form --------------------------- */}
       <form
         className="h-[auto] w-[85%] sm:w-[300px]  p-[15px] border rounded
@@ -93,6 +99,7 @@ const SignUpPage = () => {
           </div>
           <div className="w-full h-[40px] border-[2px] border-[#E4E7EC] overflow-hidden rounded-[5px] bg-[#FAFAFA]">
             <input
+              placeholder="Enter you full name"
               type="text"
               className="w-full h-full bg-transparent outline-none border-none px-[0.625rem] text-[0.85rem] sm:text-[0.9rem] md:text-[1rem] lg:text-[1rem]"
               {...register("fullName")}
@@ -115,6 +122,7 @@ const SignUpPage = () => {
           <div className="w-full h-[40px] border-[2px] border-[#E4E7EC] overflow-hidden rounded-[5px] bg-[#FAFAFA]">
             <input
               type="email"
+              placeholder="example@gmail.com"
               className="w-full h-full bg-transparent outline-none border-none px-[0.625rem] text-[0.85rem] sm:text-[0.9rem] md:text-[1rem] lg:text-[1rem]"
               {...register("email")}
             />
