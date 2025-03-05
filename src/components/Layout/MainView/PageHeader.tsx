@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import useClickOutside from "@/hooks/useClickOutside";
 import AddMenu from "./AddMenu";
 import { usePathname } from "next/navigation";
+import BackBtn from "./Pages/Common/BackBtn";
 
 const PageHeader: FC = () => {
   const menuRef = useRef<HTMLDivElement>(null);
@@ -32,7 +33,8 @@ const PageHeader: FC = () => {
   return (
     <div className="w-[100%] h-[70px] border-b-[1px] border-b-[#EFEFEF] flex">
       <section className="w-[50%] h-[100%] flex items-center justify-start">
-        <div className="flex flex-col items-start justify-center pl-[15px] lg:pl-[20px]">
+        <BackBtn />
+        <div className="flex flex-col items-start justify-center">
           <p className="text-[#1C3553] text-[1.5rem] font-medium">{heading}</p>
           {heading === "Dashboard" && (
             <p className="text-[#A2A8B2] text-[0.8rem] font-medium whitespace-nowrap">
