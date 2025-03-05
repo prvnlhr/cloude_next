@@ -85,10 +85,10 @@ const AddMenu: FC<AddMenuProps> = ({ menuRef }) => {
           <div className="h-full aspect-[1/2] flex items-center justify-center">
             <Icon
               icon="mage:file-upload"
-              className="w-[95%] h-[95%] text-[#1C3553]"
+              className="w-[100%] h-[100%] text-[#1C3553]"
             />
           </div>
-          <p className="text-[0.8rem] text-[#1C3553] ml-[9px]">File upload</p>
+          <p className="text-[0.85rem] text-[#1C3553] ml-[9px]">File upload</p>
         </button>
 
         <button
@@ -98,10 +98,10 @@ const AddMenu: FC<AddMenuProps> = ({ menuRef }) => {
           <div className="h-full aspect-[1/2] flex items-center justify-center">
             <Icon
               icon="mingcute:folder-upload-line"
-              className="w-[95%] h-[95%] text-[#1C3553]"
+              className="w-[100%] h-[100%] text-[#1C3553]"
             />
           </div>
-          <p className="text-[0.8rem] text-[#1C3553] ml-[9px]">Folder upload</p>
+          <p className="text-[0.85rem] text-[#1C3553] ml-[9px]">Folder upload</p>
         </button>
         {/* <button
           type="button"

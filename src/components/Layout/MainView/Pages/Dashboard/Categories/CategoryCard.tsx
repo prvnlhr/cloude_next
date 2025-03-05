@@ -31,7 +31,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         />
       </div>
       <div className="flex-1 h-full flex items-center justify-start overflow-hidden">
-        <p className="text-[0.7rem] text-[#1C3553] font-medium truncate">
+        <p className="text-[0.75rem] text-[#1C3553] font-medium truncate">
           {category}
         </p>
       </div>

@@ -114,7 +114,7 @@ const FileCard: React.FC<FileCardProps> = ({
         </Link>
         <div className="w-full h-[45px] flex">
           <div className="h-full aspect-square flex-grow  overflow-hidden flex items-center justify-start">
-            <p className="ml-[9%] text-[0.85rem] sm:text-[0.85rem] md:text-[0.9rem] lg:text-[0.9rem] text-[#1C3553] font-medium truncate whitespace-nowrap">
+            <p className="ml-[9%] text-[0.85rem] sm:text-[0.85rem] md:text-[0.85rem] lg:text-[0.85rem] text-[#1C3553] font-medium truncate whitespace-nowrap">
               {file?.file_name}
             </p>
           </div>

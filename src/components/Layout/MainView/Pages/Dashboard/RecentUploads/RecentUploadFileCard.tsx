@@ -79,17 +79,17 @@ const RecentUploadFileCard: React.FC<RecentUploadFileCardProps> = ({
       {/* File Name & Link */}
       <div className="w-[90%] h-[30px] flex items-center">
         <div className="flex-1 min-w-0 overflow-hidden">
-          <p className="text-[0.7rem] w-[95%] text-[#1C3553] font-medium truncate">
+          <p className="text-[0.75rem] w-[95%] text-[#1C3553] font-medium truncate">
             {item.file_name}
           </p>
         </div>
         <Link
           href={`/cloude/home/my-storage/files/${item.id}`}
-          className="h-[80%] aspect-square flex items-center justify-center bg-white border border-[#E4E7EC] rounded-full"
+          className="h-[85%] aspect-square flex items-center justify-center bg-white border border-[#E4E7EC] rounded-full"
         >
           <Icon
             icon="meteor-icons:arrow-up"
-            className="w-[60%] h-[60%] text-[#1C3553] rotate-45"
+            className="w-[65%] h-[65%] text-[#1C3553] rotate-45"
           />
         </Link>
       </div>

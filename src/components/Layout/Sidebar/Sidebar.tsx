@@ -83,7 +83,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
           </div>
           <button
             onClick={handleLogout}
-            className={`w-[80%] h-[30px] min-h-[30px] flex justify-center items-center bg-red-200 border ${
+            className={`w-[80%] h-[30px] min-h-[30px] rounded flex justify-center items-center bg-red-200 border ${
               showLogoutOption ? "border-red-600" : "boreder-[#F0F0F0]"
             }`}
           >
