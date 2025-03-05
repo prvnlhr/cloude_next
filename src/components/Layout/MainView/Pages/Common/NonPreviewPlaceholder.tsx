@@ -5,7 +5,7 @@ import { getFileIcon } from "@/utils/categoryUtils";
 interface PlaceholderImageCardProps {
   fileName: string;
 }
-const PlaceholderImageCard: React.FC<PlaceholderImageCardProps> = ({
+const NonPreviewPlaceholder: React.FC<PlaceholderImageCardProps> = ({
   fileName,
 }) => {
   return (
@@ -30,4 +30,4 @@ const PlaceholderImageCard: React.FC<PlaceholderImageCardProps> = ({
   );
 };
 
-export default PlaceholderImageCard;
+export default NonPreviewPlaceholder;

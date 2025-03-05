@@ -60,7 +60,7 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder, setActiveModal }) => {
             />
           </div>
           <div className="h-full flex-grow flex items-center justify-start overflow-hidden">
-            <p className="text-[#1C3553] text-[0.75rem] font-medium whitespace-nowrap truncate">
+            <p className="text-[0.85rem] sm:text-[0.85rem] md:text-[0.9rem] lg:text-[0.9rem] text-[#1C3553] font-medium truncate whitespace-nowrap">
               {folder.folder_name}
             </p>
           </div>

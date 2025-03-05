@@ -8,9 +8,8 @@ import ActionMenu from "./ActionMenu";
 import { getSignedUrl } from "@/actions/filesAction";
 import Image from "next/image";
 import { File, Folder } from "@/types/contentTypes";
-import PlaceholderImageCard from "./PlaceholderImageCard";
 import { getPreviewInfo } from "@/utils/categoryUtils";
-
+import NonPreviewPlaceholder from "./NonPreviewPlaceholder";
 interface FileCardProps {
   file: File;
   setActiveModal: (modal: {
@@ -85,7 +84,7 @@ const FileCard: React.FC<FileCardProps> = ({
         );
       }
     } else {
-      return <PlaceholderImageCard fileName={file.file_name} />;
+      return <NonPreviewPlaceholder fileName={file.file_name} />;
     }
   };
 
@@ -115,7 +114,7 @@ const FileCard: React.FC<FileCardProps> = ({
         </Link>
         <div className="w-full h-[45px] flex">
           <div className="h-full aspect-square flex-grow  overflow-hidden flex items-center justify-start">
-            <p className="ml-[9%] text-[0.75rem] text-[#1C3553] font-medium truncate whitespace-nowrap">
+            <p className="ml-[9%] text-[0.85rem] sm:text-[0.85rem] md:text-[0.9rem] lg:text-[0.9rem] text-[#1C3553] font-medium truncate whitespace-nowrap">
               {file?.file_name}
             </p>
           </div>

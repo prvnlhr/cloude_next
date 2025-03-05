@@ -19,7 +19,6 @@ const page = async ({ searchParams }: { searchParams: SearchParams }) => {
     userId,
     category
   );
-  // console.log(" filesByCategory:", filesByCategory);
 
   return <CategoryPage files={filesByCategory} />;
 };

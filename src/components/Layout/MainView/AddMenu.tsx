@@ -88,7 +88,7 @@ const AddMenu: FC<AddMenuProps> = ({ menuRef }) => {
               className="w-[95%] h-[95%] text-[#1C3553]"
             />
           </div>
-          <p className="text-[0.7rem] text-[#1C3553] ml-[9px]">File upload</p>
+          <p className="text-[0.8rem] text-[#1C3553] ml-[9px]">File upload</p>
         </button>
 
         <button
@@ -101,7 +101,7 @@ const AddMenu: FC<AddMenuProps> = ({ menuRef }) => {
               className="w-[95%] h-[95%] text-[#1C3553]"
             />
           </div>
-          <p className="text-[0.7rem] text-[#1C3553] ml-[9px]">Folder upload</p>
+          <p className="text-[0.8rem] text-[#1C3553] ml-[9px]">Folder upload</p>
         </button>
         {/* <button
           type="button"

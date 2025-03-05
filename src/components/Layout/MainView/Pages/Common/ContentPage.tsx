@@ -66,11 +66,11 @@ const ContentPage: React.FC<ContentPageProps> = ({
         <div className="w-full h-[40px] flex items-start border-b-[1px] border-b-[#EFEFEF]">
           <Link
             href={"/cloude/home/shared"}
-            className={`w-auto h-[30px]  flex items-center justify-center border-b-[${
-              !isShareByMe ? 1 : 0
-            }px] border-b-[#1C3553] mr-[5px] px-[15px] text-[${
-              !isShareByMe ? "#1C3553" : "#A2A8B2"
-            }] text-[0.8rem] font-medium`}
+            className={`w-auto h-[1.875rem] flex items-center justify-center border-b ${
+              !isShareByMe ? "border-b-[#1C3553]" : "border-b-0"
+            } mr-[0.3125rem] px-[0.9375rem] text-${
+              !isShareByMe ? "[#1C3553]" : "[#A2A8B2]"
+            } text-[1rem] sm:text-[0.9rem] md:text-[0.875rem] lg:text-[0.9375rem] font-medium`}
           >
             Shared with Me
           </Link>
@@ -95,7 +95,9 @@ const ContentPage: React.FC<ContentPageProps> = ({
             {folders?.length > 0 && (
               <section className="w-full h-[auto] flex flex-col">
                 <div className="w-full h-[40px] flex items-center justify-start">
-                  <p className="text-[#1C3553] font-medium">Folders</p>
+                  <p className="text-[#1C3553] text-[1.2rem] sm:text-[1.2rem] md:text-[1.125rem] font-medium">
+                    Folders
+                  </p>
                 </div>
                 <div className="w-full h-[auto]  py-[15px] flex flex-wrap">
                   {folders?.map((folder, index) => (
@@ -111,7 +113,9 @@ const ContentPage: React.FC<ContentPageProps> = ({
             {files.length > 0 && (
               <section className="w-full h-[auto] flex flex-col">
                 <div className="w-full h-[40px] flex items-center justify-start">
-                  <p className="text-[#1C3553] font-medium">Files</p>
+                  <p className="text-[#1C3553] text-[1.2rem] sm:text-[1.2rem] md:text-[1.125rem] font-medium">
+                    Files
+                  </p>
                 </div>
                 <div className={`w-full h-[auto] flex flex-wrap`}>
                   {files.map((file, index) => (

@@ -63,10 +63,10 @@ const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
                 </div>
               </div>
               <div className="h-full flex-grow  flex flex-col justify-center overflow-hidden">
-                <p className="text-[1rem] text-[#1C3553] font-medium truncate max-w-[90%]">
+                <p className="text-[1rem] sm:text-[1rem] md:text-[1rem] lg:text-[1rem] text-[#1C3553] font-medium truncate max-w-[90%]">
                   {session?.userName}
                 </p>
-                <p className="text-[0.8rem] text-[#A2A8B2] font-medium truncate max-w-[90%]">
+                <p className="text-[0.9rem] sm:text-[0.9rem] md:text-[0.8rem] lg:text-[0.8rem] text-[#A2A8B2] font-medium truncate max-w-[90%]">
                   {session?.email}
                 </p>
               </div>
@@ -122,7 +122,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
                   <p
                     className={`text-[${
                       isActive ? "#635DB0" : "#1C3553"
-                    }] text-[0.8rem]  ${
+                    }] text-[1rem] sm:text-[1rem] md:text-[1rem] lg:text-[0.9rem] ${
                       isActive ? "font-semibold" : "font-medium"
                     }`}
                   >

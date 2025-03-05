@@ -16,12 +16,12 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    console.log(error);
-    redirect("/error");
+    console.log(" error:", error);
+    return { success: false, message: "Invalid email or password" };
   }
-
   revalidatePath("/", "layout");
   redirect("/cloude/home/dashboard");
+  return { success: true, message: "Login successful" };
 }
 
 export async function signup(formData: FormData) {
@@ -38,7 +38,7 @@ export async function signup(formData: FormData) {
 
   if (signupError) {
     console.log("Signup error:", signupError);
-    redirect("/error");
+    return { success: false, message: signupError.message };
   }
 
   const { error: updateError } = await supabase.auth.updateUser({
@@ -49,8 +49,7 @@ export async function signup(formData: FormData) {
 
   if (updateError) {
     console.log("Error updating auth.usertable:", updateError);
-    redirect("/error");
-    return;
+    return { success: false, message: "Failed to update user profile." };
   }
 
   const userId = data.user?.id;
@@ -67,12 +66,12 @@ export async function signup(formData: FormData) {
 
     if (insertError) {
       console.log("Error inserting user into users table:", insertError);
-      redirect("/error");
-      return;
+      return { success: false, message: "Failed to create user record." };
     }
   }
   revalidatePath("/", "layout");
   redirect("/cloude/home/dashboard");
+  return { success: true, message: "Signup successful!" };
 }
 
 export async function signout() {
