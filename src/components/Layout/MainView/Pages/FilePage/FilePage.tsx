@@ -44,40 +44,48 @@ const FilePage: React.FC<FilePageProps> = ({ file }) => {
     // Video
     if (file_type.startsWith("video/")) {
       return (
-        <video controls className="w-full h-auto rounded-md shadow-lg">
-          <source src={signedUrl} type={file_type} />
-          Your browser does not support the video tag.
-        </video>
+        <div className="w-full h-full flex items-center justify-center">
+          <video controls className="w-auto h-full rounded-md shadow-lg">
+            <source src={signedUrl} type={file_type} />
+            Your browser does not support the video tag.
+          </video>
+        </div>
       );
     }
     // Audio
     else if (file_type.startsWith("audio/")) {
       return (
-        <audio controls className="w-[300px]">
-          <source src={signedUrl} type={file_type} />
-          Your browser does not support the audio element.
-        </audio>
+        <div className="w-full h-full flex items-center justify-center ">
+          <audio controls className="w-[300px]">
+            <source src={signedUrl} type={file_type} />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
       );
     }
     // Images
     else if (file_type.startsWith("image/")) {
       return (
-        <Image
-          src={signedUrl ?? "../../../../../../public/placeholder_image.jpg"}
-          alt={file_name}
-          fill={true}
-          className="w-full h-auto rounded-md shadow-lg"
-        />
+        <div className="h-[80%] aspect-video flex items-center justify-center relative">
+          <Image
+            src={signedUrl ?? "../../../../../../public/placeholder_image.jpg"}
+            alt={file_name}
+            fill={true}
+            objectFit="contain"
+          />
+        </div>
       );
     }
     // PDF
     else if (file_type === "application/pdf") {
       return (
-        <iframe
-          src={signedUrl}
-          className="w-full h-[80vh] rounded-md shadow-lg"
-          title="PDF Preview"
-        />
+        <div className="w-full h-full flex items-center justify-center">
+          <iframe
+            src={signedUrl}
+            className="w-full h-[80vh] rounded-md shadow-lg"
+            title="PDF Preview"
+          />
+        </div>
       );
     }
     // Other Files - Show Download Button
@@ -143,7 +151,7 @@ const FilePage: React.FC<FilePageProps> = ({ file }) => {
         </button>
       </div>
       <div className="w-full h-[calc(100%-70px)] flex items-center justify-center relative">
-        <div className="w-[60%] aspect-video flex items-center justify-center bg-[#F0F0F0] object-contain">
+        <div className="w-[60%] aspect-video flex items-center justify-center bg-[#F0F0F0] relative">
           {signedUrl && getFilePreview()}
         </div>
       </div>
