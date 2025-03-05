@@ -135,7 +135,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ item, itemType, onClose }) => {
           />
         </div>
         <div className="h-full flex-grow flex flex-col justify-center overflow-hidden">
-          <p className="text-[0.8rem] ml-[15px] italic text-[#1C3553] font-medium truncate whitespace-nowrap">
+          <p className="text-[0.8rem] w-[85%] ml-[15px] italic text-[#1C3553] font-medium truncate whitespace-nowrap">
             {itemName}
           </p>
           {itemType === "file" && (
@@ -160,7 +160,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ item, itemType, onClose }) => {
             className="w-full h-full border border-[#EFEFEF] rounded-[5px] outline-none text-[0.8rem]  text-[#1C3553]  font-medium px-[5px]"
           />
         </div>
-        <div className="w-full h-[30px] flex items-center justify-start">
+        <div className="w-full h-[40px] flex items-center justify-start">
           <p className="text-[0.7rem] text-red-700 ml-[2px] font-medium">
             {error}
           </p>

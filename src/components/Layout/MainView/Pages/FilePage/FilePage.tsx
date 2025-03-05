@@ -143,7 +143,7 @@ const FilePage: React.FC<FilePageProps> = ({ file }) => {
         </button>
       </div>
       <div className="w-full h-[calc(100%-70px)] flex items-center justify-center relative">
-        <div className="w-[60%] aspect-video flex items-center justify-center bg-[#F0F0F0]">
+        <div className="w-[60%] aspect-video flex items-center justify-center bg-[#F0F0F0] object-contain">
           {signedUrl && getFilePreview()}
         </div>
       </div>

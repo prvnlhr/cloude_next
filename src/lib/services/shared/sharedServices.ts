@@ -118,7 +118,7 @@ export async function shareItem(
   } catch (error) {
     console.error("Share Item Error:", error);
     const err = error as Error;
-    throw new Error(`Failed to share item: ${err.message}`);
+    throw new Error(`Failed to share ${itemType}: ${err.message}`);
   }
 }
 

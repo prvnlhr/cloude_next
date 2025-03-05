@@ -11,6 +11,7 @@ const SharedByMeContentPage: React.FC<SharedByMeContentPageProps> = ({
   files,
   folders,
 }) => {
+  console.log(folders, files);
   return (
     <div
       className="w-full h-full flex flex-col overflow-y-scroll pb-[10px] pt-[20px]"
