@@ -2,7 +2,6 @@ const BASE_URL: string =
   process.env.NEXT_PUBLIC_BASE_URL || "https://cloude-next.vercel.app";
 
 export async function searchItem(userId: string, searchKey: string) {
-  console.log("userId, searchKey:", userId, searchKey);
   try {
     const params = new URLSearchParams({
       searchKey: encodeURIComponent(searchKey),

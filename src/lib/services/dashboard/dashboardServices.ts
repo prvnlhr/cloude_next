@@ -16,7 +16,6 @@ export async function fetchDashboardContent(
     const result = await response.json();
 
     if (!response.ok) {
-      console.log("result", result);
       console.error(
         "Fetch Dashboard Content Error:",
         result.error || result.message

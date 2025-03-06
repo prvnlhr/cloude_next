@@ -27,7 +27,6 @@ const Searchbar: FC = () => {
       setIsSearching(true);
       try {
         const results = await searchItem(userId, key);
-        console.log(" results:", results);
         setSearchResults(results);
       } catch (error) {
         console.error("Search error:", error);

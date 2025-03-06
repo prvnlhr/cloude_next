@@ -71,7 +71,6 @@ const ShareModal: React.FC<ShareModalProps> = ({ item, itemType, onClose }) => {
     setIsSharing(true);
     setError(null);
     try {
-      console.log(item);
       const shareItemResponse = await shareItem(shareItemData, showToast);
       if (shareItemResponse && shareItemResponse.error) {
         console.log(shareItemResponse.error);
