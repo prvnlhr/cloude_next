@@ -1,3 +1,7 @@
+interface User {
+  full_name: string;
+}
+
 export type File = {
   id: string;
   user_id: string;
@@ -13,6 +17,8 @@ export type File = {
   is_starred: boolean;
   access_level?: string;
   is_shared?: boolean;
+  shared_with_name?: string;
+  users?: User;
 };
 
 export type Folder = {
@@ -28,6 +34,8 @@ export type Folder = {
   updated_at: string;
   access_level?: string;
   is_shared?: boolean;
+  shared_with_name?: string;
+  users?: User;
 };
 
 export interface ContentPageContent {

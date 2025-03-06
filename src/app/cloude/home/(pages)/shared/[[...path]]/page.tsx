@@ -33,7 +33,6 @@ export default async function SharedPage({
   if (path[0] === "files") {
     const itemId = path[1];
     const file = await getSharedFile(userId, itemId);
-
     return <FilePage file={file} />;
   }
   const contentData = await fetchSharedContent(userId, folderId, queryParams);

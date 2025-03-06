@@ -7,7 +7,7 @@ import ShareModal from "./Modals/ShareModal";
 import RenameModal from "./Modals/RenameModal";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import SharedByMeContentPage from "../SharedFilesPage/SharedByMeContentPage";
+import SharedByMeContentPage from "../SharedByMeContent/SharedByMeContentPage";
 import { File, Folder } from "@/types/contentTypes";
 
 export type ContentPageProps = {
@@ -66,7 +66,7 @@ const ContentPage: React.FC<ContentPageProps> = ({
         <div className="w-full h-[40px] flex items-start border-b-[1px] border-b-[#EFEFEF]">
           <Link
             href={"/cloude/home/shared"}
-            className={`w-auto h-[1.875rem] flex items-center justify-center border-b ${
+            className={`ml-[2px] w-auto h-[1.875rem] flex items-center justify-center border-b ${
               !isShareByMe ? "border-b-[#1C3553]" : "border-b-0"
             } mr-[0.3125rem] px-[0.9375rem] text-${
               !isShareByMe ? "[#1C3553]" : "[#A2A8B2]"

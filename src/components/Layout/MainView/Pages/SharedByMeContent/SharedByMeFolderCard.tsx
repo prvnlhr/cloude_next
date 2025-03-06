@@ -1,6 +1,5 @@
 "use client";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { removeFromShared } from "@/lib/services/shared/sharedServices";
 import useUserSession from "@/hooks/useUserSession";
@@ -9,7 +8,6 @@ import { Spinner } from "@heroui/spinner";
 import { Folder } from "@/types/contentTypes";
 
 const SharedByMeFolderCard = ({ folder }: { folder: Folder }) => {
-  const pathname = usePathname();
   const session = useUserSession();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -32,6 +30,7 @@ const SharedByMeFolderCard = ({ folder }: { folder: Folder }) => {
       setIsLoading(false);
     }
   };
+  const folderLink = `${"/cloude/home/my-storage"}/folders/${folder.id}`;
 
   return (
     <div
@@ -48,28 +47,27 @@ const SharedByMeFolderCard = ({ folder }: { folder: Folder }) => {
       shadow-[0px_3px_5px_rgba(0,0,0,0.04)]
       "
     >
-      <div className="w-full h-[40px] flex">
-        <Link
-          href={
-            pathname.includes("/folders/")
-              ? `${pathname.replace(/folders\/[^/]+$/, `folders/${folder.id}`)}`
-              : `${pathname}/folders/${folder.id}`
-          }
-          className="w-full h-full flex"
-        >
+      <div className="w-full h-[50px] flex">
+        <Link href={folderLink} className="w-full h-full flex">
           <div className="h-full w-[40px] min-w-[40px] flex items-center justify-center">
             <Icon
               icon="solar:folder-linear"
               className="w-[50%] h-[50%] text-[#1C3553]"
             />
           </div>
-          <div className="h-full flex-grow flex items-center justify-start overflow-hidden">
+          <div className="h-full flex-grow flex flex-col items-start justify-center overflow-hidden">
             <p className="text-[#1C3553] text-[0.75rem] font-medium  whitespace-nowrap truncate">
               {folder?.folder_name}
             </p>
+            <p className="text-[#A2A8B2] text-[0.75rem] font-medium  whitespace-nowrap truncate">
+              To :{" "}
+              <span className="text-[#1C3553] underline">
+                {folder?.users?.full_name}
+              </span>
+            </p>
           </div>
         </Link>
-        <div className="h-full w-[40px] min-w-[40px] flex items-center justify-center cursor-pointer">
+        <div className="h-full w-[45px] min-w-[45px] flex items-center justify-center cursor-pointer">
           <button
             onClick={handleRemoveSharedFolder}
             className="w-[70%] aspect-square flex items-center justify-center bg-white border border-[#E4E7EC] rounded-full"

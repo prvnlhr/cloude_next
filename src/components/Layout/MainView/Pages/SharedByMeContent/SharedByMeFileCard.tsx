@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { usePathname } from "next/navigation";
 import { getSignedUrl } from "@/actions/filesAction";
 import Image from "next/image";
 import { canPreview } from "@/utils/previewUtil";
@@ -13,21 +12,11 @@ import { File } from "@/types/contentTypes";
 import { getFileIcon } from "@/utils/categoryUtils";
 
 const SharedByMeFileCard = ({ file }: { file: File }) => {
-  const pathname = usePathname();
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const session = useUserSession();
   const [isLoading, setIsLoading] = useState(false);
 
-  const getBasePath = () => {
-    // Match base paths for all sections
-    const match = pathname.match(
-      /\/cloude\/home\/(my-storage|shared|starred|dashboard)/
-    );
-    return match ? match[0] : "";
-  };
-
-  const basePath = getBasePath();
-  const fileLink = `${basePath}/files/${file.id}`;
+  const fileLink = `${"/cloude/home/my-storage"}/files/${file.id}`;
 
   useEffect(() => {
     const fetchSignedUrl = async () => {
@@ -72,9 +61,7 @@ const SharedByMeFileCard = ({ file }: { file: File }) => {
       rounded-[10px]
       min-h-[45px]
       relative
-      shadow-[0px_3px_5px_rgba(0,0,0,0.04)]
-
-      "
+      shadow-[0px_3px_5px_rgba(0,0,0,0.04)]"
     >
       <div className="w-full h-[auto]flex flex-col">
         <Link
@@ -124,10 +111,16 @@ const SharedByMeFileCard = ({ file }: { file: File }) => {
             )}
           </div>
         </Link>
-        <div className="w-full h-[45px] flex">
-          <div className="h-full aspect-square flex-grow  overflow-hidden flex items-center justify-start">
+        <div className="w-full h-[50px] flex">
+          <div className="h-full aspect-square flex-grow  overflow-hidden flex flex-col items-start justify-center">
             <p className="ml-[9%] text-[0.75rem] text-[#1C3553] font-medium truncate whitespace-nowrap">
               {file?.file_name}
+            </p>
+            <p className="ml-[9%] text-[0.75rem] text-[#A2A8B2] font-medium truncate whitespace-nowrap">
+              To :{" "}
+              <span className="underline text-[#1C3553]">
+                {file?.users?.full_name}
+              </span>
             </p>
           </div>
           <div className="h-[100%] aspect-square   flex items-center justify-center cursor-pointer">

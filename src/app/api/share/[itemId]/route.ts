@@ -80,6 +80,8 @@ export async function GET(
     const { itemId } = await params;
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
+    console.log(" userId:", userId);
+    console.log(" itemId:", itemId);
 
     if (!itemId || !userId) {
       return createResponse(400, null, "itemId and userId are required.");

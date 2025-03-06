@@ -40,10 +40,13 @@ export async function fetchSharedContent(
       params.append("shareByMe", "true");
     }
 
-    const response = await fetch(`${BASE_URL}/api/share?${params.toString()}`, {
-      next: { revalidate: false, tags: ["shared"] },
-    });
+    // const response = await fetch(`${BASE_URL}/api/share?${params.toString()}`, {
+    //   next: { revalidate: false, tags: ["shared"] },
+    // });
 
+    const response = await fetch(`${BASE_URL}/api/share?${params.toString()}`, {
+      next: { tags: ["shared"] },
+    });
     const result = await response.json();
 
     if (!response.ok) {

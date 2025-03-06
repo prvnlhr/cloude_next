@@ -1,6 +1,6 @@
 import { createClient } from "@/middlewares/supabase/server";
 import { createResponse } from "@/utils/apiResponseUtils";
-
+// import { SharedItem } from "@/types/shareContentTypes";
 // POST : share a item(file or folder with other user) -----------------------------------------------------------------------------------------------
 export async function POST(req: Request) {
   try {
@@ -118,10 +118,19 @@ async function getSharedByMeData(userId: string, folderId: string | null) {
 
   let query = supabase
     .from("share_items")
-    .select("folder_id, folders(*), file_id, files(*)")
+    .select(
+      `
+    folder_id, 
+    file_id, 
+    shared_with, 
+    users:shared_with(full_name),
+    folders:folders(*),
+    files:files(*)
+    `
+    )
     .eq("shared_by", userId);
 
-  // Filter by folderId if provided
+  // If folder id provided that means we are inside a folder
   if (folderId) {
     query = query.eq("folders.parent_folder_id", folderId);
   }
@@ -134,11 +143,18 @@ async function getSharedByMeData(userId: string, folderId: string | null) {
 
   // Extract folders and files from the result
   const folders = sharedItems
-    .filter((item) => item.folders)
-    .map((item) => item.folders);
+    .filter((item) => item.folders !== null)
+    .map((item) => ({
+      ...item.folders!,
+      users: item.users,
+    }));
+
   const files = sharedItems
-    .filter((item) => item.files)
-    .map((item) => item.files);
+    .filter((item) => item.files !== null)
+    .map((item) => ({
+      ...item.files!,
+      users: item.users,
+    }));
 
   return { folders, files };
 }
