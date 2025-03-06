@@ -1,11 +1,11 @@
-type Folder = {
+export type UploadFolderData = {
   id: string;
   name: string;
   parentFolderId: string | null;
   userId: string;
 };
 
-type FileData = {
+export type UploadFileData = {
   name: string;
   type: string;
   size: number;
@@ -18,14 +18,14 @@ export const processFolderInput = (
   files: FileList,
   userId: string,
   rootParentFolderId: string | null = null
-): { foldersArray: Folder[]; filesArray: FileData[] } => {
-  const foldersArray: Folder[] = [];
-  const filesArray: FileData[] = [];
+): { foldersArray: UploadFolderData[]; filesArray: UploadFileData[] } => {
+  const foldersArray: UploadFolderData[] = [];
+  const filesArray: UploadFileData[] = [];
   const folderMap: Record<string, string> = {};
 
   // Helper function to create a folder
   const createFolder = (folderName: string, parentFolderId: string | null) => {
-    const folder: Folder = {
+    const folder: UploadFolderData = {
       id: crypto.randomUUID(),
       name: folderName,
       parentFolderId,

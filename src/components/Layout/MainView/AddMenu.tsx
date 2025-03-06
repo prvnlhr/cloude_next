@@ -101,7 +101,9 @@ const AddMenu: FC<AddMenuProps> = ({ menuRef }) => {
               className="w-[100%] h-[100%] text-[#1C3553]"
             />
           </div>
-          <p className="text-[0.85rem] text-[#1C3553] ml-[9px]">Folder upload</p>
+          <p className="text-[0.85rem] text-[#1C3553] ml-[9px]">
+            Folder upload
+          </p>
         </button>
         {/* <button
           type="button"

@@ -76,7 +76,6 @@ export async function uploadFiles(
           `Uploaded ${fileDataObject.name} successfully!`,
           toastId
         );
-
         console.log("Upload Success:", result.message);
         return result.data;
       } catch (error) {

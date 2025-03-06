@@ -10,26 +10,11 @@ interface UpdateData {
   itemOwnerId: string;
   accessLevel: string;
 }
-
-type Folder = {
-  id: string;
-  name: string;
-  parentFolderId: string | null;
-  userId: string;
-};
-
-type FileData = {
-  name: string;
-  type: string;
-  size: number;
-  folderId: string;
-  userId: string;
-  file: File;
-};
+import { UploadFileData, UploadFolderData } from "@/utils/folderProcessUtils";
 
 export async function uploadFolder(
-  filesArray: FileData[],
-  foldersArray: Folder[],
+  filesArray: UploadFileData[],
+  foldersArray: UploadFolderData[],
   userId: string,
   showToast: (
     type: "loading" | "success" | "error",
@@ -39,23 +24,6 @@ export async function uploadFolder(
   ) => string | number
 ) {
   try {
-    const formData = new FormData();
-    formData.append("folders", JSON.stringify(foldersArray));
-    formData.append("userId", userId);
-
-    filesArray.forEach((fileData, index) => {
-      formData.append(`file-${index}`, fileData.file);
-      formData.append(
-        `fileData-${index}`,
-        JSON.stringify({
-          name: fileData.name,
-          type: fileData.type,
-          size: fileData.size,
-          folderId: fileData.folderId,
-          userId: fileData.userId,
-        })
-      );
-    });
     const folderName = foldersArray[0].name;
 
     // show loading toast
@@ -65,29 +33,57 @@ export async function uploadFolder(
       `Uploading ${folderName}...`
     );
 
-    const uploadResponse = await fetch(`${BASE_URL}/api/user/folders`, {
+    console.log("foldersArray", foldersArray);
+    const response = await fetch(`${BASE_URL}/api/user/folders`, {
       method: "POST",
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ folders: foldersArray, userId }),
     });
 
-    const result = await uploadResponse.json();
-
-    if (!uploadResponse.ok) {
-      console.error("Upload Folder Error:", result.error || result.message);
-
-      showToast(
-        "error",
-        "Upload Failed",
-        `Failed to upload ${folderName}: ${result.error || result.message}`,
-        toastId
-      );
-
-      throw new Error(
-        result.error ||
-          result.message ||
-          "Failed to upload folder and its content"
-      );
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to upload folder structure");
     }
+
+    const foldersResponse = await response.json();
+    const folderIdMap = await foldersResponse?.data;
+
+    const updatedFilesArray = filesArray.map((fileData) => ({
+      ...fileData,
+      folderId: folderIdMap[fileData.folderId],
+    }));
+
+    const uploadFilesPromises = updatedFilesArray.map(async (fileData) => {
+      const formData = new FormData();
+      formData.append("file", fileData.file);
+      formData.append("name", fileData.name);
+      formData.append("userId", userId);
+      formData.append("folderId", fileData.folderId);
+
+      try {
+        const uploadResponse = await fetch(`${BASE_URL}/api/user/files`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          throw new Error(errorData.error || "Failed to upload file");
+        }
+
+        const result = await uploadResponse.json();
+        console.log(`File uploaded successfully`);
+        return result.data;
+      } catch (error) {
+        console.error(`Failed to upload file ${fileData.name}:`, error);
+        throw error;
+      }
+    });
+
+    // Wait for all file uploads to complete
+    const promiseResponse = await Promise.all(uploadFilesPromises);
 
     await revalidateTagHandler("storage");
     await revalidateTagHandler("dashboard");
@@ -99,9 +95,7 @@ export async function uploadFolder(
       `Uploaded ${folderName} successfully!`,
       toastId
     );
-
-    console.log("Upload Folder Success:", result.message);
-    return result.data;
+    console.log("Upload Folder Success:", promiseResponse);
   } catch (error) {
     const err = error as Error;
 

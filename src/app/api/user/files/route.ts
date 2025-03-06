@@ -33,9 +33,8 @@ export async function POST(req: Request): Promise<Response> {
     const formData = await req.formData();
     const file = formData.get("file") as File;
     const userId = formData.get("userId") as string;
-
     const folderId = formData.get("folderId") || null;
-
+    const fileName = formData.get("name") as string;
     if (!file || !userId) {
       return createResponse(400, null, "File and UserId are required");
     }
@@ -47,7 +46,7 @@ export async function POST(req: Request): Promise<Response> {
     const fileMetadata = {
       user_id: userId,
       folder_id: folderId,
-      file_name: file.name,
+      file_name: fileName,
       file_type: file.type,
       file_size: file.size,
       storage_path: filePath,
