@@ -27,14 +27,21 @@ const FilePage: React.FC<FilePageProps> = ({ file }) => {
     fetchSignedUrl();
   }, [file.storage_path]);
 
-  const handleDownload = () => {
-    if (signedUrl) {
+  const handleDownload = async () => {
+    if (!signedUrl) return;
+
+    try {
+      const response = await fetch(signedUrl);
+      const blob = await response.blob();
       const link = document.createElement("a");
-      link.href = signedUrl;
-      link.download = file.file_name;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", file.file_name);
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error("Download failed:", error);
     }
   };
 
