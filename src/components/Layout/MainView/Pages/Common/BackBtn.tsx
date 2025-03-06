@@ -6,16 +6,17 @@ const BackBtn = () => {
   const router = useRouter();
   const handleGoBack = () => {
     router.back();
+    console.log("knkn");
   };
   return (
     <button
+      onClick={handleGoBack}
       type="button"
       className="w-[30px] min-w-[30px] h-full flex items-center justify-center cursor-pointer ml-[8px] mr-[5px]"
-      onClick={handleGoBack}
     >
       <Icon
         icon="famicons:chevron-back"
-        className="text-[#1C3553] w-[75%] h-[75%] mt-[1px]"
+        className="icon-class text-[#1C3553] w-[75%] h-[75%] mt-[1px] pointer-events-none"
       />
     </button>
   );
