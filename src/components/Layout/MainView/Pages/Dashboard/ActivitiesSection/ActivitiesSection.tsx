@@ -19,7 +19,7 @@ const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
         ) : (
           <div className="w-full h-[200px] flex items-center justify-center">
             <p className="text-[#A2A8B2] text-[1rem] font-medium text-center">
-              Start exploring, and your activities will be displayed here.
+              Activities across the app will be displayed here.
             </p>
           </div>
         )}

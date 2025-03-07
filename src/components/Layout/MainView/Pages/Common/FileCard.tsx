@@ -9,7 +9,8 @@ import { getSignedUrl } from "@/actions/filesAction";
 import Image from "next/image";
 import { File, Folder } from "@/types/contentTypes";
 import { getPreviewInfo } from "@/utils/categoryUtils";
-import NonPreviewPlaceholder from "./NonPreviewPlaceholder";
+import PlaceholderFile from "./PlaceholderFile";
+import { formatDate } from "@/utils/contentUtils";
 interface FileCardProps {
   file: File;
   setActiveModal: (modal: {
@@ -27,6 +28,7 @@ const FileCard: React.FC<FileCardProps> = ({
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  console.log(file);
 
   const toggleMenu = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -61,82 +63,130 @@ const FileCard: React.FC<FileCardProps> = ({
 
   const renderPreview = (type: "image" | "video" | null) => {
     if (!signedUrl) {
-      return <Icon icon="mdi:file" className="w-[80%] h-[80%]" />;
+      return (
+        <div className="w-[80%] h-full flex items-end justify-center relative">
+          {/* <PlaceholderFile /> */}
+        </div>
+      );
     }
 
     if (canPreview) {
       if (type == "image") {
         return (
-          <Image
-            src={signedUrl}
-            fill={true}
-            quality={20}
-            alt={file.file_name}
-            className="object-cover object-center"
-          />
+          <div
+            className="w-[100%] h-full flex items-end justify-center relative overflow-hidden"
+            style={{
+              borderRadius: "inherit",
+            }}
+          >
+            <Image
+              src={signedUrl}
+              fill={true}
+              quality={20}
+              alt={file.file_name}
+              className="object-fill w-full h-full"
+            />
+          </div>
         );
       } else if (type === "video") {
         return (
-          <video
-            src={signedUrl}
-            className="w-full h-full object-cover rounded"
-          />
+          <div className="w-[100%] h-full flex items-end justify-center relative">
+            <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center">
+              <Icon
+                icon="gravity-ui:play-fill"
+                className="w-[24px] h-[24px] text-[#1C3553]"
+              />
+            </div>
+            <video
+              src={signedUrl}
+              className="w-full h-full object-cover rounded"
+            />
+          </div>
         );
       }
     } else {
-      return <NonPreviewPlaceholder fileName={file.file_name} />;
+      return (
+        <div className="w-[80%] h-[90%] flex justify-center items-end relative">
+          <div className="w-full h-full  flex flex-col items-center z-[2]">
+            <div className="w-[85%]  h-[40px] flex items-end justify-start">
+              <div className="h-[80%] aspect-square flex items-center justify-center rounded-full bg-[#F7F7F7]">
+                <Icon
+                  icon="streamline:convert-pdf-2-solid"
+                  className="w-[50%] h-[50%] text-[#87ADF4]"
+                />
+              </div>
+            </div>
+            <div className="w-full  h-[calc(100%-40px)] flex flex-col items-center justify-evenly">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="w-[80%] h-[5px] bg-[#F7F7F7]"></div>
+              ))}
+            </div>
+          </div>
+          <PlaceholderFile />
+        </div>
+      );
     }
   };
 
   return (
     <div
-      className="w-[48%] sm:w-[48%] md:w-[30%] lg:w-[18%] h-auto 
-      mx-[1%] my-[15px] 
-      bg-[#F6F6F6] border-[1px] border-[#E4E7EC] 
-      flex flex-col 
+      className="w-[45%] sm:w-[45%] md:w-[30%] lg:w-[18%] h-auto 
+      flex flex-col items-center bg-white 
+      p-[6px] my-[15px]
+      mx-[2.5%] sm:mx-[2.5%] md:mx-[1.5%] lg:mx-[1%]
       rounded-[10px]
-      min-h-[45px]
-      relative
       shadow-[0px_3px_5px_rgba(0,0,0,0.04)]
-      "
+      hover:shadow-[0px_7px_29px_0px_rgba(100,100,111,0.2)]
+      relative"
     >
-      <div className="w-full h-[auto] flex flex-col">
-        <Link
-          href={fileLink}
-          className="w-full aspect-[2/1.5] flex items-end justify-center cursor-pointer overflow-hidden p-[8px]"
-        >
-          <div
-            className="w-[100%] h-[100%] bg-[#FFFFFF] 
-            flex items-center justify-center overflow-hidden relative rounded"
-          >
-            {renderPreview(type)}
-          </div>
-        </Link>
-        <div className="w-full h-[45px] flex">
-          <div className="h-full aspect-square flex-grow  overflow-hidden flex items-center justify-start">
-            <p className="ml-[9%] text-[0.85rem] sm:text-[0.85rem] md:text-[0.85rem] lg:text-[0.85rem] text-[#1C3553] font-medium truncate whitespace-nowrap">
-              {file?.file_name}
+      <Link
+        href={fileLink}
+        className="w-full h-full aspect-[3/2] bg-[#F7F7F7] flex justify-center items-end"
+        style={{
+          borderRadius: "inherit",
+        }}
+      >
+        {renderPreview(type)}
+      </Link>
+      <div className="w-[95%] h-[80px] flex flex-col relative">
+        <div className="w-full h-[30px] flex items-end justify-start">
+          <div className="h-[70%] w-auto flex items-center justify-center px-[8px] bg-[#DDE8FC] rounded">
+            <p className="text-[#1C3553] text-[0.6rem] font-bold p-0 m-0">
+              {file.extension}
             </p>
           </div>
-          <div
-            className="h-[100%] aspect-square  flex items-center justify-center cursor-pointer"
-            onClick={toggleMenu}
-          >
-            <Icon
-              icon="qlementine-icons:menu-dots-16"
-              className="w-[40%] h-[40%] text-[#1C3553]"
-            />
-            {isMenuOpen && (
-              <ActionMenu
-                dropdownRef={dropdownRef}
-                item={file}
-                itemType={"file"}
-                setActiveModal={setActiveModal}
+        </div>
+        <div className="w-full h-[50px] flex min-w-0 relative">
+          <div className="h-full flex-grow flex flex-col items-start justify-center overflow-hidden">
+            <p className="text-[#1C3553] w-[95%] text-[0.8rem] font-medium truncate whitespace-nowrap">
+              {file.file_name}
+            </p>
+            <p className="text-[#A2A8B2] w-full text-[0.65rem] font-medium truncate whitespace-nowrap">
+              {formatDate(file.created_at)}
+            </p>
+          </div>
+          <div className="h-full aspect-[1/1.8] flex-shrink-0 flex items-center justify-end relative">
+            <button
+              onClick={toggleMenu}
+              type="button"
+              className="w-[100%] aspect-square flex items-center  justify-center bg-[#F2F2F2] border-[#F0F0F0] rounded-full"
+            >
+              <Icon
+                icon="qlementine-icons:menu-dots-16"
+                className="w-[60%] h-[60%] text-[#1C3553]"
               />
-            )}
+            </button>
           </div>
         </div>
       </div>
+      {isMenuOpen && (
+        <ActionMenu
+          dropdownRef={dropdownRef}
+          item={file}
+          itemType={"file"}
+          setActiveModal={setActiveModal}
+        />
+      )}
     </div>
   );
 };

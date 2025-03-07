@@ -1,0 +1,7 @@
+canPreview
+ - Image, Video
+!canPreview
+ - Document
+ - Music
+ - Executible
+ - ...  
