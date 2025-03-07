@@ -10,40 +10,46 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   const normalizedCategory = category && category?.toLowerCase();
   return (
     <div
-      className="w-[48%] sm:w-[48%] md:w-[30%] lg:w-[18%] h-auto 
-      mx-[1%] my-[15px] 
-      bg-[#F6F6F6] border-[1px] border-[#E4E7EC] 
-      flex
-      items-center
-      justify-between  
+      className="w-[45%] sm:w-[45%] md:w-[30%] lg:w-[18%] h-auto 
+      flex flex-col items-center bg-white 
+      p-[6px] my-[15px]
+      mx-[2.5%] sm:mx-[2.5%] md:mx-[1.5%] lg:mx-[1%]
       rounded-[10px]
-      min-h-[45px]
+      shadow-[0px_3px_5px_rgba(0,0,0,0.04)]
+      hover:shadow-[0px_7px_29px_0px_rgba(100,100,111,0.2)]
       relative
-      z-[4]
-      cursor-pointer
-      overflow-hidden
-      shadow-[0px_3px_5px_rgba(0,0,0,0.04)]"
+      "
     >
-      <div className="h-full aspect-square flex items-center justify-center">
-        <Icon
-          icon={getCategoryIcon(category as Category)}
-          className="w-[50%] h-[50%] text-[#1C3553]"
-        />
+      <div className="w-full h-[40px] flex items-start justify-start rounded-[10px]">
+        <div
+          className="h-full aspect-square bg-[#F7F7F7] flex items-center justify-center"
+          style={{
+            borderRadius: "inherit",
+          }}
+        >
+          <Icon
+            icon={getCategoryIcon(category as Category)}
+            className="w-[60%] h-[60%] text-[#87ADF4]"
+          />
+        </div>
+        <div className="h-full flex-grow min-w-0 flex flex-col justify-center">
+          <p className="text-[#1C3553] w-[90%] ml-[10px] text-[0.8rem] font-medium truncate whitespace-nowrap">
+            {category}
+          </p>
+        </div>
+        <div className="h-full aspect-[1/1] flex-shrink-0 flex items-center justify-center relative">
+          <Link
+            href={`dashboard/categories?category=${normalizedCategory}`}
+            type="button"
+            className="w-[85%] aspect-square flex items-center  justify-center bg-[#F7F7F7] rounded-full"
+          >
+            <Icon
+              icon="lucide:arrow-up"
+              className="w-[55%] h-[55%] text-[#87ADF4] rotate-45"
+            />
+          </Link>
+        </div>
       </div>
-      <div className="flex-1 h-full flex items-center justify-start overflow-hidden">
-        <p className="text-[0.75rem] text-[#1C3553] font-medium truncate">
-          {category}
-        </p>
-      </div>
-      <Link
-        href={`dashboard/categories?category=${normalizedCategory}`}
-        className="h-[80%] aspect-square flex items-center justify-center bg-white border border-[#E4E7EC] rounded-full mr-[5px] ml-[10px]"
-      >
-        <Icon
-          icon="meteor-icons:arrow-up"
-          className="w-[50%] h-[50%] text-[#1C3553] rotate-45"
-        />
-      </Link>
     </div>
   );
 };

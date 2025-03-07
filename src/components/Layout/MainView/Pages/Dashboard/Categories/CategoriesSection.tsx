@@ -1,3 +1,4 @@
+import React from "react";
 import { getCategoryByFileExtension } from "@/utils/categoryUtils";
 import CategoryCard from "./CategoryCard";
 import { FileExtension } from "@/utils/categoryUtils";

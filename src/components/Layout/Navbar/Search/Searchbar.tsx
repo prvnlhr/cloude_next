@@ -57,11 +57,11 @@ const Searchbar: FC = () => {
     searchResults.shared_items.length > 0;
 
   return (
-    <div className="w-[200px] rounded-[5px] h-[30px] ml-[20px] flex items-center border-[1px] border-[#D0D5DD]">
+    <div className="w-[250px] rounded-[5px] h-[35px] ml-[20px] flex items-center border-[1px] border-[#D0D5DD]">
       <div className="h-full flex-grow px-[10px] flex items-center">
         <input
-          className="w-full h-full outline-none text-[#1C3553] text-[0.85rem] sm:text-[0.9rem] md:text-[0.95rem] lg:text-[1rem] font-medium placeholder:text-[#A2A8B2] placeholder:text-[0.7rem] sm:placeholder:text-[0.75rem] md:placeholder:text-[0.8rem] lg:placeholder:text-[0.85rem] placeholder:font-medium"
-          placeholder="SEARCH"
+          className="w-full h-full outline-none bg-transparent text-[#1C3553] text-[0.85rem] sm:text-[0.9rem] md:text-[0.95rem] lg:text-[1rem] font-medium placeholder:text-[#A2A8B2] placeholder:text-[0.7rem] sm:placeholder:text-[0.75rem] md:placeholder:text-[0.8rem] lg:placeholder:text-[0.85rem] placeholder:font-medium"
+          placeholder="Search items by name or file extension"
           value={searchKey}
           onChange={handleSearch}
         />
@@ -73,7 +73,7 @@ const Searchbar: FC = () => {
           <Icon
             onClick={clearResults}
             icon={hasResults ? "iconamoon:close-duotone" : "mynaui:search"}
-            className="w-[65%] h-[65%] text-[#635DB0] cursor-pointer"
+            className="w-[65%] h-[65%] text-[#336CF3] cursor-pointer"
           />
         )}
       </div>

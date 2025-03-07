@@ -8,7 +8,7 @@ import ActionMenu from "./ActionMenu";
 import { getSignedUrl } from "@/actions/filesAction";
 import Image from "next/image";
 import { File, Folder } from "@/types/contentTypes";
-import { getPreviewInfo } from "@/utils/categoryUtils";
+import { getFileIcon, getPreviewInfo } from "@/utils/categoryUtils";
 import PlaceholderFile from "./PlaceholderFile";
 import { formatDate } from "@/utils/contentUtils";
 interface FileCardProps {
@@ -111,8 +111,8 @@ const FileCard: React.FC<FileCardProps> = ({
             <div className="w-[85%]  h-[40px] flex items-end justify-start">
               <div className="h-[80%] aspect-square flex items-center justify-center rounded-full bg-[#F7F7F7]">
                 <Icon
-                  icon="streamline:convert-pdf-2-solid"
-                  className="w-[50%] h-[50%] text-[#87ADF4]"
+                  icon={getFileIcon(file.file_name)}
+                  className="w-[70%] h-[70%] text-[#87ADF4]"
                 />
               </div>
             </div>
@@ -141,7 +141,7 @@ const FileCard: React.FC<FileCardProps> = ({
     >
       <Link
         href={fileLink}
-        className="w-full h-full aspect-[3/2] bg-[#F7F7F7] flex justify-center items-end"
+        className="w-full aspect-[3/2] bg-[#F7F7F7] flex justify-center items-end"
         style={{
           borderRadius: "inherit",
         }}

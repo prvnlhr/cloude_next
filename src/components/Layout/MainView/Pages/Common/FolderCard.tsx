@@ -51,7 +51,7 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder, setActiveModal }) => {
         >
           <Icon
             icon="solar:folder-bold"
-            className="w-[70%] h-[70%] text-[#87ADF4]"
+            className="w-[60%] h-[60%] text-[#87ADF4]"
           />
         </div>
         <Link

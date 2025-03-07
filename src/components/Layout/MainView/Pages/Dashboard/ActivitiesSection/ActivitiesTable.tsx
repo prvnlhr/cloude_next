@@ -40,12 +40,12 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
 
   return (
     <div
-      className="w-full h-full overflow-auto"
+      className="w-full h-full overflow-auto bg-white"
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
       <table className="min-w-full border-collapse">
         {/* Table Head */}
-        <thead className="bg-[#F6F6F6] sticky top-0 z-10">
+        <thead className="bg-[#F7F7F7] sticky top-0 z-10 border-t-[1px] border-t-[#D0D5DD]">
           <tr className="text-left text-[#1C3553] text-[0.8rem]">
             {columns.map((col) => (
               <th
@@ -77,7 +77,7 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
             return (
               <tr
                 key={index}
-                className="border border-[#D0D5DD] hover:bg-[#F6F6F6] text-[0.8rem]"
+                className="border border-[#D0D5DD] hover:bg-[#F7FAFE] text-[0.8rem]"
               >
                 {/* Name with Icon */}
                 <td className="px-4 py-2 h-[50px] border border-[#D0D5DD]  text-[#1C3553] overflow-hidden">
@@ -86,9 +86,9 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
                     aria-label={`Open ${itemName}`}
                   >
                     <div className="flex items-center max-w-[300px]">
-                      <div className="h-[30px] rounded aspect-square bg-[#F2F4F5]  border border-[#D0D5DD] flex items-center justify-center">
+                      <div className="h-[35px] rounded-[8px] aspect-square bg-[#F7F7F7]  flex items-center justify-center">
                         <Icon
-                          className="w-[60%] h-[60%]"
+                          className="w-[60%] h-[60%] text-[#87ADF4]"
                           icon={
                             item_type === "folder"
                               ? "solar:folder-bold"

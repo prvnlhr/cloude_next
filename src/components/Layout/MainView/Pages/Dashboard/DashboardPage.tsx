@@ -16,7 +16,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ dashboardContent }) => {
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
       {/* Recent uploads section ----------------------------------------------- */}
-      <div className="w-full h-[220px] mb-[20px]">
+      <div className="w-full h-auto mb-[20px]">
         <RecentUploadsSection recentUploads={recentUploads} />
       </div>
       {/* Categories section ----------------------------------------------- */}

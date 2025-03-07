@@ -34,7 +34,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
   };
 
   return (
-    <div className="w-[100%] left-[-100%] h-full border-r-[1px] border-r-[#EFEFEF] flex flex-col bg-[#FAFAFA]">
+    <div className="w-[100%] left-[-100%] h-full border-r-[1px] border-r-[#EFEFEF] flex flex-col bg-[#F3F7FA]">
       <section className="w-[100%] h-[80px] flex items-center justify-start relative">
         <div className="h-[40%] border-[#EFEFEF] ml-[20px]">
           <AppLogo />
@@ -71,7 +71,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
                 </p>
               </div>
               <div
-                className="w-[20px] min-w-[20px] h-[70%] rounded flex items-center justify-center border border-[#F0F0F0] bg-[#F2F2F2] cursor-pointer"
+                className="w-[20px] min-w-[20px] h-[70%] rounded flex items-center justify-center border border-[#F0F0F0] bg-[white] cursor-pointer"
                 onClick={() => setShowLogoutOption((prev) => !prev)}
               >
                 <Icon
@@ -107,24 +107,24 @@ const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
                 className={`w-[70%] h-[40px] rounded-[10px] flex my-[10px] pr-[15px]
                 ${
                   isActive
-                    ? "bg-[#F1F1F1] border border-[#EFEFEF]"
+                    ? "bg-[white] border border-[#EFEFEF]"
                     : "bg-transparent"
                 }
                 `}
               >
                 <div className="h-full aspect-square flex justify-center items-center">
                   <Icon
-                    icon={route.icon}
-                    className="w-[50%] h-[50%] text-[#635DB0]"
+                    icon={isActive ? route.activeIcon : route.inactiveIcon}
+                    className="w-[50%] h-[50%]"
+                    style={{ color: isActive ? "#87ADF4" : "#A2A8B2" }}
                   />
                 </div>
                 <div className="flex-1 h-full flex items-center">
                   <p
-                    className={`text-[${
-                      isActive ? "#635DB0" : "#1C3553"
-                    }] text-[1rem] sm:text-[1rem] md:text-[1rem] lg:text-[0.9rem] ${
+                    className={`text-[1rem] sm:text-[1rem] md:text-[1rem] lg:text-[0.9rem] ${
                       isActive ? "font-semibold" : "font-medium"
                     }`}
+                    style={{ color: isActive ? "#87ADF4" : "#A2A8B2" }}
                   >
                     {route.label}
                   </p>

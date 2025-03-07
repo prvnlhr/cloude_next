@@ -160,10 +160,10 @@ export type FileExtension = keyof typeof extensionToCategory;
 export type Category = (typeof extensionToCategory)[FileExtension];
 
 const categoryIcons: Record<Category, string> = {
-  Image: "ion:image",
+  Image: "material-symbols:image-rounded",
   Video: "majesticons:video",
-  Audio: "mingcute:music-fill",
-  Document: "mingcute:document-2-fill",
+  Audio: "eva:music-fill",
+  Document: "basil:file-solid",
   Code: "mingcute:code-line",
   Archive: "material-symbols-light:archive",
   Executable: "eos-icons:application",
@@ -203,25 +203,25 @@ export const fileTypeIcons: Record<FileExtension, string> = {
   ".m4v": "mdi:video",
 
   // Audio Extensions
-  ".mp3": "mdi:music",
-  ".wav": "mdi:music",
-  ".aac": "mdi:music",
-  ".weba": "mdi:music",
-  ".aiff": "mdi:music",
-  ".m4a": "mdi:music",
-  ".wma": "mdi:music",
-  ".flac": "mdi:music",
-  ".midi": "mdi:music",
-  ".mid": "mdi:music",
+  ".mp3": "eva:music-fill",
+  ".wav": "eva:music-fill",
+  ".aac": "eva:music-fill",
+  ".weba": "eva:music-fill",
+  ".aiff": "eva:music-fill",
+  ".m4a": "eva:music-fill",
+  ".wma": "eva:music-fill",
+  ".flac": "eva:music-fill",
+  ".midi": "eva:music-fill",
+  ".mid": "eva:music-fill",
 
   // Document Extensions
-  ".pdf": "mingcute:pdf-fill",
+  ".pdf": "ri:file-pdf-2-fill",
   ".doc": "mingcute:doc-fill",
   ".docx": "mingcute:doc-fill",
-  ".xls": "mdi:file-excel",
-  ".xlsx": "mdi:file-excel",
-  ".ppt": "ri:file-ppt-2-fill",
-  ".pptx": "ri:file-ppt-2-fill",
+  ".xls": "ri:file-excel-2-fill",
+  ".xlsx": "ri:file-excel-2-fill",
+  ".ppt": "teenyicons:ms-powerpoint-solid",
+  ".pptx": "teenyicons:ms-powerpoint-solid",
   ".txt": "mdi:file-document",
   ".csv": "mdi:file-document",
   ".rtf": "mdi:file-document",
@@ -240,7 +240,7 @@ export const fileTypeIcons: Record<FileExtension, string> = {
   ".py": "mdi:language-python",
   ".java": "mdi:language-java",
   ".c": "mdi:language-c",
-  ".cpp": "ph:file-cpp-fill",
+  ".cpp": "devicon-plain:cplusplus",
   ".php": "mdi:language-php",
   ".rb": "mdi:language-ruby",
   ".pl": "mdi:language-perl",
@@ -299,7 +299,7 @@ export const fileTypeIcons: Record<FileExtension, string> = {
   ".sz": "mdi:archive",
 
   // Executable Extensions
-  ".exe": "mdi:application",
+  ".exe": "eos-icons:application",
   ".sh": "mdi:bash",
   ".bin": "mdi:application",
   ".dmg": "mdi:apple",
@@ -310,12 +310,12 @@ export const fileTypeIcons: Record<FileExtension, string> = {
   ".dll": "mdi:application",
 
   // Font Extensions
-  ".ttf": "mdi:format-font",
-  ".otf": "mdi:format-font",
-  ".woff": "mdi:format-font",
-  ".woff2": "mdi:format-font",
-  ".eot": "mdi:format-font",
-  ".sfnt": "mdi:format-font",
+  ".ttf": "flowbite:font-family-outline",
+  ".otf": "flowbite:font-family-outline",
+  ".woff": "flowbite:font-family-outline",
+  ".woff2": "flowbite:font-family-outline",
+  ".eot": "flowbite:font-family-outline",
+  ".sfnt": "flowbite:font-family-outline",
 
   // Database Extensions
   ".sqlite": "mdi:database",

@@ -8,15 +8,15 @@ const PlaceholderFile = () => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_1413_760)">
+      <g clipPath="url(#clip0_1413_760)">
         <path
           d="M133.896 -0.195312H12.041C5.4136 -0.195312 0.0410156 5.17727 0.0410156 11.8047V119H157.959V23.8047L133.896 -0.195312Z"
           fill="white"
         />
         <g filter="url(#filter0_d_1413_760)">
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M133.896 18.8047C133.896 21.5661 136.135 23.8047 138.896 23.8047H157.959L133.896 -0.195312V18.8047Z"
             fill="white"
           />
@@ -30,9 +30,9 @@ const PlaceholderFile = () => {
           width="34.0625"
           height="34"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
