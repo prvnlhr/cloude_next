@@ -36,7 +36,7 @@ const SearchItem: FC<SearchItemProps> = ({ item, setSearchResults }) => {
             icon={
               item.type === "folder" ? "solar:folder-bold" : "basil:file-solid"
             }
-            className="w-[50%] h-[50%] text-[#88B1F5]"
+            className="w-[50%] h-[50%] text-[#5B8DF4]"
           />
         </div>
       </div>
@@ -53,11 +53,11 @@ const SearchItem: FC<SearchItemProps> = ({ item, setSearchResults }) => {
       <div className="h-full aspect-square flex items-center justify-center">
         <button
           onClick={handleItemClicked}
-          className="h-[60%] aspect-square flex items-center justify-center rounded-full border border-transparent bg-[#F7F7F7] hover:border hover:border-[#88B1F5]"
+          className="h-[60%] aspect-square flex items-center justify-center rounded-full border border-transparent bg-[#F7F7F7] hover:border hover:border-[#5B8DF4]"
         >
           <Icon
             icon="lucide:arrow-up"
-            className="w-[50%] h-[50%] rotate-45 text-[#88B1F5]"
+            className="w-[50%] h-[50%] rotate-45 text-[#5B8DF4]"
           />
         </button>
       </div>

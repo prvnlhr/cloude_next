@@ -57,7 +57,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
             <div className="w-[80%] border-t-[1px] border-t-[#E4E7EC] border-b-[1px] border-b-[#E4E7EC] h-full flex items-center">
               <div className="h-full aspect-square  flex items-center justify-center">
                 <div className="w-[70%] aspect-square rounded-full bg-[white] border flex items-center justify-center">
-                  <p className="text-[1rem] text-[#635DB0] font-semibold">
+                  <p className="text-[1rem] text-[#5B8DF4] font-semibold">
                     {session?.userName.charAt(0)}
                   </p>
                 </div>
@@ -116,7 +116,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
                   <Icon
                     icon={isActive ? route.activeIcon : route.inactiveIcon}
                     className="w-[50%] h-[50%]"
-                    style={{ color: isActive ? "#88B1F5" : "#A2A8B2" }}
+                    style={{ color: isActive ? "#5B8DF4" : "#A2A8B2" }}
                   />
                 </div>
                 <div className="flex-1 h-full flex items-center">
@@ -124,7 +124,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
                     className={`text-[1rem] sm:text-[1rem] md:text-[1rem] lg:text-[0.9rem] ${
                       isActive ? "font-semibold" : "font-medium"
                     }`}
-                    style={{ color: isActive ? "#88B1F5" : "#A2A8B2" }}
+                    style={{ color: isActive ? "#5B8DF4" : "#A2A8B2" }}
                   >
                     {route.label}
                   </p>

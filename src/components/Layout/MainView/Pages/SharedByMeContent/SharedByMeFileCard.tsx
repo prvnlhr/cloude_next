@@ -101,7 +101,7 @@ const SharedByMeFileCard = ({ file }: { file: File }) => {
               <div className="h-[80%] aspect-square flex items-center justify-center rounded-full bg-[#F7F7F7]">
                 <Icon
                   icon={getFileIcon(file.file_name)}
-                  className="w-[70%] h-[70%] text-[#88B1F5]"
+                  className="w-[70%] h-[70%] text-[#5B8DF4]"
                 />
               </div>
             </div>
@@ -148,7 +148,7 @@ const SharedByMeFileCard = ({ file }: { file: File }) => {
             <div className="w-[70%] h-[70%] flex items-center justify-center bg-[white] rounded">
               <Icon
                 icon="heroicons:link-20-solid"
-                className="w-[60%] h-[60%] text-[#88B1F5]"
+                className="w-[60%] h-[60%] text-[#5B8DF4]"
               />
             </div>
           </div>
@@ -171,7 +171,7 @@ const SharedByMeFileCard = ({ file }: { file: File }) => {
               ) : (
                 <Icon
                   icon="iconamoon:close-duotone"
-                  className="w-[55%] h-[55%] text-[#88B1F5]"
+                  className="w-[55%] h-[55%] text-[#5B8DF4]"
                 />
               )}
             </button>

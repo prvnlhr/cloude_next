@@ -112,7 +112,7 @@ const FileCard: React.FC<FileCardProps> = ({
               <div className="h-[80%] aspect-square flex items-center justify-center rounded-full bg-[#F7F7F7]">
                 <Icon
                   icon={getFileIcon(file.file_name)}
-                  className="w-[70%] h-[70%] text-[#88B1F5]"
+                  className="w-[70%] h-[70%] text-[#5B8DF4]"
                 />
               </div>
             </div>

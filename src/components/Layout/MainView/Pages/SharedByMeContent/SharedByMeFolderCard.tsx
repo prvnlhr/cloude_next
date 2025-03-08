@@ -54,7 +54,7 @@ const SharedByMeFolderCard = ({ folder }: { folder: Folder }) => {
         >
           <Icon
             icon="solar:folder-bold"
-            className="w-[60%] h-[60%] text-[#88B1F5]"
+            className="w-[60%] h-[60%] text-[#5B8DF4]"
           />
         </div>
         <Link
@@ -74,7 +74,7 @@ const SharedByMeFolderCard = ({ folder }: { folder: Folder }) => {
           <div className="w-[70%] h-[70%] flex items-center justify-center bg-[white] rounded">
             <Icon
               icon="heroicons:link-20-solid"
-              className="w-[60%] h-[60%] text-[#88B1F5]"
+              className="w-[60%] h-[60%] text-[#5B8DF4]"
             />
           </div>
         </div>
@@ -97,7 +97,7 @@ const SharedByMeFolderCard = ({ folder }: { folder: Folder }) => {
             ) : (
               <Icon
                 icon="iconamoon:close-duotone"
-                className="w-[55%] h-[55%] text-[#88B1F5]"
+                className="w-[55%] h-[55%] text-[#5B8DF4]"
               />
             )}
           </button>

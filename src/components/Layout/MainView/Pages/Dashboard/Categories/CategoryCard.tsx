@@ -29,7 +29,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         >
           <Icon
             icon={getCategoryIcon(category as Category)}
-            className="w-[60%] h-[60%] text-[#88B1F5]"
+            className="w-[60%] h-[60%] text-[#5B8DF4]"
           />
         </div>
         <div className="h-full flex-grow min-w-0 flex flex-col justify-center">
@@ -45,7 +45,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
           >
             <Icon
               icon="lucide:arrow-up"
-              className="w-[55%] h-[55%] text-[#88B1F5] rotate-45"
+              className="w-[55%] h-[55%] text-[#5B8DF4] rotate-45"
             />
           </Link>
         </div>
