@@ -1,31 +1,30 @@
 const LoadingFolderCard = () => {
   return (
     <div
-      className="w-[48%] sm:w-[48%] md:w-[30%] lg:w-[18%] h-auto 
-        mx-[1%] my-[15px] 
-        bg-[#F6F6F6] border-[1px] border-[#E4E7EC] 
-        flex
-        justify-between  
-        rounded-[10px]
-        min-h-[40px]
-        relative
-        z-[4]
-        cursor-pointer
-        shadow-[0px_3px_5px_rgba(0,0,0,0.04)]
-        animate-blink
-        "
+      className="w-[45%] sm:w-[45%] md:w-[30%] lg:w-[18%] h-auto 
+      flex flex-col items-center bg-white 
+      p-[6px] my-[15px]
+      mx-[2.5%] sm:mx-[2.5%] md:mx-[1.5%] lg:mx-[1%]
+      rounded-[10px]
+      shadow-[0px_3px_5px_rgba(0,0,0,0.04)]
+      hover:shadow-[0px_7px_29px_0px_rgba(100,100,111,0.2)]
+      relative
+      animate-blink
+      "
     >
-      <div className="w-full h-[40px] flex justify-between">
-        <div className="h-full w-[40px] min-w-[40px] flex items-center justify-center cursor-pointer">
-          <div className="w-[60%]  rounded aspect-square bg-white bg-opacity-60 ml-[8px]"></div>
+      <div className="w-full h-[40px] flex items-start justify-start rounded-[10px]">
+        <div
+          className="h-full aspect-square bg-[#F7F7F7] flex items-center justify-center"
+          style={{
+            borderRadius: "inherit",
+          }}
+        ></div>
+        <div className="h-full flex-grow min-w-0 flex flex-col justify-evenly">
+          <div className="w-[85%] ml-[10px] h-[5px] bg-[#F7F7F7]"></div>
+          <div className="w-[80%] ml-[10px] h-[5px] bg-[#F7F7F7]"></div>
         </div>
-        <div className="w-auto h-full flex overflow-hidden">
-          <div className="h-full flex-grow flex items-center justify-start overflow-hidden">
-            <div className="w-[100px]  rounded-2xl h-[10px] bg-white bg-opacity-60 ml-[8px]"></div>
-          </div>
-        </div>
-        <div className="h-full w-[40px] min-w-[40px] flex items-center justify-center cursor-pointer">
-          <div className="w-[10px] h-[60%]  bg-white bg-opacity-60 ml-[8px]"></div>
+        <div className="h-full aspect-[1/1.5] flex-shrink-0 flex items-center justify-center relative">
+          <div className="w-[100%] aspect-square flex items-center  justify-center bg-[#F2F2F2] border-[#F0F0F0] rounded-full"></div>
         </div>
       </div>
     </div>
@@ -35,43 +34,37 @@ const LoadingFolderCard = () => {
 const LoadingFileCard = () => {
   return (
     <div
-      className="w-[48%] sm:w-[48%] md:w-[30%] lg:w-[18%] h-auto 
-      mx-[1%] my-[15px] 
-      bg-[#F6F6F6] border-[1px] border-[#E4E7EC] 
-      flex flex-col 
+      className="w-[45%] sm:w-[45%] md:w-[30%] lg:w-[18%] h-auto 
+      flex flex-col items-center bg-white 
+      p-[6px] my-[15px]
+      mx-[2.5%] sm:mx-[2.5%] md:mx-[1.5%] lg:mx-[1%]
       rounded-[10px]
-      min-h-[45px]
-      relative
       shadow-[0px_3px_5px_rgba(0,0,0,0.04)]
+      hover:shadow-[0px_7px_29px_0px_rgba(100,100,111,0.2)]
+      relative
       animate-blink
       "
     >
-      <div className="w-full h-[auto] flex flex-col">
-        <div className="w-full aspect-[2/1.5] flex items-end justify-center cursor-pointer overflow-hidden p-[8px]">
-          <div
-            className="w-[100%] h-[100%] bg-[#FFFFFF] 
-            flex items-center justify-center overflow-hidden relative rounded"
-          >
-            <div className="w-full h-full flex flex-col items-center justify-evenly bg-white px-[10px]">
-              <div className="w-[100%] h-[60px] flex items-end">
-                <div className="h-[80%] aspect-square rounded-full bg-[#F1F1F1] flex items-center justify-center p-[8px]"></div>
-              </div>
-              <div className="w-full h-[calc(100%-40px)] flex flex-col items-center justify-evenly">
-                {Array.from({ length: 3 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="w-full h-[10px] bg-[#F1F1F1] rounded"
-                  ></div>
-                ))}
-              </div>
-            </div>
+      <div
+        className="w-full aspect-[3/2] bg-[#F7F7F7] flex justify-center items-end "
+        style={{
+          borderRadius: "inherit",
+        }}
+      ></div>
+      <div className="w-[95%] h-[80px] flex flex-col relative">
+        <div className="w-full h-[30px] flex items-end justify-start">
+          <div className="h-[70%] w-auto flex items-center justify-center px-[8px] bg-[#DDE8FD] rounded ">
+            <p className="text-[#4B74D7] text-[0.6rem] font-bold p-0 m-0"></p>
           </div>
         </div>
-        <div className="w-full h-[45px] flex">
-          <div className="h-full aspect-square flex-grow  overflow-hidden flex items-center justify-start">
-            <p className="ml-[9%] text-[0.75rem] text-[#1C3553] font-medium truncate whitespace-nowrap"></p>
+        <div className="w-full h-[50px] flex min-w-0 relative">
+          <div className="h-full flex-grow flex flex-col items-start justify-evenly overflow-hidden">
+            <div className="bg-[#F7F7F7] w-[90%] h-[10px] "></div>
+            <div className="bg-[#F7F7F7] w-[80%] h-[10px] "></div>
           </div>
-          <div className="h-[100%] aspect-square  flex items-center justify-center cursor-pointer"></div>
+          <div className="h-full aspect-[1/1.8] flex-shrink-0 flex items-center justify-end relative">
+            <div className="w-[100%] aspect-square flex items-center  justify-center bg-[#F2F2F2] border-[#F0F0F0] rounded-full"></div>
+          </div>
         </div>
       </div>
     </div>
