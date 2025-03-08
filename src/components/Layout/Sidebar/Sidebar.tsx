@@ -34,7 +34,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
   };
 
   return (
-    <div className="w-[100%] left-[-100%] h-full border-r-[1px] border-r-[#EFEFEF] flex flex-col bg-[#F3F7FA]">
+    <div className="w-[100%] left-[-100%] h-full border-r-[1px] border-r-[#E4E7EC] flex flex-col bg-[#F3F7FA]">
       <section className="w-[100%] h-[80px] flex items-center justify-start relative">
         <div className="h-[40%] border-[#EFEFEF] ml-[20px]">
           <AppLogo />
@@ -54,7 +54,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
           }px]  transition-all duration-300 ease-in-out flex flex-col overflow-hidden items-center`}
         >
           <div className="w-full h-[70px] min-h-[70px] flex justify-center relative">
-            <div className="w-[80%] border-t-[1px] border-t-[#F0F0F0] border-b-[1px] border-b-[#F0F0F0] h-full flex items-center">
+            <div className="w-[80%] border-t-[1px] border-t-[#E4E7EC] border-b-[1px] border-b-[#E4E7EC] h-full flex items-center">
               <div className="h-full aspect-square  flex items-center justify-center">
                 <div className="w-[70%] aspect-square rounded-full bg-[white] border flex items-center justify-center">
                   <p className="text-[1rem] text-[#635DB0] font-semibold">

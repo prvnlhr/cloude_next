@@ -6,7 +6,7 @@ interface NavbarProps {
 }
 const Navbar: React.FC<NavbarProps> = ({ toggleSidebarShow }) => {
   return (
-    <div className="relative w-full h-[80px] border-b-[1px] border-b-[#EFEFEF] flex items-center justify-start">
+    <div className="relative w-full h-[80px] border-b-[1px] border-b-[#E4E7EC] flex items-center justify-start">
       <div
         className="w-[15px] h-full flex items-center lg:hidden"
         onClick={toggleSidebarShow}

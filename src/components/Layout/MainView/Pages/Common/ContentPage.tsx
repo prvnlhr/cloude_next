@@ -63,7 +63,7 @@ const ContentPage: React.FC<ContentPageProps> = ({
     >
       {/* If Shared Page, below tab bar will be shown*/}
       {isSharedPage && (
-        <div className="w-full h-[40px] flex items-start border-b-[1px] border-b-[#EFEFEF]">
+        <div className="w-full h-[40px] flex items-start border-b-[1px] border-b-[#E4E7EC]">
           <Link
             href={"/cloude/home/shared"}
             className={`ml-[2px] w-auto h-[1.875rem] flex items-center justify-center border-b ${

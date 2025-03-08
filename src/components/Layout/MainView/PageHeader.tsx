@@ -31,7 +31,7 @@ const PageHeader: FC = () => {
   useClickOutside(menuRef, () => setIsMenuOpen(false));
 
   return (
-    <div className="w-[100%] h-[70px] border-b-[1px] border-b-[#EFEFEF] flex">
+    <div className="w-[100%] h-[70px] border-b-[1px] border-b-[#E4E7EC] flex">
       <section className="w-[50%] h-[100%] flex items-center justify-start">
         <BackBtn />
         <div className="flex flex-col items-start justify-center">
