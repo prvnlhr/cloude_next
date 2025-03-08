@@ -21,6 +21,7 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder, setActiveModal }) => {
   const pathname = usePathname();
   const dropdownRef = useRef(null);
 
+  console.log(folder);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleActionMenu = (event: React.MouseEvent) => {

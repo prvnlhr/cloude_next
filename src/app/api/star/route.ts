@@ -91,7 +91,6 @@ export async function POST(req: Request) {
 }
 
 // GET : all starred items -----------------------------------------------------------------------------------------------------------------------
-
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
