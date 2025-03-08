@@ -29,14 +29,14 @@ const SearchItem: FC<SearchItemProps> = ({ item, setSearchResults }) => {
   };
 
   return (
-    <div className="w-full h-[60px] my-[10px] rounded flex items-center border border-transparent hover:border-[#EFEFEF] hover:bg-[#F6F6F6]">
+    <div className="w-full h-[60px] my-[10px] rounded-[8px] flex items-center border border-transparent hover:bg-[#F7FAFE]">
       <div className="h-[100%] aspect-square flex items-center justify-center">
-        <div className="h-[70%] aspect-square flex items-center justify-center bg-[#F2F4F5] border border-[#D0D5DD] rounded">
+        <div className="h-[80%] aspect-square flex items-center justify-center bg-[#F7F7F7] rounded-[10px]">
           <Icon
             icon={
-              item.type === "folder" ? "mdi-light:folder" : "mdi-light:file"
+              item.type === "folder" ? "solar:folder-bold" : "basil:file-solid"
             }
-            className="w-[50%] h-[50%] text-[#1C3553]"
+            className="w-[50%] h-[50%] text-[#88B1F5]"
           />
         </div>
       </div>
@@ -44,18 +44,20 @@ const SearchItem: FC<SearchItemProps> = ({ item, setSearchResults }) => {
         <p className="w-[95%] text-[0.8rem] text-[#1C3553] font-medium whitespace-nowrap truncate">
           {item.name}
         </p>
-        <p className="max-w-[90%] text-[0.8rem] text-[#1C3553] italic">
-          Type: {item.extension}
-        </p>
+        <div className="h-auto mt-[5px] w-auto flex items-center justify-center px-[8px] py-[2px] bg-[#DDE8FD] rounded">
+          <p className="text-[#4B74D7] text-[0.55rem] font-bold p-0 m-0">
+            {item.extension.toUpperCase()}
+          </p>
+        </div>
       </div>
       <div className="h-full aspect-square flex items-center justify-center">
         <button
           onClick={handleItemClicked}
-          className="h-[60%] aspect-square border flex items-center justify-center rounded-full bg-[#F4F6F6] hover:border hover:border-[#D0D5DD]"
+          className="h-[60%] aspect-square flex items-center justify-center rounded-full border border-transparent bg-[#F7F7F7] hover:border hover:border-[#88B1F5]"
         >
           <Icon
-            icon="iconoir:arrow-up"
-            className="w-[50%] h-[50%] rotate-45 text-[#1C3553]"
+            icon="lucide:arrow-up"
+            className="w-[50%] h-[50%] rotate-45 text-[#88B1F5]"
           />
         </button>
       </div>

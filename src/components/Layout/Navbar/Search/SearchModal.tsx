@@ -40,8 +40,8 @@ const SearchModal: React.FC<SearchModalProps> = ({
           <section className="w-full h-auto mt-[10px]">
             <div className="w-full h-[40px] flex items-center sticky top-0 z-10 bg-white border-b">
               <p className="text-[1rem] text-[#1C3553] font-medium">Files</p>
-              <div className="h-[60%] aspect-square rounded flex items-center justify-center ml-[10px] bg-[#F4F6F6] border border-[#E4E7EC]">
-                <p className="text-[0.7rem] text-[#1C3553] font-semibold">
+              <div className="h-[50%] aspect-square rounded flex items-center justify-center ml-[10px] bg-[#F7F7F7] border border-[#E4E7EC]">
+                <p className="text-[0.7rem] text-[#4B74D7] font-semibold">
                   {searchResults.files.length}
                 </p>
               </div>
@@ -63,8 +63,8 @@ const SearchModal: React.FC<SearchModalProps> = ({
           <section className="w-full h-auto mt-[10px]">
             <div className="w-full h-[40px]  flex items-center sticky top-0 z-10 bg-white border-b">
               <p className="text-[1rem] text-[#1C3553] font-medium">Folders</p>
-              <div className="h-[60%] aspect-square rounded flex items-center justify-center ml-[10px] bg-[#F4F6F6] border border-[#E4E7EC]">
-                <p className="text-[0.7rem] text-[#1C3553] font-medium ">
+              <div className="h-[50%] aspect-square rounded flex items-center justify-center ml-[10px] bg-[#F7F7F7] border border-[#E4E7EC]">
+                <p className="text-[0.7rem] text-[#4B74D7] font-medium ">
                   {searchResults.folders.length}
                 </p>
               </div>
@@ -86,8 +86,8 @@ const SearchModal: React.FC<SearchModalProps> = ({
           <section className="w-full h-auto mt-[10px]">
             <div className="w-full h-[40px]  flex items-center  sticky top-0 z-10 bg-white border-b">
               <p className="text-[1rem] text-[#1C3553] font-medium">Shared</p>
-              <div className="h-[60%] aspect-square rounded flex items-center justify-center ml-[10px] bg-[#F4F6F6] border border-[#E4E7EC]">
-                <p className="text-[0.7rem] text-[#1C3553] font-medium ">
+              <div className="h-[50%] aspect-square rounded flex items-center justify-center ml-[10px] bg-[#F7F7F7] border border-[#E4E7EC]">
+                <p className="text-[0.7rem] text-[#4B74D7] font-medium ">
                   {searchResults.shared_items.length}
                 </p>
               </div>

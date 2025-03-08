@@ -48,7 +48,7 @@ const PageHeader: FC = () => {
         <button
           type="button"
           className="w-[auto] h-[30px] 
-          border-[1px] border-[#EFEFEF] bg-[#87ADF4] 
+          border-[1px] border-[#EFEFEF] bg-[#88B1F5] 
           flex items-center justify-center 
           cursor-pointer
           mr-[15px]

@@ -88,7 +88,7 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({ activities }) => {
                     <div className="flex items-center max-w-[300px]">
                       <div className="h-[35px] rounded-[8px] aspect-square bg-[#F7F7F7]  flex items-center justify-center">
                         <Icon
-                          className="w-[60%] h-[60%] text-[#87ADF4]"
+                          className="w-[60%] h-[60%] text-[#88B1F5]"
                           icon={
                             item_type === "folder"
                               ? "solar:folder-bold"

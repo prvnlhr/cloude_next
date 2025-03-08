@@ -49,9 +49,11 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder, setActiveModal }) => {
             borderRadius: "inherit",
           }}
         >
+          {/* 88B1F5 */}
+          {/* 88B1F5 */}
           <Icon
             icon="solar:folder-bold"
-            className="w-[60%] h-[60%] text-[#87ADF4]"
+            className="w-[60%] h-[60%] text-[#88B1F5]"
           />
         </div>
         <Link

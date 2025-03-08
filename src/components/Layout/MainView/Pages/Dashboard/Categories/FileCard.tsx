@@ -79,7 +79,7 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
               <div className="h-[80%] aspect-square flex items-center justify-center rounded-full bg-[#F7F7F7]">
                 <Icon
                   icon={getFileIcon(file.file_name)}
-                  className="w-[70%] h-[70%] text-[#87ADF4]"
+                  className="w-[70%] h-[70%] text-[#88B1F5]"
                 />
               </div>
             </div>
@@ -117,9 +117,9 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
       </Link>
       <div className="w-[95%] h-[80px] flex flex-col relative">
         <div className="w-full h-[30px] flex items-end justify-start">
-          <div className="h-[70%] w-auto flex items-center justify-center px-[8px] bg-[#DDE8FC] rounded">
-            <p className="text-[#1C3553] text-[0.6rem] font-bold p-0 m-0">
-              {file.extension}
+          <div className="h-[70%] w-auto flex items-center justify-center px-[8px] bg-[#DDE8FD] rounded">
+            <p className="text-[#4B74D7] text-[0.6rem] font-bold p-0 m-0">
+              {file.extension?.toUpperCase()}
             </p>
           </div>
         </div>

@@ -81,7 +81,7 @@ const RecentUploadFileCard: React.FC<RecentUploadFileCardProps> = ({
               <div className="h-[80%] aspect-square flex items-center justify-center rounded-full bg-[#F7F7F7]">
                 <Icon
                   icon={getFileIcon(item.file_name)}
-                  className="w-[70%] h-[70%] text-[#87ADF4]"
+                  className="w-[70%] h-[70%] text-[#88B1F5]"
                 />
               </div>
             </div>
@@ -123,9 +123,9 @@ const RecentUploadFileCard: React.FC<RecentUploadFileCardProps> = ({
       </div>
       <div className="w-[95%] h-[80px] flex flex-col relative">
         <div className="w-full h-[30px] flex items-end justify-start">
-          <div className="h-[60%] w-auto flex items-center justify-center px-[8px] bg-[#DDE8FC] rounded">
-            <p className="text-[#1C3553] text-[0.6rem] font-bold p-0 m-0">
-              {item.extension}
+          <div className="h-[60%] w-auto flex items-center justify-center px-[8px] bg-[#DDE8FD] rounded">
+            <p className="text-[#4B74D7] text-[0.6rem] font-bold p-0 m-0">
+              {item.extension.toUpperCase()}
             </p>
           </div>
         </div>
@@ -146,7 +146,7 @@ const RecentUploadFileCard: React.FC<RecentUploadFileCardProps> = ({
             >
               <Icon
                 icon="lucide:arrow-up"
-                className="w-[55%] h-[55%] text-[#87ADF4] rotate-45"
+                className="w-[55%] h-[55%] text-[#88B1F5] rotate-45"
               />
             </Link>
           </div>

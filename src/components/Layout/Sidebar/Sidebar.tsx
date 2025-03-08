@@ -116,7 +116,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
                   <Icon
                     icon={isActive ? route.activeIcon : route.inactiveIcon}
                     className="w-[50%] h-[50%]"
-                    style={{ color: isActive ? "#87ADF4" : "#A2A8B2" }}
+                    style={{ color: isActive ? "#88B1F5" : "#A2A8B2" }}
                   />
                 </div>
                 <div className="flex-1 h-full flex items-center">
@@ -124,7 +124,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleSidebarShow }) => {
                     className={`text-[1rem] sm:text-[1rem] md:text-[1rem] lg:text-[0.9rem] ${
                       isActive ? "font-semibold" : "font-medium"
                     }`}
-                    style={{ color: isActive ? "#87ADF4" : "#A2A8B2" }}
+                    style={{ color: isActive ? "#88B1F5" : "#A2A8B2" }}
                   >
                     {route.label}
                   </p>
