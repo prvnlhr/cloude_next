@@ -136,7 +136,7 @@ const RenameModal: React.FC<RenameModalProps> = ({
                 }}
               />
               <p className="text-[0.8rem] text-[#4B74D7] font-medium ml-[10px]">
-                Renaming...
+                Renaming
               </p>
             </>
           ) : (

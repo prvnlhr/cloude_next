@@ -133,7 +133,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
                 }}
               />
               <p className="text-[0.8rem] text-white font-medium ml-[10px]">
-                Deleting...
+                Deleting
               </p>
             </>
           ) : (
