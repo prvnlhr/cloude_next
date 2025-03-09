@@ -103,13 +103,13 @@ const FilePage: React.FC<FilePageProps> = ({ file }) => {
             <p className="text-[1.5rem] text-[#1C3553] font-medium truncate">
               {file.file_name}
             </p>
-            <p className="text-[0.9rem] text-[#1C3553] font-medium">
+            <p className="text-[0.9rem] text-[#4B74D7] font-medium border py-[5px] px-[10px] rounded bg-[#5b8ef424]">
               Preview not available
             </p>
           </div>
           <button
             onClick={handleDownload}
-            className="w-auto h-[30px] bg-[#635DB0] px-[10px] mr-[15px] flex items-center border border-[#F0F0F0]"
+            className="w-auto h-[30px] bg-[#5B8DF4] px-[10px] flex items-center rounded"
           >
             <Icon
               icon="material-symbols-light:download"
@@ -123,7 +123,7 @@ const FilePage: React.FC<FilePageProps> = ({ file }) => {
   };
 
   return (
-    <div className="fixed w-screen h-screen right-0 top-0 bg-white flex-col backdrop-blur-sm">
+    <div className="fixed w-screen h-screen right-0 top-0 bg-[#F3F7FA] flex-col backdrop-blur-sm">
       <div className="w-full h-[70px] flex items-center justify-between border-b-[1px] border-b-[#EFEFEF]">
         <div className="w-auto h-full flex items-center">
           <button
@@ -148,7 +148,7 @@ const FilePage: React.FC<FilePageProps> = ({ file }) => {
         </div>
         <button
           onClick={handleDownload}
-          className="w-auto h-[30px] bg-[#635DB0] px-[10px] mr-[15px] flex items-center border border-[#F0F0F0]"
+          className="w-auto h-[30px] bg-[#5B8DF4] px-[10px] mr-[15px] flex items-center rounded"
         >
           <Icon
             icon="material-symbols-light:download"

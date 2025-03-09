@@ -11,7 +11,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <div className="w-[100%] h-[100%]  overflow-hidden relative border border-white bg-[#F3F7FA]">
+    <div className="w-[100%] h-[100%]  overflow-hidden relative bg-[#F3F7FA]">
       <div
         className={`
         flex h-full transition-transform duration-[100]
