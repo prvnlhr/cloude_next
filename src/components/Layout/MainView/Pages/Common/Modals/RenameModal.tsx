@@ -93,11 +93,11 @@ const RenameModal: React.FC<RenameModalProps> = ({
         </p>
         <button
           onClick={onClose}
-          className="w-[20px] border border-[#EFEFEF] h-[20px] rounded-full bg-[#E7EFFC] flex items-center justify-center"
+          className="w-[22px] h-[22px] border border-[#EFEFEF] rounded-full bg-[#E7EFFC] flex items-center justify-center"
         >
           <Icon
             icon="iconamoon:close-fill"
-            className="w-[60%] h-[60%] text-[#1C3553]"
+            className="w-[70%] h-[70%] text-[#1C3553]"
           />
         </button>
       </div>
@@ -106,7 +106,7 @@ const RenameModal: React.FC<RenameModalProps> = ({
       <div className="w-full h-auto flex flex-col mt-[5px]">
         <div className="w-full h-[30px] flex items-center">
           <p className="text-[0.8rem] text-[#A2A8B2] font-medium">
-            Enter new name
+            Enter a new name for this {itemType}
           </p>
         </div>
         <div className="w-full h-[40px]">
@@ -122,12 +122,25 @@ const RenameModal: React.FC<RenameModalProps> = ({
       <div className="w-full h-[50px] flex items-center justify-end">
         <button
           onClick={handleRename}
-          className="w-[80px] h-[30px] px-[15px] flex items-center justify-center rounded text-[0.8rem] text-[#1C3553] font-medium bg-[#E7EFFC]"
+          disabled={isLoading ? true : false}
+          className="w-auto h-[30px] px-[15px] flex items-center justify-center rounded bg-[#E7EFFC]"
         >
           {isLoading ? (
-            <Spinner variant="gradient" color="primary" size="sm" />
+            <>
+              <Spinner
+                variant="default"
+                color="primary"
+                size="sm"
+                classNames={{
+                  wrapper: "w-[15px] h-[15px] flex item-center justify-center",
+                }}
+              />
+              <p className="text-[0.8rem] text-[#4B74D7] font-medium ml-[10px]">
+                Renaming...
+              </p>
+            </>
           ) : (
-            "Rename"
+            <p className="text-[0.8rem] text-[#4B74D7] font-medium">Rename</p>
           )}
         </button>
       </div>

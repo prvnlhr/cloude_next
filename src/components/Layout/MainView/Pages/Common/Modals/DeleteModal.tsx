@@ -113,7 +113,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
         <button
           onClick={onClose}
           type="button"
-          className="w-[45%] h-[30px] text-[0.8rem] text-[#1C3553] font-medium rounded bg-[#FAFAFA] border border-[#EFEFEF] px-[15px]"
+          className="w-[45%] h-[30px] text-[0.8rem] text-[#1C3553] font-medium rounded bg-[#F7F7F7] border border-[#EFEFEF] px-[15px]"
         >
           Cancel
         </button>
@@ -123,7 +123,19 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
           className="w-[45%] h-[30px] text-[0.8rem] text-white bg-red-700 rounded font-medium px-[15px] flex justify-center items-center"
         >
           {isLoading ? (
-            <Spinner variant="gradient" color="default" size="sm" />
+            <>
+              <Spinner
+                variant="default"
+                color="default"
+                size="sm"
+                classNames={{
+                  wrapper: "w-[15px] h-[15px] flex item-center justify-center",
+                }}
+              />
+              <p className="text-[0.8rem] text-white font-medium ml-[10px]">
+                Deleting...
+              </p>
+            </>
           ) : (
             "Delete"
           )}

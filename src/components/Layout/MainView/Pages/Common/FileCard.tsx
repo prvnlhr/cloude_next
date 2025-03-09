@@ -26,9 +26,9 @@ const FileCard: React.FC<FileCardProps> = ({
 }: FileCardProps) => {
   const pathname = usePathname();
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
-  console.log(file);
 
   const toggleMenu = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -185,6 +185,7 @@ const FileCard: React.FC<FileCardProps> = ({
           item={file}
           itemType={"file"}
           setActiveModal={setActiveModal}
+          setIsMenuOpen={setIsMenuOpen}
         />
       )}
     </div>

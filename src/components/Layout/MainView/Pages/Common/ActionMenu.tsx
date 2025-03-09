@@ -13,6 +13,7 @@ interface ActionMenuProps {
     item: File | Folder;
     type: string;
   }) => void;
+  setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 type Action = {
@@ -26,6 +27,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({
   item,
   itemType,
   setActiveModal,
+  setIsMenuOpen,
 }) => {
   const session = useUserSession();
   const userId = session?.userId;
@@ -75,6 +77,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({
   const handleActionClick = (action: Action) => {
     if (isActionAllowed(action.value)) {
       setActiveModal({ value: action.value, item, type: itemType });
+      setIsMenuOpen(false);
     }
   };
 

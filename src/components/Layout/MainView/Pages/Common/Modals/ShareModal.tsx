@@ -124,17 +124,15 @@ const ShareModal: React.FC<ShareModalProps> = ({ item, itemType, onClose }) => {
       </div>
 
       {/* Logo and item name ------------------------ */}
-      <div className="w-full h-[40px] flex items-center">
-        <div className="h-[80%] aspect-square border rounded bg-[#F6F6F6] flex items-center justify-center">
+      <div className="w-full h-[50px] flex items-center">
+        <div className="h-[80%] aspect-square rounded-[10px] bg-[#F7F7F7] flex items-center justify-center">
           <Icon
-            icon={
-              itemType === "folder" ? "solar:folder-linear" : "proicons:file"
-            }
-            className="w-[50%] h-[50%] text-[#1C3553]"
+            icon={itemType === "folder" ? "solar:folder-bold" : "proicons:file"}
+            className="w-[50%] h-[50%] text-[#5B8DF4]"
           />
         </div>
         <div className="h-full flex-grow flex flex-col justify-center overflow-hidden">
-          <p className="text-[0.8rem] w-[85%] ml-[15px] italic text-[#1C3553] font-medium truncate whitespace-nowrap">
+          <p className="text-[0.9rem] w-[85%] ml-[15px]  text-[#1C3553] font-medium truncate whitespace-nowrap">
             {itemName}
           </p>
           {itemType === "file" && (
@@ -148,8 +146,8 @@ const ShareModal: React.FC<ShareModalProps> = ({ item, itemType, onClose }) => {
       {/* Input Group ----------------------------- */}
       <div className="w-full h-auto flex flex-col mt-[5px]">
         <div className="w-full h-[30px] flex items-center">
-          <p className="text-[0.8rem]  text-[#A2A8B2]  font-medium">
-            Enter email
+          <p className="text-[0.8rem]  text-[#A2A8B2] font-medium ml-[2px]">
+            Enter an email address to share with
           </p>
         </div>
         <div className="w-full h-[40px]">
@@ -159,16 +157,19 @@ const ShareModal: React.FC<ShareModalProps> = ({ item, itemType, onClose }) => {
             className="w-full h-full border border-[#EFEFEF] rounded-[5px] outline-none text-[0.8rem]  text-[#1C3553]  font-medium px-[5px]"
           />
         </div>
-        <div className="w-full h-[40px] flex items-center justify-start">
-          <p className="text-[0.7rem] text-red-700 ml-[2px] font-medium">
-            {error}
-          </p>
-        </div>
+        {error && (
+          <div className="w-full h-[30px] my-[5px] flex items-center justify-start">
+            <p className="text-[0.7rem] text-red-700 ml-[2px] font-semibold">
+              {error}
+            </p>
+          </div>
+        )}
       </div>
-      {/* Share button --------------------------------------*/}
+      {/* Footer --------------------------------------*/}
       <div className="w-full h-[50px] flex items-center justify-between">
-        <div className="w-[65%] h-full flex items-center justify-center relative mr-[2%]">
-          <div className="w-[calc(100%-20px)] h-[100%] border outline-none rounded px-[10px] text-[0.8rem] font-medium text-[#1C3553] flex items-center">
+        {/* Access level selector ---------------- */}
+        <div className="w-[48%] h-[80%] flex items-center justify-center relative mr-[2%]">
+          <div className="w-[calc(100%-20px)] h-[100%] border outline-none rounded px-[10px] text-[0.8rem] font-semibold text-[#4B74D7] flex items-center">
             {accessLevelMap[accessLevel]}
           </div>
           <div
@@ -206,15 +207,28 @@ const ShareModal: React.FC<ShareModalProps> = ({ item, itemType, onClose }) => {
           )}
         </div>
 
+        {/* Share button -------------------------- */}
         <button
           type="button"
           onClick={handleShare}
-          className="w-[30%] h-[30px] px-[15px] flex items-center justify-center rounded text-[0.8rem]  text-[#1C3553] font-medium bg-[#E7EFFC] border"
+          className="w-[45%] h-[30px] px-[15px] flex items-center justify-center rounded  bg-[#E7EFFC]"
         >
           {isSharing ? (
-            <Spinner variant="gradient" color="primary" size="sm" />
+            <>
+              <Spinner
+                variant="default"
+                color="primary"
+                size="sm"
+                classNames={{
+                  wrapper: "w-[15px] h-[15px] flex item-center justify-center",
+                }}
+              />
+              <p className="text-[0.8rem] text-[#4B74D7] font-medium ml-[10px]">
+                Sharing...
+              </p>
+            </>
           ) : (
-            "Share"
+            <p className="text-[0.8rem] text-[#4B74D7] font-medium">Share</p>
           )}
         </button>
       </div>
