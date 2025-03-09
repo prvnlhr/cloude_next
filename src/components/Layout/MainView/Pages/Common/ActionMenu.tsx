@@ -20,6 +20,7 @@ type Action = {
   label: string;
   icon: string;
   value: string;
+  color: string;
 };
 
 const ActionMenu: React.FC<ActionMenuProps> = ({
@@ -35,23 +36,27 @@ const ActionMenu: React.FC<ActionMenuProps> = ({
   const allActions: Action[] = [
     {
       label: "Rename",
-      icon: "mingcute:edit-line",
+      icon: "cuida:edit-outline",
       value: "rename",
+      color: "#32D583",
     },
     {
       label: "Share",
-      icon: "mynaui:share",
+      icon: "tdesign:share",
       value: "share",
+      color: "#2E90FA",
     },
     {
       label: "Delete",
-      icon: "solar:trash-bin-2-linear",
+      icon: "mingcute:delete-3-line",
       value: "delete",
+      color: "#D92D20",
     },
     {
       label: item?.is_starred ? "Remove from Starred" : "Add to Starred",
-      icon: item?.is_starred ? "solar:star-bold" : "solar:star-line-duotone",
+      icon: item?.is_starred ? "streamline:star-1-solid" : "streamline:star-1",
       value: "star",
+      color: "#FEC84B",
     },
   ];
 
