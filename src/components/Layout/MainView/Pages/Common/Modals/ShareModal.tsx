@@ -127,7 +127,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ item, itemType, onClose }) => {
       <div className="w-full h-[50px] flex items-center">
         <div className="h-[80%] aspect-square rounded-[10px] bg-[#F7F7F7] flex items-center justify-center">
           <Icon
-            icon={itemType === "folder" ? "solar:folder-bold" : "proicons:file"}
+            icon={itemType === "folder" ? "solar:folder-bold" : "basil:file-solid"}
             className="w-[50%] h-[50%] text-[#5B8DF4]"
           />
         </div>
