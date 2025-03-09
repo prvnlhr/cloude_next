@@ -33,7 +33,6 @@ export async function uploadFolder(
       `Uploading ${folderName}...`
     );
 
-    console.log("foldersArray", foldersArray);
     const response = await fetch(`${BASE_URL}/api/user/folders`, {
       method: "POST",
       headers: {
