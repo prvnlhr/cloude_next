@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { Providers } from "@/app/provider";
 import { Toaster } from "sonner";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { Spinner } from "@heroui/spinner";
 
 export const metadata: Metadata = {
   title: "Cloud.e",
@@ -97,6 +98,16 @@ export default function RootLayout({
               <Icon
                 icon="ep:success-filled"
                 className="text-[#36BF76] w-[20px] h-[20px]"
+              />
+            ),
+            loading: (
+              <Spinner
+                variant="default"
+                color="primary"
+                size="sm"
+                classNames={{
+                  wrapper: "w-[15px] h-[15px] flex item-center justify-center",
+                }}
               />
             ),
           }}

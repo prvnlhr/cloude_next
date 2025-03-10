@@ -41,8 +41,8 @@ export async function uploadFiles(
       // show loading toast
       const toastId = showToast(
         "loading",
-        "Uploading File",
-        `Uploading ${fileDataObject.name}...`
+        "Uploading in Progress",
+        `${fileDataObject.name} is being uploaded`
       );
 
       try {
@@ -72,8 +72,8 @@ export async function uploadFiles(
         // show success toast
         showToast(
           "success",
-          "Upload Successful",
-          `Uploaded ${fileDataObject.name} successfully!`,
+          "File Uploaded Successfully",
+          `${fileDataObject.name} has been uploaded`,
           toastId
         );
         console.log("Upload Success:", result.message);

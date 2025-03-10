@@ -29,8 +29,8 @@ export async function uploadFolder(
     // show loading toast
     const toastId = showToast(
       "loading",
-      "Uploading Folder",
-      `Uploading ${folderName}...`
+      "Uploading in Progress",
+      `${folderName} is being uploaded`
     );
 
     const response = await fetch(`${BASE_URL}/api/user/folders`, {
@@ -90,8 +90,8 @@ export async function uploadFolder(
     // show success toast
     showToast(
       "success",
-      "Upload Successful",
-      `Uploaded ${folderName} successfully!`,
+      "Folder Uploaded Successfully",
+      `${folderName} has been uploaded`,
       toastId
     );
     console.log("Upload Folder Success:", promiseResponse);
