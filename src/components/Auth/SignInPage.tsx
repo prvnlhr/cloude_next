@@ -131,9 +131,14 @@ const SignInPage: React.FC = () => {
                 <button
                   className="w-full h-[30px] rounded border-none bg-[#4F85F3] text-white text-[0.9rem] sm:text-[0.8rem] md:text-[0.9rem] lg:text-[0.9rem] xl:text-[0.9rem] flex justify-center items-center"
                   type="submit"
+                  disabled={isSubmitting}
                 >
                   {isSubmitting ? (
-                    <Spinner variant="gradient" color="default" size="sm" />
+                    <Spinner
+                      variant="dots"
+                      color="default"
+                      classNames={{ dots: "bg-white" }}
+                    />
                   ) : (
                     "Sign In"
                   )}

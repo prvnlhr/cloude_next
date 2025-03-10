@@ -187,7 +187,11 @@ const SignUpPage = () => {
                   type="submit"
                 >
                   {isSubmitting ? (
-                    <Spinner variant="gradient" color="default" size="sm" />
+                    <Spinner
+                    variant="dots"
+                    color="default"
+                    classNames={{ dots: "bg-white" }}
+                  />
                   ) : (
                     "Sign Up"
                   )}

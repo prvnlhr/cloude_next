@@ -68,7 +68,14 @@ const Searchbar: FC = () => {
       </div>
       <div className="h-full aspect-square flex-shrink-0 flex items-center justify-center">
         {isSearching ? (
-          <Spinner variant="gradient" color="primary" size="sm" />
+          <Spinner
+            variant="default"
+            color="primary"
+            size="sm"
+            classNames={{
+              wrapper: "w-[18px] h-[18px] flex item-center justify-center",
+            }}
+          />
         ) : (
           <Icon
             onClick={clearResults}
