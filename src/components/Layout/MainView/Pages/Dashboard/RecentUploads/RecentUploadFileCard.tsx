@@ -43,7 +43,7 @@ const RecentUploadFileCard: React.FC<RecentUploadFileCardProps> = ({
       if (type == "image") {
         return (
           <div
-            className="w-[100%] h-full flex items-end justify-center relative overflow-hidden"
+            className="w-full h-full flex items-end justify-center relative overflow-hidden"
             style={{
               borderRadius: "inherit",
             }}
@@ -53,7 +53,11 @@ const RecentUploadFileCard: React.FC<RecentUploadFileCardProps> = ({
               fill={true}
               quality={20}
               alt={item.file_name}
-              className="object-fill w-full h-full"
+              className="border border-gray-100"
+              objectFit="cover"
+              style={{
+                borderRadius: "inherit",
+              }}
             />
           </div>
         );

@@ -60,6 +60,7 @@ export async function uploadFolder(
       formData.append("name", fileData.name);
       formData.append("userId", userId);
       formData.append("folderId", fileData.folderId);
+      formData.append("isFolderUpload", "true");
 
       try {
         const uploadResponse = await fetch(`${BASE_URL}/api/user/files`, {

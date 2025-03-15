@@ -74,7 +74,7 @@ const FileCard: React.FC<FileCardProps> = ({
       if (type == "image") {
         return (
           <div
-            className="w-[100%] h-full flex items-end justify-center relative overflow-hidden"
+            className="w-[100%] h-full flex items-end justify-center relative"
             style={{
               borderRadius: "inherit",
             }}
@@ -84,7 +84,11 @@ const FileCard: React.FC<FileCardProps> = ({
               fill={true}
               quality={20}
               alt={file.file_name}
-              className="object-fill w-full h-full"
+              className="border border-gray-100"
+              objectFit="cover"
+              style={{
+                borderRadius: "inherit",
+              }}
             />
           </div>
         );

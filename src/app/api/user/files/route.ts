@@ -28,6 +28,7 @@ const uploadToStorage = async (file: File, userId: string) => {
 };
 
 // POST : UPLOAD FILE -----------------------------------------------------------------------------------------------------------------
+
 export async function POST(req: Request): Promise<Response> {
   try {
     const formData = await req.formData();
@@ -35,6 +36,7 @@ export async function POST(req: Request): Promise<Response> {
     const userId = formData.get("userId") as string;
     const folderId = formData.get("folderId") || null;
     const fileName = formData.get("name") as string;
+    const isFolderUpload = formData.get("isFolderUpload") === "true";
     if (!file || !userId) {
       return createResponse(400, null, "File and UserId are required");
     }
@@ -63,22 +65,23 @@ export async function POST(req: Request): Promise<Response> {
       throw new Error("Failed to insert file metadata: " + insertError.message);
     }
 
-    const activity: Activity = {
-      activity_type: "upload",
-      item_type: "file",
-      file_id: insertData.id,
-      folder_id: null,
-      user_id: userId,
-      details: null,
-    };
+    if (!isFolderUpload) {
+      const activity: Activity = {
+        activity_type: "upload",
+        item_type: "file",
+        file_id: insertData.id,
+        folder_id: null,
+        user_id: userId,
+        details: null,
+      };
 
-    // Add upload activity
-    const { error: activityError } = await supabase
-      .from("activities")
-      .insert([activity]);
+      const { error: activityError } = await supabase
+        .from("activities")
+        .insert([activity]);
 
-    if (activityError) {
-      console.error("Error logging upload activity:", activityError);
+      if (activityError) {
+        console.error("Error logging upload activity:", activityError);
+      }
     }
 
     return createResponse(201, insertData, null, "File uploaded successfully");

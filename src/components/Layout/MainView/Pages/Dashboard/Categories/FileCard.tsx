@@ -51,7 +51,11 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
               fill={true}
               quality={20}
               alt={file.file_name}
-              className="object-fill w-full h-full"
+              className="border border-gray-100"
+              objectFit="cover"
+              style={{
+                borderRadius: "inherit",
+              }}
             />
           </div>
         );
