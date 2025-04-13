@@ -53,8 +53,8 @@ const RecentUploadFileCard: React.FC<RecentUploadFileCardProps> = ({
               fill={true}
               quality={20}
               alt={item.file_name}
-              className="border border-gray-100"
-              objectFit="cover"
+              className="border border-gray-100 object-cover"
+              priority={true}
               style={{
                 borderRadius: "inherit",
               }}

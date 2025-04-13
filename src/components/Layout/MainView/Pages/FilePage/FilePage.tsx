@@ -78,7 +78,7 @@ const FilePage: React.FC<FilePageProps> = ({ file }) => {
             src={signedUrl ?? "../../../../../../public/placeholder_image.jpg"}
             alt={file_name}
             fill={true}
-            objectFit="contain"
+            className="object-contain"
           />
         </div>
       );
