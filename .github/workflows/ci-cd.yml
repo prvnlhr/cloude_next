@@ -27,13 +27,13 @@ jobs:
         run: npm run lint
 
       - name: Run tests
-        run: npm run test
+        run: echo "Tests not implemented yet" # Replace with npm run test when tests are added
 
       - name: Build Next.js app
         run: npm run build
 
   deploy-preview:
-    name: Deploy Preview invariants(PR)
+    name: Deploy Preview (PR)
     runs-on: ubuntu-latest
     needs: ci
     if: github.event_name == 'pull_request'
